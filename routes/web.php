@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 
 Route::get('Administrador',function(){
-    return 'Página principal del administrador';
+    return view('layouts.app');
 });
 
 
