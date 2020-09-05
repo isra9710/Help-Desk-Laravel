@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 
 Route::get('Administrador',function(){
-    return view('layouts.app');
+    return view('layouts.test');
 });
 
 
@@ -36,3 +36,26 @@ Route::get('Usuario',function(){
 Route::get('Prueba', function(){
     return view('prueba.prueba');
 });
+
+
+//Gestión
+    //tickets
+
+    //asignación
+
+//Configuración
+
+
+//Reporte
+    //creados
+
+    //pendientes
+
+
+//Administración
+    //usuarios
+    Route::get('Administración/Usuarios', 'Admin\UsersController@index');
+    Route::get('Administración/Usuarios/{user}', 'Admin\UsersController@show');
+    //roles
+
+    //permisos

@@ -24,9 +24,9 @@ class CreateUsersTable extends Migration
             $table->unsignedTinyInteger('idTypeU')->nullable();
             $table->unsignedBigInteger('idDepartment')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->rememberToken();
-            $table->unsignedBigInteger('created_by')->index();
-            $table->unsignedBigInteger('updated_by')->index();
+            $table->rememberToken()->nullable();
+            $table->unsignedBigInteger('created_by')->index()->nullable();
+            $table->unsignedBigInteger('updated_by')->index()->nullable();
             $table->foreign('idTypeU')->references('idTypeU')->on('typesu')->onDelete('set null');
             $table->foreign('idDepartment')->references('idDepartment')->on('departments')->onDelete('set null');
         });
