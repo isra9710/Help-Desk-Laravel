@@ -55,7 +55,7 @@ Route::get('Prueba', function(){
 //Administración
     //usuarios
     Route::get('Administración/Usuarios', 'Admin\UsersController@index');
-    Route::get('Administración/Usuarios/{user}', 'Admin\UsersController@show');
+    Route::get('Administración/Usuarios/VerUsuario{user}', 'Admin\UsersController@show');
     //roles
 
     //permisos

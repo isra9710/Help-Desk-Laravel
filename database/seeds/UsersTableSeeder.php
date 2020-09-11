@@ -14,22 +14,8 @@ class UsersTableSeeder extends Seeder
         //
         //User::truncate();
 
-        $root = new User();
-        $root->firstname = 'Israel';
-        $root->lastname = 'Ríos Contreras';
-        $root->username = 'Israel97';
-        $root->email = 'rcio172619@upemor.edu.mx';
-        $root->password =123456 ;
-        $root->save();
 
-        $user = new User();
-        $user->firstname = 'Perla';
-        $user->lastname = 'Perez Ocampo';
-        $user->username = 'Peoca92';
-        $user->email = 'peo9@gmail.com';
-        $user->password =123456;
-        $user->save();
-        factory(User::class,100)->create();
+        factory(User::class, 100)->create();
     }
 }
 /**

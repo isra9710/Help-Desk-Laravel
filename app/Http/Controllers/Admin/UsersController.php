@@ -16,8 +16,8 @@ class UsersController extends Controller
     public function index()
     {
         //
-        $querys = User::all();
-        return view('admin.user.index',[ 'users'=>$querys,]);
+        $users = User::paginate(1);
+        return view('admin.user.index',[ 'users'=>$users,]);
         //return 'Lista';
     }
 
@@ -51,6 +51,7 @@ class UsersController extends Controller
     public function show($id)
     {
         //
+        return view('admin.user.index');
     }
 
     /**
