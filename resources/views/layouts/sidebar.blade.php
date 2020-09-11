@@ -47,7 +47,7 @@
             <a href="../calendar.html" class="nav-link">
             <i class="fas fa-map-signs"></i>
               <p>
-                Tipos 
+                Tipos
                 <span class="badge badge-info right">2</span>
               </p>
             </a>
@@ -80,14 +80,23 @@
           </li>
           <li class="nav-header">Administración</li>
           <li class="nav-item">
-            <a href="../calendar.html" class="nav-link">
+            <a href="{{route('admin.user.indexE')}}" class="nav-link">
             <i class="fas fa-user-cog"></i>
               <p>
-                Usuarios
+                Empleados Generales
                 <span class="badge badge-info right">2</span>
               </p>
             </a>
           </li>
+            <li class="nav-item">
+                <a href="{{route('admin.user.indexE')}}" class="nav-link">
+                    <i class="fas fa-user-cog"></i>
+                    <p>
+                        Tecnicos
+                        <span class="badge badge-info right">2</span>
+                    </p>
+                </a>
+            </li>
           <li class="nav-item">
             <a href="../gallery.html" class="nav-link">
             <i class="fas fa-lock"></i>

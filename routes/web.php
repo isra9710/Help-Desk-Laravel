@@ -53,9 +53,14 @@ Route::get('Prueba', function(){
 
 
 //Administración
-    //usuarios
-    Route::get('Administración/Usuarios', 'Admin\UsersController@index');
-    Route::get('Administración/Usuarios/VerUsuario{user}', 'Admin\UsersController@show');
+    //Empleado General
+    Route::get('Administración/Usuarios', 'Admin\UsersController@indexE')->name('admin.user.indexE');
+    Route::post('Administración/Usuarios/Agregar','Admin\UsersController@createE')->name('admin.user.createE');
+    Route::get('Administración/Usuarios/VerUsuario/{id}', 'Admin\UsersController@showE')->name('admin.user.showE');
+    Route::post('Administración/Usuarios/Editar/{id}','Admin\UsersController@updateE')->name('admin.user.updateE');
+    Route::get('Administración/Usuarios/Eliminar/{id}','Admin\UsersController@destroyE')->name('admin.user.destroyE');
+    //Tecnicos
+
     //roles
 
     //permisos

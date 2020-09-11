@@ -17,9 +17,14 @@ mix
         'resources/css/adminlte.min.css'
     ], 'public/css/app.css')
 
+    .styles(['resources/css/crud/bootstrap.css'
+    ], 'public/css/crud.css')
 
     .js('resources/js/app.js', 'public/js')
-
+    .js('resources/js/bootstrap.js', 'public/js')
+    .js('resources/js/jquery.js', 'public/js')
+    .js('resources/js/popper.js', 'public/js')
+    .js('resources/js/funcion.js', 'public/js')
 
     .scripts([
         'resources/vendor/jquery/jquery.min.js',

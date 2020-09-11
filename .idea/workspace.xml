@@ -20,20 +20,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="15f13b81-ea0d-47be-910d-ac30e5a53667" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/resources/views/admin/user/show.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/layouts/crud.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Entities/Admin/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Entities/Admin/User.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/UsersController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/UsersController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeds/UsersTableSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeds/UsersTableSeeder.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2014_10_12_000003_create_users_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2014_10_12_000003_create_users_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/mix-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/mix-manifest.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/admin/user/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/user/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/user/show.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/user/show.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layouts/crud.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/crud.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layouts/sidebar.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/sidebar.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webpack.mix.js" beforeDir="false" afterPath="$PROJECT_DIR$/webpack.mix.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution />
   </component>
@@ -173,13 +177,33 @@
     <option name="myCommands">
       <command value="artisan db:seed" />
       <command value="service apache2 start" />
+      <command value="npm run dev" />
+      <command value="php artisan migrate" />
+      <command value="php artisan migrate:refresh" />
+      <command value="artisan route:clear" />
+      <command value="artisan serve" />
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="PHPUnit.phpunit.xml">
     <configuration name="phpunit.xml" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
       <TestRunner scope="XML" />
       <method v="2" />
     </configuration>
+    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.dev" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -190,6 +214,7 @@
       <option name="presentableId" value="Default" />
       <updated>1599612263519</updated>
       <workItem from="1599612274523" duration="14550000" />
+      <workItem from="1599788492488" duration="28636000" />
     </task>
     <servers />
   </component>
@@ -206,32 +231,37 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="1852" y="280" width="372" height="241" key="#Composer" timestamp="1599612649127">
       <screen x="1360" y="0" width="1366" height="768" />
     </state>
     <state x="1852" y="280" width="372" height="241" key="#Composer/1360.0.1366.768/0.30.1360.738@1360.0.1366.768" timestamp="1599612649127" />
-    <state width="1320" height="173" key="GridCell.Tab.0.bottom" timestamp="1599787826809">
+    <state width="1314" height="173" key="GridCell.Tab.0.bottom" timestamp="1599820767488">
+      <screen x="0" y="30" width="1360" height="738" />
+    </state>
+    <state width="1314" height="173" key="GridCell.Tab.0.bottom/1360.0.1366.768/0.30.1360.738@0.30.1360.738" timestamp="1599820767488" />
+    <state width="1320" height="173" key="GridCell.Tab.0.bottom/1360.0.1366.768/0.30.1360.738@1360.0.1366.768" timestamp="1599820490920" />
+    <state width="1314" height="173" key="GridCell.Tab.0.center" timestamp="1599820767487">
+      <screen x="0" y="30" width="1360" height="738" />
+    </state>
+    <state width="1314" height="173" key="GridCell.Tab.0.center/1360.0.1366.768/0.30.1360.738@0.30.1360.738" timestamp="1599820767487" />
+    <state width="1320" height="173" key="GridCell.Tab.0.center/1360.0.1366.768/0.30.1360.738@1360.0.1366.768" timestamp="1599820490920" />
+    <state width="1314" height="173" key="GridCell.Tab.0.left" timestamp="1599820767487">
+      <screen x="0" y="30" width="1360" height="738" />
+    </state>
+    <state width="1314" height="173" key="GridCell.Tab.0.left/1360.0.1366.768/0.30.1360.738@0.30.1360.738" timestamp="1599820767487" />
+    <state width="1320" height="173" key="GridCell.Tab.0.left/1360.0.1366.768/0.30.1360.738@1360.0.1366.768" timestamp="1599820490919" />
+    <state width="1314" height="173" key="GridCell.Tab.0.right" timestamp="1599820767487">
+      <screen x="0" y="30" width="1360" height="738" />
+    </state>
+    <state width="1314" height="173" key="GridCell.Tab.0.right/1360.0.1366.768/0.30.1360.738@0.30.1360.738" timestamp="1599820767487" />
+    <state width="1320" height="173" key="GridCell.Tab.0.right/1360.0.1366.768/0.30.1360.738@1360.0.1366.768" timestamp="1599820490920" />
+    <state x="1707" y="176" width="672" height="677" key="run.anything.popup" timestamp="1599820490728">
       <screen x="1360" y="0" width="1366" height="768" />
     </state>
-    <state width="1320" height="173" key="GridCell.Tab.0.bottom/1360.0.1366.768/0.30.1360.738@1360.0.1366.768" timestamp="1599787826809" />
-    <state width="1320" height="173" key="GridCell.Tab.0.center" timestamp="1599787826808">
-      <screen x="1360" y="0" width="1366" height="768" />
-    </state>
-    <state width="1320" height="173" key="GridCell.Tab.0.center/1360.0.1366.768/0.30.1360.738@1360.0.1366.768" timestamp="1599787826808" />
-    <state width="1320" height="173" key="GridCell.Tab.0.left" timestamp="1599787826808">
-      <screen x="1360" y="0" width="1366" height="768" />
-    </state>
-    <state width="1320" height="173" key="GridCell.Tab.0.left/1360.0.1366.768/0.30.1360.738@1360.0.1366.768" timestamp="1599787826808" />
-    <state width="1320" height="173" key="GridCell.Tab.0.right" timestamp="1599787826809">
-      <screen x="1360" y="0" width="1366" height="768" />
-    </state>
-    <state width="1320" height="173" key="GridCell.Tab.0.right/1360.0.1366.768/0.30.1360.738@1360.0.1366.768" timestamp="1599787826809" />
-    <state x="1707" y="176" width="672" height="677" key="run.anything.popup" timestamp="1599624419241">
-      <screen x="1360" y="0" width="1366" height="768" />
-    </state>
-    <state x="1707" y="176" width="672" height="677" key="run.anything.popup/1360.0.1366.768/0.30.1360.738@1360.0.1366.768" timestamp="1599624419241" />
+    <state x="1707" y="176" width="672" height="677" key="run.anything.popup/1360.0.1366.768/0.30.1360.738@1360.0.1366.768" timestamp="1599820490728" />
     <state x="1706" y="89" width="672" height="678" key="search.everywhere.popup" timestamp="1599780223000">
       <screen x="1360" y="0" width="1366" height="768" />
     </state>
