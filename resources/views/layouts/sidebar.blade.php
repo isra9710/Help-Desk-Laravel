@@ -80,7 +80,7 @@
           </li>
           <li class="nav-header">Administración</li>
           <li class="nav-item">
-            <a href="{{route('admin.user.indexE')}}" class="nav-link">
+            <a href="{{route('admin.user.index',3)}}" class="nav-link">
             <i class="fas fa-user-cog"></i>
               <p>
                 Empleados Generales
@@ -89,7 +89,7 @@
             </a>
           </li>
             <li class="nav-item">
-                <a href="{{route('admin.user.indexE')}}" class="nav-link">
+                <a href="{{route('admin.user.index',2)}}" class="nav-link">
                     <i class="fas fa-user-cog"></i>
                     <p>
                         Tecnicos

@@ -18,10 +18,7 @@ Route::get('/', function () {
 });
 
 
-Route::get('Administrador',function(){
-    return view('layouts.test');
-});
-
+Route::get('Administrador','Admin\UsersController@home')->name('admin.user.home');
 
 Route::get('Empleado',function(){
     return 'Página principal del empleado';
@@ -54,11 +51,11 @@ Route::get('Prueba', function(){
 
 //Administración
     //Empleado General
-    Route::get('Administración/Usuarios', 'Admin\UsersController@indexE')->name('admin.user.indexE');
-    Route::post('Administración/Usuarios/Agregar','Admin\UsersController@createE')->name('admin.user.createE');
-    Route::get('Administración/Usuarios/VerUsuario/{id}', 'Admin\UsersController@showE')->name('admin.user.showE');
-    Route::post('Administración/Usuarios/Editar/{id}','Admin\UsersController@updateE')->name('admin.user.updateE');
-    Route::get('Administración/Usuarios/Eliminar/{id}','Admin\UsersController@destroyE')->name('admin.user.destroyE');
+    Route::get('Administración/Usuarios/{tipo}', 'Admin\UsersController@index')->name('admin.user.index');
+    Route::post('Administración/Usuarios/Agregar','Admin\UsersController@create')->name('admin.user.create');
+    Route::get('Administración/Usuarios/VerUsuario/{id}', 'Admin\UsersController@show')->name('admin.user.show');
+    Route::post('Administración/Usuarios/Editar/{id}','Admin\UsersController@update')->name('admin.user.update');
+    Route::get('Administración/Usuarios/Eliminar/{id}','Admin\UsersController@destroy')->name('admin.user.destroy');
     //Tecnicos
 
     //roles

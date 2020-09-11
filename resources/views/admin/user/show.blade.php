@@ -11,28 +11,27 @@
         <div class="row">
             <div class="col-sm-8 offset-2">
                 <h4 class="text-center alert alert-info ">Editar empleado</h4>
-                <form action="{{route('admin.user.updateE', $user->idUser)}}" method="POST">
+                <form action="{{route('admin.user.update', $user->idUser)}}" method="POST">
                     {{ csrf_field() }}
-                    <input type="text" value="{{$user->idUser}}" name="idUser">
-                    <label>
+
                         Nombre
                         <input type="text" class="form-control" required name="firstname" value="{{$user->firstname}}">
-                    </label>
+
                     <br><br>
-                    <label>
+
                         Apellidos
                         <input type="text" class="form-control" required name="lastname" value="{{$user->lastname}}">
-                    </label><br><br>
-                    <label>
+                    <br><br>
+
                         Correo electronico
                         <input type="email" class="form-control" required name="email" value="{{$user->email}}">
-                    </label><br><br>
-                    <label>
+                    <br><br>
+
                         Nombre de usuario
                         <input type="text" class="form-control" required name="username" value="{{$user->username}}">
-                    </label><br><br>
+                    <br><br>
                     <input type="submit" class="btn btn-success" value="Actualizar">
-                    <a href="{{route('admin.user.indexE')}}" class="btn btn-info">Regresar</a>
+                    <a href="{{route('admin.user.index',$user->idTypeU)}}" class="btn btn-info">Regresar</a>
                     <br>
                     <br>
                 </form>

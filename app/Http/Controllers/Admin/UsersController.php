@@ -8,17 +8,16 @@ use App\Entities\Admin\User;
 
 class UsersController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexE()
+    public function home()
     {
         //
-        $users = User::paginate(5);
-        return view('admin.user.index',[ 'users'=>$users,]);
-        //return 'Lista';
+        return view('layouts.test');
     }
 
 
@@ -26,20 +25,24 @@ class UsersController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * @param  int  $tipo
      */
-    public function indexT()
+    public function index($tipo)
     {
         //
-        $users = User::paginate(5)->where('idUser', 2);
-        return view('admin.user.index',[ 'users'=>$users,]);
+        $users = User::where('idTypeU', $tipo)->paginate(1);
+        return view('admin.user.index',[ 'users'=>$users,'tipo'=>$tipo]);
     }
+
+
+
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function createE(Request $request)
+    public function create(Request $request)
     {
         //
         $user = new User();
@@ -48,9 +51,9 @@ class UsersController extends Controller
         $user->email=$request->email;
         $user->username=$request->username;
         $user->password=bcrypt($request->password);
-        $user->idTypeU=3;
+        $user->idTypeU=$request->type;
         $user->save();
-        return redirect()->route('admin.user.indexE');
+        return redirect()->route('admin.user.index',$user->idTypeU);
     }
 
 
@@ -72,7 +75,7 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function showE( $id)
+    public function show( $id)
     {
         //
         $user = User::where('idUser', $id)->first();
@@ -87,7 +90,7 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function editeE($id)
+    public function edite($id)
     {
         //
         $user = User::where('idUser', $id)->first();
@@ -103,18 +106,16 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updateE($id,Request $request)
+    public function update($id,Request $request)
     {
         //
-        $id=$request->idUser;
         $user = User::where('idUser', $request->id)->first();
         $user->firstname= $request->firstname;
-        $user->idUser = $request->idUser;
         $user->lastname=$request->lastname;
         $user->email=$request->email;
         $user->username=$request->username;
         $user->save();
-        return redirect()->route('admin.user.indexE');
+        return redirect()->route('admin.user.index',$user->idTypeU);
     }
 
     /**
@@ -123,10 +124,12 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroyE($id)
+    public function destroy($id)
     {
         //
+        $user = User::where('idUser', $id)->first();
+        $tipo = $user->idTypeU;
         User::destroy($id);
-        return redirect()->route('admin.user.indexE');
+        return redirect()->route('admin.user.index',$tipo);
     }
 }
