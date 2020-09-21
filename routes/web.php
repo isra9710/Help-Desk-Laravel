@@ -20,7 +20,7 @@ Route::get('/', function () {
 //Route::get('/', 'App\Http\Controllers\Auth\LoginController@showLoginForm')->name('login');
 
 
-
+Route::get('Administrador','Admin\UsersController@home')->name('admin.user.home');
 
 Route::get('Empleado',function(){
     return 'Página principal del empleado';
@@ -50,8 +50,7 @@ Route::get('Prueba', function(){
 
     //pendientes
 
-Route::middleware('auth')->group(function(){
-    Route::get('Administrador','Admin\UsersController@home')->name('admin.user.home');
+
 //Administración
     //Empleado General
     Route::get('Administración/Usuarios/{tipo}', 'Admin\UsersController@index')->name('admin.user.index');
@@ -60,7 +59,7 @@ Route::middleware('auth')->group(function(){
     Route::post('Administración/Usuarios/Editar/{id}','Admin\UsersController@update')->name('admin.user.update');
     Route::get('Administración/Usuarios/Eliminar/{id}','Admin\UsersController@destroy')->name('admin.user.destroy');
     //Tecnicos
-});
+
     //roles
 
     //permisos
