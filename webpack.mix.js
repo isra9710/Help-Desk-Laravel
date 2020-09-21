@@ -11,6 +11,7 @@ const mix = require('laravel-mix');
  |
  */
 
+
 mix
     .styles([
         'resources/vendor/fontawesome-free-5.14.0-web/css/all.min.css',
@@ -18,9 +19,7 @@ mix
         'resources/css/adminlte.min.css'
     ], 'public/css/app.css')
 
-    .styles(['resources/css/crud/bootstrap.css'
-    ], 'public/css/crud.css')
-
+    
     .js('resources/js/app.js', 'public/js')
     //.js('resources/js/bootstrap.js', 'public/js')
     //.js('resources/js/jquery.js', 'public/js')
@@ -37,8 +36,7 @@ mix
     //.js('resources/js/jquery.js', 'public/js')
     //.js('resources/js/popper.js', 'public/js')
     //.js('resources/js/funcion.js', 'public/js')
-
-
+    //.sass('resources/sass/app.scss', 'public/css')
     .scripts([
         'resources/vendor/jquery/jquery.min.js',
         'resources/vendor/bootstrap/js/bootstrap.bundle.min.js'
@@ -51,4 +49,5 @@ mix
 
     .version()
     //.sass('resources/sass/app.scss', 'public/css');
+    
 ;
