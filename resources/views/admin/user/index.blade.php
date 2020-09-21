@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.app')
 @if($tipo==3)
     @section('title', 'Empleados')
 @else

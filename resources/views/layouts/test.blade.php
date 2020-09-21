@@ -1,10 +1,7 @@
-@extends('layouts.main')
+@extends('layouts.app')
 
-@section('title', 'Inicio')  
-
-
-@section('icon_title')
-    <i class="fa fa-home"></i>
+@section('title')
+  <i class="fa fa-home"></i> Inicio 
 @endsection
   
 @section('content')
@@ -20,7 +17,7 @@
           </div>
         </div>
         <div class="card-body">
-         BIENVENIDO
+          Start creating your amazing application!
         </div>
         <!-- /.card-body -->
         <div class="card-footer">

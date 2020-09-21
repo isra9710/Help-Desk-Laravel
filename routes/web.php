@@ -16,8 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('auth.login');
 });
-//Route::get('home','HomeController')->name('home');
-//Route::get('/', 'App\Http\Controllers\Auth\LoginController@showLoginForm')->name('login');
 
 
 Route::get('Administrador','Admin\UsersController@home')->name('admin.user.home');
@@ -68,3 +66,6 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
