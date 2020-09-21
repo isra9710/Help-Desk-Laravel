@@ -14,7 +14,7 @@ const mix = require('laravel-mix');
 mix
     .styles([
         'resources/vendor/fontawesome-free-5.14.0-web/css/all.min.css',
-
+        'resources/vendor/icheck-bootstrap/icheck-bootstrap.min.css',
         'resources/css/adminlte.min.css'
     ], 'public/css/app.css')
 
@@ -22,18 +22,18 @@ mix
     ], 'public/css/crud.css')
 
     .js('resources/js/app.js', 'public/js')
-    .js('resources/js/bootstrap.js', 'public/js')
-    .js('resources/js/jquery.js', 'public/js')
-    .js('resources/js/popper.js', 'public/js')
-    .js('resources/js/funcion.js', 'public/js')
+    //.js('resources/js/bootstrap.js', 'public/js')
+    //.js('resources/js/jquery.js', 'public/js')
+    //.js('resources/js/popper.js', 'public/js')
+    //.js('resources/js/funcion.js', 'public/js')
 
       /*  'resources/vendor/icheck-bootstrap/icheck-bootstrap.min.css',
         'resources/css/adminlte.min.css'
     ], 'public/css/app.css')*/
 
 
-    .js('resources/js/app.js', 'public/js')
-    .js('resources/js/bootstrap.js', 'public/js')
+    //.js('resources/js/app.js', 'public/js')
+    //.js('resources/js/bootstrap.js', 'public/js')
     //.js('resources/js/jquery.js', 'public/js')
     //.js('resources/js/popper.js', 'public/js')
     //.js('resources/js/funcion.js', 'public/js')

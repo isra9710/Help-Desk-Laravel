@@ -21634,7 +21634,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /media/israel/Nuevo vol/Israel/Universidad/10/Help-Desk/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /media/israel/Nuevo vol/Israel/Universidad/10/carpeta sin título/Help-Desk/resources/js/app.js */"./resources/js/app.js");
 
 
 /***/ })

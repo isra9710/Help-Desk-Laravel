@@ -93,7 +93,7 @@
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-!(function webpackMissingModule() { var e = new Error("Cannot find module '/media/israel/Nuevo vol/Israel/Universidad/10/Help-Desk/resources/js/popper.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+!(function webpackMissingModule() { var e = new Error("Cannot find module '/media/israel/Nuevo vol/Israel/Universidad/10/carpeta sin título/Help-Desk/resources/js/popper.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
 
 
 /***/ })

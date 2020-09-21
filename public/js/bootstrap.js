@@ -19362,7 +19362,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /media/israel/Nuevo vol/Israel/Universidad/10/Help-Desk/resources/js/bootstrap.js */"./resources/js/bootstrap.js");
+module.exports = __webpack_require__(/*! /media/israel/Nuevo vol/Israel/Universidad/10/carpeta sin título/Help-Desk/resources/js/bootstrap.js */"./resources/js/bootstrap.js");
 
 
 /***/ })
