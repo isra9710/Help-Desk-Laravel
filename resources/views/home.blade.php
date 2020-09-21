@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Inicio {{ auth()->user()->firstname}}')  
+@section('title', 'Inicio')  
 
 
 @section('icon_title')
