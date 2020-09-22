@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Entities\Admin\User;
+use App\Models\User;
 
 class UsersController extends Controller
 {
@@ -30,6 +30,7 @@ class UsersController extends Controller
     public function index($tipo)
     {
         //
+        
         $users = User::where('idTypeU', $tipo)->paginate(1);
         return view('admin.user.index',[ 'users'=>$users,'tipo'=>$tipo]);
     }
@@ -79,7 +80,7 @@ class UsersController extends Controller
     {
         //
         $user = User::where('idUser', $id)->first();
-        return view('admin.user.show',[
+        return view('admin.user.edit',[
             'user' => $user
         ]);
     }

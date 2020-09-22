@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+//Vista principal de la aplicación
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -37,29 +37,23 @@ Route::get('Prueba', function(){
 });
 
 
-//Gestión
-    //tickets
-
-    //asignación
-
-//Configuración
-
-
-//Reporte
-    //creados
-
-    //pendientes
-
+//Administrador
 Route::middleware('auth')->group(function(){
-    Route::get('Administrador','Admin\UsersController@home')->name('admin.user.home');
+    Route::get('Administrador','UsersController@home')->name('admin.user.home');
 //Administración
-    //Empleado General
-    Route::get('Administración/Usuarios/{tipo}', 'Admin\UsersController@index')->name('admin.user.index');
-    Route::post('Administración/Usuarios/Agregar','Admin\UsersController@create')->name('admin.user.create');
-    Route::get('Administración/Usuarios/VerUsuario/{id}', 'Admin\UsersController@show')->name('admin.user.show');
-    Route::post('Administración/Usuarios/Editar/{id}','Admin\UsersController@update')->name('admin.user.update');
-    Route::get('Administración/Usuarios/Eliminar/{id}','Admin\UsersController@destroy')->name('admin.user.destroy');
-    //Tecnicos
+    //Usuarios
+    Route::get('Administración/Usuarios/{tipo}', 'UsersController@index')->name('admin.user.index');
+    Route::post('Administración/Usuarios/Agregar','UsersController@create')->name('admin.user.create');
+    Route::get('Administración/Usuarios/VerUsuario/{id}', 'UsersController@show')->name('admin.user.show');
+    Route::post('Administración/Usuarios/EditarUsuario/{id}','UsersController@update')->name('admin.user.update');
+    Route::get('Administración/Usuarios/EliminarUsuario/{id}','UsersController@destroy')->name('admin.user.destroy');
+    //Subáreas
+    Route::get('Administración/Subárea', 'UsersController@index')->name('admin.subarea.index');
+    Route::post('Administración/Subárea/Agregar','UsersController@create')->name('admin.subarea.create');
+    Route::get('Administración/Usuarios/VerSubárea/{id}', 'UsersController@show')->name('admin.subarea.show');
+    Route::post('Administración/Usuarios/EditarSubárea/{id}','UsersController@update')->name('admin.subarea.update');
+    Route::get('Administración/Usuarios/EliminarSubárea/{id}','UsersController@destroy')->name('admin.subarea.destroy');
+
 });
     //roles
 

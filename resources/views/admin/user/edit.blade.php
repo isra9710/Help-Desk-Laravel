@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('admin.layouts.main')
 
 @section('title', 'Empleados')
 
@@ -27,7 +27,7 @@
                         <input type="email" class="form-control" required name="email" value="{{$user->email}}">
                     <br><br>
 
-                        Nombre de usuario
+                    Número de empleado
                         <input type="text" class="form-control" required name="username" value="{{$user->username}}">
                     <br><br>
                     <input type="submit" class="btn btn-success" value="Actualizar">

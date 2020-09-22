@@ -16,7 +16,8 @@ class CreateTypesuTable extends Migration
         Schema::create('typesu', function (Blueprint $table) {
             $table->tinyIncrements('idTypeU');
 
-            $table->string('typeUser');
+            $table->string('typeUser')->unique;
+            $table->string('slug')->unique;
             $table->timestamps();
         });
     }
