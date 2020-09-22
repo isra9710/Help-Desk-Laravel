@@ -17,7 +17,8 @@ class CreateTypesuTable extends Migration
             $table->tinyIncrements('idTypeU');
 
             $table->string('typeUser')->unique;
-            $table->string('slug')->unique;
+           // $table->string('slug')->unique;
+           // $table->text('description');
             $table->timestamps();
         });
     }

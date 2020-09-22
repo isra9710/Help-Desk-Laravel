@@ -31,7 +31,7 @@ class UsersController extends Controller
     {
         //
         
-        $users = User::where('idTypeU', $tipo)->paginate(1);
+        $users = User::where('idTypeU', $tipo)->paginate(3);
         return view('admin.user.index',[ 'users'=>$users,'tipo'=>$tipo]);
     }
 

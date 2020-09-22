@@ -59,17 +59,17 @@ class User extends Authenticatable
 	];
 
 	protected $fillable = [
-		/*'firstname',
-		'lastname',*/
+		'firstname',
+		'lastname',
 		'username',
-		//'email',
+		'email',
 		'password',
-		/*'idTypeU',
+		'idTypeU',
 		'idDepartment',
 		'email_verified_at',
 		'remember_token',
 		'created_by',
-		'updated_by'*/
+		'updated_by'
 	];
 
 	public function department()
