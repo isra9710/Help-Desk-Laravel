@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDescriptionsTable extends Migration
+class CreateRolesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateDescriptionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('descriptions', function (Blueprint $table) {
-            $table->bigIncrements('idDescription');
-            
-            $table->unsignedBigInteger('idTicket')->nullable();
+        Schema::create('roles', function (Blueprint $table) {
+            $table->tinyIncrements('idRole');
+
+            $table->string('roleName')->unique;
+           // $table->string('slug')->unique;
+           // $table->text('description');
             $table->timestamps();
-            $table->foreign('idTicket')->references('idTicket')->on('tickets')->onDelete('set null'); 
         });
     }
 
@@ -29,6 +30,6 @@ class CreateDescriptionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('descriptions');
+        Schema::dropIfExists('typesu');
     }
 }

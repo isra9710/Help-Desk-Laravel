@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTypesuTable extends Migration
+class CreateMessagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateTypesuTable extends Migration
      */
     public function up()
     {
-        Schema::create('typesu', function (Blueprint $table) {
-            $table->tinyIncrements('idTypeU');
-
-            $table->string('typeUser')->unique;
-           // $table->string('slug')->unique;
-           // $table->text('description');
+        Schema::create('messages', function (Blueprint $table) {
+            $table->bigIncrements('idMessage');
+            
+            $table->unsignedBigInteger('idTicket')->nullable();
             $table->timestamps();
+            $table->foreign('idTicket')->references('idTicket')->on('tickets')->onDelete('set null'); 
         });
     }
 
@@ -30,6 +29,6 @@ class CreateTypesuTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('typesu');
+        Schema::dropIfExists('descriptions');
     }
 }

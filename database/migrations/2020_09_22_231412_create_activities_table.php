@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTypesTable extends Migration
+class CreateActivitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,16 @@ class CreateTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('types', function (Blueprint $table) {
-            $table->tinyIncrements('idType');
+        Schema::create('activities', function (Blueprint $table) {
+            $table->bigIncrements('idActivity');
 
+            $table->string('activityName');
+            $table->unsignedBigInteger('idSubarea')->nullable();
             $table->unsignedSmallInteger('idPriority')->nullable();
-            $table->unsignedBigInteger('idDepartment')->nullable();
-            $table->string('nameType')->unique();
             $table->timestamps();
+            $table->foreign('idSubarea')->references('idSubarea')->on('subareas')->onDelete('set null');
             $table->foreign('idPriority')->references('idPriority')->on('priorities')->onDelete('set null');
-            $table->foreign('idDepartment')->references('idDepartment')->on('departments')->onDelete('set null');
-        });
+        });                                                              
     }
 
     /**
@@ -32,6 +32,6 @@ class CreateTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('types');
+        Schema::dropIfExists('activities');
     }
 }

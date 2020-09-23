@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
- * @property Collection|Type[] $types
+ * @property Collection|Activity[] $activities
  *
  * @package App\Models
  */
@@ -31,8 +31,8 @@ class Priority extends Model
 		'priorityName'
 	];
 
-	public function types()
+	public function activities()
 	{
-		return $this->hasMany(Type::class, 'idPriority');
+		return $this->hasMany(Activity::class, 'idPriority');
 	}
 }

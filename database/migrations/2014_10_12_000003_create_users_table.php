@@ -16,20 +16,21 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('idUser');
 
-            //$table->string('name');
-            $table->string('firstname');
-            $table->string('lastname');
+            $table->string('name');
+            //$table->string('firstname');
+            //$table->string('lastname');
             $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('password');
-            //$table->string('extension');
-            $table->unsignedTinyInteger('idTypeU')->nullable();
+            $table->string('extension');
+            $table->unsignedTinyInteger('idRole')->nullable();
             $table->unsignedBigInteger('idDepartment')->nullable();
+            $table->boolean('status');
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken()->nullable();
             $table->unsignedBigInteger('created_by')->index()->nullable();
             $table->unsignedBigInteger('updated_by')->index()->nullable();
-            $table->foreign('idTypeU')->references('idTypeU')->on('typesu')->onDelete('set null');
+            $table->foreign('idRole')->references('idRole')->on('roles')->onDelete('set null');
             $table->foreign('idDepartment')->references('idDepartment')->on('departments')->onDelete('set null');
         });
     }

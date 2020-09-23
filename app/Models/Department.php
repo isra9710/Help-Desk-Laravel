@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
- * @property Collection|Type[] $types
+ * @property Collection|Subarea[] $subareas
  * @property Collection|User[] $users
  *
  * @package App\Models
@@ -32,9 +32,9 @@ class Department extends Model
 		'departmentName'
 	];
 
-	public function types()
+	public function subareas()
 	{
-		return $this->hasMany(Type::class, 'idDepartment');
+		return $this->hasMany(Subarea::class, 'idDepartment');
 	}
 
 	public function users()

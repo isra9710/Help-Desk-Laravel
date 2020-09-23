@@ -11,10 +11,10 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Typesu
+ * Class Role
  * 
- * @property int $idTypeU
- * @property string $typeUser
+ * @property int $idRole
+ * @property string $roleName
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
@@ -22,17 +22,17 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Models
  */
-class Typesu extends Model
+class Role extends Model
 {
-	protected $table = 'typesu';
-	protected $primaryKey = 'idTypeU';
+	protected $table = 'roles';
+	protected $primaryKey = 'idRole';
 
 	protected $fillable = [
-		'typeUser'
+		'roleName'
 	];
 
 	public function users()
 	{
-		return $this->hasMany(User::class, 'idTypeU');
+		return $this->hasMany(User::class, 'idRole');
 	}
 }

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 
-class UsersController extends Controller
+class UserController extends Controller
 {
 
     /**
@@ -25,14 +25,14 @@ class UsersController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
-     * @param  int  $tipo
+     * @param  int  $role
      */
-    public function index($tipo)
+    public function index($role)
     {
         //
         
-        $users = User::where('idTypeU', $tipo)->paginate(3);
-        return view('admin.user.index',[ 'users'=>$users,'tipo'=>$tipo]);
+        $users = User::where('idRole', $role)->paginate(3);
+        return view('admin.user.index',[ 'users'=>$users,'role'=>$role]);
     }
 
 
@@ -47,14 +47,17 @@ class UsersController extends Controller
     {
         //
         $user = new User();
-        $user->firstname= $request->firstname;
-        $user->lastname=$request->lastname;
+        //$user->firstname= $request->firstname;
+        //$user->lastname=$request->lastname;
+        $user->name=$request->name;
         $user->email=$request->email;
         $user->username=$request->username;
         $user->password=bcrypt($request->password);
-        $user->idTypeU=$request->type;
+        $user->idRole=$request->type;
+        $user->extension=$request->extension;
+        $user->status=TRUE;
         $user->save();
-        return redirect()->route('admin.user.index',$user->idTypeU);
+        return redirect()->route('admin.user.index',$user->role);
     }
 
 
@@ -116,7 +119,7 @@ class UsersController extends Controller
         $user->email=$request->email;
         $user->username=$request->username;
         $user->save();
-        return redirect()->route('admin.user.index',$user->idTypeU);
+        return redirect()->route('admin.user.index',$user->idRole);
     }
 
     /**
@@ -129,8 +132,8 @@ class UsersController extends Controller
     {
         //
         $user = User::where('idUser', $id)->first();
-        $tipo = $user->idTypeU;
+        $role = $user->idRole;
         User::destroy($id);
-        return redirect()->route('admin.user.index',$tipo);
+        return redirect()->route('admin.user.index',$role);
     }
 }

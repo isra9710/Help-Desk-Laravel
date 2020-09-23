@@ -1,5 +1,5 @@
 @extends('admin.layouts.main')
-@if($tipo==3)
+@if($role==3)
     @section('title', 'Empleados')
 @else
     @section('title', 'Tecnicos')
@@ -18,7 +18,7 @@
     </div>-->
     <div class="row">
         <div class="col-sm-4">
-            @if($tipo==3)
+            @if($role==3)
                 <h4 class="text-center alert alert-info ">Agregar nuevo empleado</h4>
             @else
                 <h4 class="text-center alert alert-info ">Agregar nuevo tecnico</h4>
@@ -27,13 +27,13 @@
                 {{ csrf_field() }}
 
                     Nombre
-                    <input type="text" class="form-control" required name="firstname">
+                    <input type="text" class="form-control" required name="name">
 
                 <br><br>
 
-                    Apellidos
+                  <!--  Apellidos
                     <input type="text" class="form-control" required name="lastname">
-                <br><br>
+                <br><br>-->
 
                     Correo electronico
                     <input type="email" class="form-control" required name="email">
@@ -51,12 +51,12 @@
                 <input type="submit" class="btn btn-success" value="Agregar">
                 <br>
                 <br>
-                <input type="hidden" value="{{$tipo}}" name="type">
+                <input type="hidden" value="{{$role}}" name="type">
             </form>
         </div>
 
         <div class="col-sm-7 offset-1">
-            @if($tipo==3)
+            @if($role==3)
                 <h4 class="text-center aler alert-info">Empleados Registrados</h4>
             @else
                 <h4 class="text-center aler alert-info">Tecnicos Registrados</h4>

@@ -10,9 +10,9 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Description
+ * Class Message
  * 
- * @property int $idDescription
+ * @property int $idMessage
  * @property int|null $idTicket
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -21,10 +21,10 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Models
  */
-class Description extends Model
+class Message extends Model
 {
-	protected $table = 'descriptions';
-	protected $primaryKey = 'idDescription';
+	protected $table = 'messages';
+	protected $primaryKey = 'idMessage';
 
 	protected $casts = [
 		'idTicket' => 'int'

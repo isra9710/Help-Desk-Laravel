@@ -14,22 +14,22 @@ use Illuminate\Database\Eloquent\Model;
  * Class Ticket
  * 
  * @property int $idTicket
- * @property int|null $idType
+ * @property int|null $idStaff
+ * @property int|null $idTechnician
  * @property int|null $idStatus
- * @property int|null $idUser
  * @property Carbon $startDate
  * @property Carbon $limitDate
  * @property string $firstPhoto
  * @property string $secondPhoto
+ * @property bool|null $doubt
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int|null $created_by
  * @property int|null $updated_by
  * 
- * @property Status $status
- * @property Type $type
  * @property User $user
- * @property Collection|Description[] $descriptions
+ * @property Status $status
+ * @property Collection|Message[] $messages
  * @property Collection|Poll[] $polls
  *
  * @package App\Models
@@ -40,9 +40,10 @@ class Ticket extends Model
 	protected $primaryKey = 'idTicket';
 
 	protected $casts = [
-		'idType' => 'int',
+		'idStaff' => 'int',
+		'idTechnician' => 'int',
 		'idStatus' => 'int',
-		'idUser' => 'int',
+		'doubt' => 'bool',
 		'created_by' => 'int',
 		'updated_by' => 'int'
 	];
@@ -53,35 +54,31 @@ class Ticket extends Model
 	];
 
 	protected $fillable = [
-		'idType',
+		'idStaff',
+		'idTechnician',
 		'idStatus',
-		'idUser',
 		'startDate',
 		'limitDate',
 		'firstPhoto',
 		'secondPhoto',
+		'doubt',
 		'created_by',
 		'updated_by'
 	];
+
+	public function user()
+	{
+		return $this->belongsTo(User::class, 'idTechnician');
+	}
 
 	public function status()
 	{
 		return $this->belongsTo(Status::class, 'idStatus');
 	}
 
-	public function type()
+	public function messages()
 	{
-		return $this->belongsTo(Type::class, 'idType');
-	}
-
-	public function user()
-	{
-		return $this->belongsTo(User::class, 'idUser');
-	}
-
-	public function descriptions()
-	{
-		return $this->hasMany(Description::class, 'idTicket');
+		return $this->hasMany(Message::class, 'idTicket');
 	}
 
 	public function polls()

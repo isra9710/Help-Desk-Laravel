@@ -69,7 +69,7 @@
   <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
-<script src="{{ mix('js/vendor.js') }}"></script>
+<!--<script src=></script>-->
 <script src=" {{ mix('js/app.js') }}"></script> 
 <!-- jQuery -->
 <!--<script src="../../plugins/jquery/jquery.min.js"></script>-->

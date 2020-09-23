@@ -11,35 +11,31 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Type
+ * Class Subarea
  * 
- * @property int $idType
- * @property int|null $idPriority
+ * @property int $idSubarea
+ * @property string $subareaName
  * @property int|null $idDepartment
- * @property string $nameType
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
  * @property Department $department
- * @property Priority $priority
- * @property Collection|Ticket[] $tickets
+ * @property Collection|Activity[] $activities
  *
  * @package App\Models
  */
-class Type extends Model
+class Subarea extends Model
 {
-	protected $table = 'types';
-	protected $primaryKey = 'idType';
+	protected $table = 'subareas';
+	protected $primaryKey = 'idSubarea';
 
 	protected $casts = [
-		'idPriority' => 'int',
 		'idDepartment' => 'int'
 	];
 
 	protected $fillable = [
-		'idPriority',
-		'idDepartment',
-		'nameType'
+		'subareaName',
+		'idDepartment'
 	];
 
 	public function department()
@@ -47,13 +43,8 @@ class Type extends Model
 		return $this->belongsTo(Department::class, 'idDepartment');
 	}
 
-	public function priority()
+	public function activities()
 	{
-		return $this->belongsTo(Priority::class, 'idPriority');
-	}
-
-	public function tickets()
-	{
-		return $this->hasMany(Ticket::class, 'idType');
+		return $this->hasMany(Activity::class, 'idSubarea');
 	}
 }

@@ -31,7 +31,7 @@
                         <input type="text" class="form-control" required name="username" value="{{$user->username}}">
                     <br><br>
                     <input type="submit" class="btn btn-success" value="Actualizar">
-                    <a href="{{route('admin.user.index',$user->idTypeU)}}" class="btn btn-info">Regresar</a>
+                    <a href="{{route('admin.user.index',$user->idRole)}}" class="btn btn-info">Regresar</a>
                     <br>
                     <br>
                 </form>

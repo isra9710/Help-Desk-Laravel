@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property int $idPoll
  * @property int|null $idTicket
+ * @property int $score
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
@@ -27,11 +28,13 @@ class Poll extends Model
 	protected $primaryKey = 'idPoll';
 
 	protected $casts = [
-		'idTicket' => 'int'
+		'idTicket' => 'int',
+		'score' => 'int'
 	];
 
 	protected $fillable = [
-		'idTicket'
+		'idTicket',
+		'score'
 	];
 
 	public function ticket()

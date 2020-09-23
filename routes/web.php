@@ -38,23 +38,24 @@ Route::get('Prueba', function(){
 
 
 //Administrador
-Route::middleware('auth')->group(function(){
-    Route::get('Administrador','UsersController@home')->name('admin.user.home');
+//Route::middleware('auth')->group(function(){
+    Route::get('Administrador','UserController@home')->name('admin.user.home');
 //Administración
     //Usuarios
-    Route::get('Administración/Usuarios/{tipo}', 'UsersController@index')->name('admin.user.index');
-    Route::post('Administración/Usuarios/Agregar','UsersController@create')->name('admin.user.create');
-    Route::get('Administración/Usuarios/VerUsuario/{id}', 'UsersController@show')->name('admin.user.show');
-    Route::post('Administración/Usuarios/EditarUsuario/{id}','UsersController@update')->name('admin.user.update');
-    Route::get('Administración/Usuarios/EliminarUsuario/{id}','UsersController@destroy')->name('admin.user.destroy');
+    Route::get('Administración/Usuarios/{role}', 'UserController@index')->name('admin.user.index');
+    Route::post('Administración/Usuarios/Agregar','UserController@create')->name('admin.user.create');
+    Route::get('Administración/Usuarios/VerUsuario/{id}', 'UserController@show')->name('admin.user.show');
+    Route::post('Administración/Usuarios/EditarUsuario/{id}','UserController@update')->name('admin.user.update');
+    Route::get('Administración/Usuarios/EliminarUsuario/{id}','UserController@destroy')->name('admin.user.destroy');
     //Subáreas
-    Route::get('Administración/Subárea', 'UsersController@index')->name('admin.subarea.index');
-    Route::post('Administración/Subárea/Agregar','UsersController@create')->name('admin.subarea.create');
-    Route::get('Administración/Usuarios/VerSubárea/{id}', 'UsersController@show')->name('admin.subarea.show');
-    Route::post('Administración/Usuarios/EditarSubárea/{id}','UsersController@update')->name('admin.subarea.update');
-    Route::get('Administración/Usuarios/EliminarSubárea/{id}','UsersController@destroy')->name('admin.subarea.destroy');
+    /*
+    Route::get('Administración/Subárea', 'UserController@index')->name('admin.subarea.index');
+    Route::post('Administración/Subárea/Agregar','UserController@create')->name('admin.subarea.create');
+    Route::get('Administración/Usuarios/VerSubárea/{id}', 'UserController@show')->name('admin.subarea.show');
+    Route::post('Administración/Usuarios/EditarSubárea/{id}','UserController@update')->name('admin.subarea.update');
+    Route::get('Administración/Usuarios/EliminarSubárea/{id}','UserController@destroy')->name('admin.subarea.destroy');*/
 
-});
+//});
     //roles
 
     //permisos
@@ -62,4 +63,6 @@ Route::middleware('auth')->group(function(){
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+
 

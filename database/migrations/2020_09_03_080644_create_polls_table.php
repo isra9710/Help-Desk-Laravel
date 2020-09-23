@@ -17,6 +17,7 @@ class CreatePollsTable extends Migration
             $table->bigIncrements('idPoll');
 
             $table->unsignedBigInteger('idTicket')->nullable();
+            $table->Smallinteger('score');
             $table->timestamps();
             $table->foreign('idTicket')->references('idTicket')->on('tickets')->onDelete('set null');
         });

@@ -29,13 +29,13 @@
     <form action="{{ route('login')}}" method="POST">
       @csrf
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Número de empleado" @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required  autofocus>
+          <input type="email" class="form-control" placeholder="Correo" @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required  autofocus>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
             </div>
           </div>
-          @error('username')
+          @error('email')
           <span class="invalid-feedback" role="alert">
               <strong>{{ $message }}</strong>
           </span>
@@ -87,7 +87,5 @@
 
 <!-- /.login-box -->
 
-<script src="{{ mix('js/vendor.js')}}"></script>
-<script src="{{}mix('js/app.js')}"></script>
 </body>
 </html>

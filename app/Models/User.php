@@ -6,45 +6,50 @@
 
 namespace App\Models;
 
-
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+
+
 /**
  * Class User
  * 
  * @property int $idUser
- * @property string $firstname
- * @property string $lastname
+ * @property string $name
  * @property string $username
  * @property string $email
  * @property string $password
- * @property int|null $idTypeU
+ * @property string $extension
+ * @property int|null $idRole
  * @property int|null $idDepartment
+ * @property bool $status
  * @property Carbon|null $email_verified_at
  * @property string|null $remember_token
  * @property int|null $created_by
  * @property int|null $updated_by
  * 
  * @property Department $department
- * @property Typesu $typesu
+ * @property Role $role
+ * @property Collection|Assignment[] $assignments
+ * @property Collection|Substitution[] $substitutions
  * @property Collection|Ticket[] $tickets
  *
  * @package App\Models
- */			
+ */
 class User extends Authenticatable
 {
-	use Notifiable;
 	protected $table = 'users';
 	protected $primaryKey = 'idUser';
 	public $timestamps = false;
+	use Notifiable;
 
 	protected $casts = [
-		'idTypeU' => 'int',
+		'idRole' => 'int',
 		'idDepartment' => 'int',
+		'status' => 'bool',
 		'created_by' => 'int',
 		'updated_by' => 'int'
 	];
@@ -59,13 +64,14 @@ class User extends Authenticatable
 	];
 
 	protected $fillable = [
-		'firstname',
-		'lastname',
+		'name',
 		'username',
 		'email',
 		'password',
-		'idTypeU',
+		'extension',
+		'idRole',
 		'idDepartment',
+		'status',
 		'email_verified_at',
 		'remember_token',
 		'created_by',
@@ -77,13 +83,47 @@ class User extends Authenticatable
 		return $this->belongsTo(Department::class, 'idDepartment');
 	}
 
-	public function typesu()
+	public function role()
 	{
-		return $this->belongsTo(Typesu::class, 'idTypeU');
+		return $this->belongsTo(Role::class, 'idRole');
+	}
+
+	public function assignments()
+	{
+		return $this->hasMany(Assignment::class, 'idUser');
+	}
+
+	public function substitutions()
+	{
+		return $this->hasMany(Substitution::class, 'idYes');
 	}
 
 	public function tickets()
 	{
-		return $this->hasMany(Ticket::class, 'idUser');
+		return $this->hasMany(Ticket::class, 'idTechnician');
 	}
+
+	public function hasAnyRole($role){
+		if ($this->hasRole($role)){
+			return true;
+		}
+		return false;
+	}
+
+
+	public function hasRole($role){
+		if($this->role()->where('roleName',$role)->first()){
+			return true;
+		}
+		return false;
+	}
+
+
+	public function atuthorizeRole($role){
+		if($this->hasAnyRole($role)){
+			return true;
+		}
+		abort(401,'No tienes autorización para entrar a esta sección');
+	}
+	
 }
