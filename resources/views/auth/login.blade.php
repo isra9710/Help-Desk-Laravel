@@ -29,13 +29,13 @@
     <form action="{{ route('login')}}" method="POST">
       @csrf
         <div class="input-group mb-3">
-          <input type="email" class="form-control" placeholder="Correo" @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required  autofocus>
+          <input type="text" class="form-control" placeholder="Número de empleado" @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required  autofocus>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
             </div>
           </div>
-          @error('email')
+          @error('username')
           <span class="invalid-feedback" role="alert">
               <strong>{{ $message }}</strong>
           </span>

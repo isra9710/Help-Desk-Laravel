@@ -38,8 +38,11 @@ Route::get('Prueba', function(){
 
 
 //Administrador
-//Route::middleware('auth')->group(function(){
-    Route::get('Administrador','UserController@home')->name('admin.user.home');
+Route::middleware('auth')->group(function(){
+    $user=Auth::user();
+    
+        Route::get('Administrador', 'HomeController@index')->name('home');
+        Route::get('Administrador','UserController@home')->name('admin.user.home');
 //Administración
     //Usuarios
     Route::get('Administración/Usuarios/{role}', 'UserController@index')->name('admin.user.index');
@@ -55,14 +58,14 @@ Route::get('Prueba', function(){
     Route::post('Administración/Usuarios/EditarSubárea/{id}','UserController@update')->name('admin.subarea.update');
     Route::get('Administración/Usuarios/EliminarSubárea/{id}','UserController@destroy')->name('admin.subarea.destroy');*/
 
-//});
+});
     //roles
 
     //permisos
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+
 
 
 

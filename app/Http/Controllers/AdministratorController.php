@@ -21,7 +21,7 @@ class UserController extends Controller
         return view('layouts.test');
     }
 
-
+    //Gestión de Usuarios
     /**
      * Display a listing of the resource.
      *
@@ -37,8 +37,6 @@ class UserController extends Controller
     }
 
 
-
-
     /**
      * Show the form for creating a new resource.
      *
@@ -48,8 +46,6 @@ class UserController extends Controller
     {
         //
         $user = new User();
-        //$user->firstname= $request->firstname;
-        //$user->lastname=$request->lastname;
         $user->name=$request->name;
         $user->email=$request->email;
         $user->username=$request->username;
