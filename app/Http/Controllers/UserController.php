@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Models\User;
+use App\Models\Department;
 
 class UserController extends Controller
 {
@@ -18,9 +20,42 @@ class UserController extends Controller
     public function home()
     {
         //
-        return view('layouts.test');
+
+       /*if (Auth()->user()->hasRole("Administrador")) {
+           return view('administrator.home');
+        }*/
+
+        if (Auth()->user()->hasRole("Administrador")) {
+            
+            return redirect()->route('administrator.home');
+         }
+        elseif(Auth()->user()->hasRole("Coordinador")) {
+            return redirect()->route('administrator.home');
+        }
+        elseif(Auth()->user()->hasRole("Asistente")) {
+            return '/Asistente';
+        }
+        elseif(Auth()->user()->hasRole("Agente")) {
+            return '/Agente';
+        }
+        elseif(Auth()->user()->hasRole("Usuario")) {
+            return '/Usuario';
+        }
+        else {
+            return '/Invitado';
+        }
+        return view('welcome');
     }
 
+    function homeAdministrator()
+    {
+        return view('home');
+    }
+
+    function homeCoordinator()
+    {
+        return view('home');
+    }
 
     /**
      * Display a listing of the resource.
@@ -28,12 +63,25 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      * @param  int  $role
      */
-    public function index($role)
+    public function index($role, $department=null)
     {
         //
+        $users = "";
+        if(Auth()->user()->isAdministrator())//Al administrador sólo se le harán dos filtros para mostrar menos cantidad de información
+        {
+            
+            $users = User::where('idRole', $role)->where('idDepartment', $department)->paginate(3);
+        }
+        elseif($role == 5 || $role == 6)//Si es un usuario o invitado, no necesitamos ningún filtro, pues estos no pertenecen a algún departamento en especificoß
+        {
+            $users = User::where('idRole', $role)->paginate(3);
+        }
+        else{
+            //$department = Department::firstWhere('idDepartment', Auth()->user()->idDepartment);
+            $users = User::where('idRole', $role)->where('idDepartment', Auth()->user()->idDepartment)->paginate(3);
+        }
         
-        $users = User::where('idRole', $role)->paginate(3);
-        return view('admin.user.index',[ 'users'=>$users,'role'=>$role]);
+        return view('management.user.index',[ 'users'=>$users,'role'=>$role]);
     }
 
 
@@ -48,8 +96,6 @@ class UserController extends Controller
     {
         //
         $user = new User();
-        //$user->firstname= $request->firstname;
-        //$user->lastname=$request->lastname;
         $user->name=$request->name;
         $user->email=$request->email;
         $user->username=$request->username;
@@ -57,8 +103,11 @@ class UserController extends Controller
         $user->idRole=$request->type;
         $user->extension=$request->extension;
         $user->status=TRUE;
+        if(Auth()->user()->isAdmin()){
+
+        }
         $user->save();
-        return redirect()->route('admin.user.index',$user->role);
+        return redirect()->route('administrator.user.index',$user->role);
     }
 
 
@@ -84,7 +133,7 @@ class UserController extends Controller
     {
         //
         $user = User::where('idUser', $id)->first();
-        return view('admin.user.edit',[
+        return view('administrator.user.edit',[
             'user' => $user
         ]);
     }
@@ -99,7 +148,7 @@ class UserController extends Controller
     {
         //
         $user = User::where('idUser', $id)->first();
-        return view('admin.user.show',[
+        return view('administrator.user.show',[
             'user' => $user
         ]);
     }
@@ -120,7 +169,7 @@ class UserController extends Controller
         $user->email=$request->email;
         $user->username=$request->username;
         $user->save();
-        return redirect()->route('admin.user.index',$user->idRole);
+        return redirect()->route('administrator.user.index',$user->idRole);
     }
 
     /**
@@ -135,6 +184,9 @@ class UserController extends Controller
         $user = User::where('idUser', $id)->first();
         $role = $user->idRole;
         User::destroy($id);
-        return redirect()->route('admin.user.index',$role);
+        return redirect()->route('administrator.user.index',$role);
     }
+
+
+   
 }

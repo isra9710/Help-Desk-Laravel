@@ -1,5 +1,5 @@
-@extends('admin.layouts.main')
-@if($role==3)
+@extends('layouts.main')
+@if($role==5)
     @section('title', 'Empleados')
 @else
     @section('title', 'Tecnicos')
@@ -23,7 +23,11 @@
             @else
                 <h4 class="text-center alert alert-info ">Agregar nuevo tecnico</h4>
             @endif
-                <form action="{{route('admin.user.create')}}" method="POST">
+            @if(auth()->user()->isAdministrator())
+                <form action="{{route('administrator.user.create')}}" method="POST">
+            @else
+                <form action="{{route('coordinator.user.create')}}" method="POST">   
+            @endif
                 {{ csrf_field() }}
 
                     Nombre
@@ -56,7 +60,7 @@
         </div>
 
         <div class="col-sm-7 offset-1">
-            @if($role==3)
+            @if($role==5)
                 <h4 class="text-center aler alert-info">Empleados Registrados</h4>
             @else
                 <h4 class="text-center aler alert-info">Tecnicos Registrados</h4>
@@ -83,13 +87,21 @@
                             <td>{{$user->email }}</td>
                             <td>{{$user->username}}</td>
                             <td>
-                                <a href="{{route('admin.user.show', $user->idUser)}}" class="btn
-                                btn-warning btn-sm">Editar</a>
+                                @if(auth()->user()->isAdministrator())
+                                    <a href="{{route('administrator.user.show', $user->idUser)}}" class="btn
+                                        btn-warning btn-sm">Editar</a>
+                                @else
+                                    <a href="{{route('coordinator.user.show', $user->idUser)}}" class="btn
+                                        btn-warning btn-sm">Editar</a>   
+                                @endif
                             </td>
                             <td>
-                                <form action="{{route('admin.user.destroy', $user->idUser)}}"
-                                      method="GET" class="d-inline">
-                                    {{ csrf_field() }}
+                                @if(auth()->user()->isAdministrator())
+                                    <form action="{{route('administrator.user.destroy', $user->idUser)}}" method="POST">
+                                @else
+                                    <form action="{{route('coordinator.user.destroy', $user->idUser)}}" method="POST">   
+                                @endif
+                                {{ csrf_field() }}
                                     <input type="submit" onclick="return confirm('¿Seguro que desa borrar?');" class="btn btn-danger btn-sm" value="Eliminar">
                                 </form>
                             </td>
@@ -98,8 +110,10 @@
                     </tbody>
                 </table>
             {{$users->render()}}
-            @else
+            @elseif($role==3)
                 <h4 class="text-center aler alert-warning"> No hay registro de empleados</h4>
+            @else
+                <h4 class="text-center aler alert-warning"> No hay registro de técnicos</h4>
             @endif
         </div>
 

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 
 /**
@@ -103,12 +104,7 @@ class User extends Authenticatable
 		return $this->hasMany(Ticket::class, 'idTechnician');
 	}
 
-	public function hasAnyRole($role){
-		if ($this->hasRole($role)){
-			return true;
-		}
-		return false;
-	}
+	
 
 
 	public function hasRole($role){
@@ -125,5 +121,58 @@ class User extends Authenticatable
 		}
 		abort(401,'No tienes autorización para entrar a esta sección');
 	}
+
+
+	public function isAdministrator()
+	{
+		if (Auth()->user()->hasRole("Administrador")) {
+			return true;
+		 }
+		return false;
+	}
 	
+
+	public function isCoordinator()
+	{
+		if (Auth()->user()->hasRole("Coordinador")) {
+			return true;
+		 }
+		return false;
+	}
+
+
+	public function isAssistant()
+	{
+		if (Auth()->user()->hasRole("Asistente")) {
+			return true;
+		 }
+		return false;
+	}
+
+
+	public function isAgent()
+	{
+		if (Auth()->user()->hasRole("Agente")) {
+			return true;
+		 }
+		return false;
+	}
+
+
+	public function isUser()
+	{
+		if (Auth()->user()->hasRole("Usuario")) {
+			return true;
+		 }
+		return false;
+	}
+
+
+	public function isAGuest()
+	{
+		if (Auth()->user()->hasRole("Invitado")) {
+			return true;
+		 }
+		return false;
+	}
 }

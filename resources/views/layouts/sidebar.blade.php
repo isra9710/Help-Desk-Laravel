@@ -1,3 +1,4 @@
+
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="../../index3.html" class="brand-link">
@@ -80,7 +81,7 @@
           </li>
           <li class="nav-header">Administración</li>
           <li class="nav-item">
-            <a href="{{route('admin.user.index',3)}}" class="nav-link">
+            <a href="{{route('administrator.user.index',['role'=>5, 'department'=>Auth()->user()->idDepartment])}}" class="nav-link">
             <i class="fas fa-user-cog"></i>
               <p>
                 Empleados Generales
@@ -89,7 +90,7 @@
             </a>
           </li>
             <li class="nav-item">
-                <a href="{{route('admin.user.index',2)}}" class="nav-link">
+                <a href="{{route('administrator.user.index',['role'=>4, 'department'=>Auth()->user()->idDepartment])}}" class="nav-link">
                     <i class="fas fa-user-cog"></i>
                     <p>
                         Tecnicos

@@ -16,8 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('auth.login');
 });
-//Route::get('home','HomeController')->name('home');
-//Route::get('/', 'App\Http\Controllers\Auth\LoginController@showLoginForm')->name('login');
+
 
 
 
@@ -37,31 +36,79 @@ Route::get('Prueba', function(){
 });
 
 
-//Administrador
+
 Route::middleware('auth')->group(function(){
-    $user=Auth::user();
     
-        Route::get('Administrador', 'HomeController@index')->name('home');
-        Route::get('Administrador','UserController@home')->name('admin.user.home');
-//Administración
-    //Usuarios
-    Route::get('Administración/Usuarios/{role}', 'UserController@index')->name('admin.user.index');
-    Route::post('Administración/Usuarios/Agregar','UserController@create')->name('admin.user.create');
-    Route::get('Administración/Usuarios/VerUsuario/{id}', 'UserController@show')->name('admin.user.show');
-    Route::post('Administración/Usuarios/EditarUsuario/{id}','UserController@update')->name('admin.user.update');
-    Route::get('Administración/Usuarios/EliminarUsuario/{id}','UserController@destroy')->name('admin.user.destroy');
-    //Subáreas
-    /*
-    Route::get('Administración/Subárea', 'UserController@index')->name('admin.subarea.index');
-    Route::post('Administración/Subárea/Agregar','UserController@create')->name('admin.subarea.create');
-    Route::get('Administración/Usuarios/VerSubárea/{id}', 'UserController@show')->name('admin.subarea.show');
-    Route::post('Administración/Usuarios/EditarSubárea/{id}','UserController@update')->name('admin.subarea.update');
-    Route::get('Administración/Usuarios/EliminarSubárea/{id}','UserController@destroy')->name('admin.subarea.destroy');*/
+    Route::get('/home','UserController@home')->name('home');
+    
+    
+    //La siguiente línea nos ayuda a poner un prefijo que aparecerá en la url del navegador, para no escribirla varias veces
+    
+    //En este apartado irá todo lo que un administrador puede hacer
+    Route::prefix('Administrador')->name('administrator.')->group(function()
+    {
+        //La página principal del administrador
+        Route::get('','UserController@homeAdministrator')->name('home');
+        
+        //En esta parte va el CRUD de todo tipo de usuario, coordinador, técnico, usuario
+
+
+        /*En la siguiente ruta mandamos llamar la función index, la que nos listará usuarios,
+         pero se hará un filtro por departamento y role, para no cargar de información la plantilla
+        */
+        Route::get('/Usuarios/{role}/{department}', 'UserController@index')->name('user.index');
+
+
+        /*La siguiente función sirve para crear un Usuario, gracias a la función anterior,
+          Ya sabemos de qué tipo será y si es necesario asignarle un departamento
+        */
+        Route::post('/Usuarios/Agregar','UserController@create')->name('user.create');
+
+        /*La siguiente ruta nos sirve para mostrar no usuario, pasando como parametro su id,
+          cuando la plantilla cargue, tendrá en ella adjuntada el objeto que se está deseando editar
+        */
+        Route::get('/Usuarios/VerUsuario/{id}', 'UserController@show')->name('user.show');
+
+
+        /*La siguiente ruta es la que realmente se va a encargar de editar, después de modificados los datos
+          se encarga de recolectarlos del formulario para enviar una consulta
+        */
+        Route::post('/Usuarios/EditarUsuario/{id}','UserController@update')->name('user.update');
+
+
+        /*La siguiente ruta se va a encargar de eliminar pasando como parametro el id del usuario
+         éste se va a obtener gracias a la ruta index, que nos proporciona los datos necesarios del
+         usuario para su edición, eliminación o visualización
+        */
+        Route::get('/Usuarios/EliminarUsuario/{id}','UserController@destroy')->name('user.destroy');
+
+
+        
+    });
+
+
+
+    Route::prefix('Coordinador')->name('coordinator.')->group(function()
+    {
+        
+        Route::get('','UserController@homeCoordinator')->name('home');
+        
+        //En esta parte va el CRUD de todo tipo de usuario, coordinador, técnico, usuario
+        Route::get('/Usuarios/{role}', 'UserController@index')->name('user.index');
+        Route::post('/Usuarios/Agregar','UserController@create')->name('user.create');
+        Route::get('/Usuarios/VerUsuario/{id}', 'UserController@show')->name('user.show');
+        Route::post('/Usuarios/EditarUsuario/{id}','UserController@update')->name('user.update');
+        Route::get('/Usuarios/EliminarUsuario/{id}','UserController@destroy')->name('user.destroy');
+
+
+        //
+    });
+    
+
+  
 
 });
-    //roles
-
-    //permisos
+    
 
 Auth::routes();
 
