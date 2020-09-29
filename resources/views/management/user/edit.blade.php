@@ -11,8 +11,12 @@
         <div class="row">
             <div class="col-sm-8 offset-2">
                 <h4 class="text-center alert alert-info ">Editar empleado</h4>
-                <form action="{{route('admin.user.update', $user->idUser)}}" method="POST">
-                    {{ csrf_field() }}
+                @if(auth()->user()->isAdministrator())
+                    <form action="{{route('administrator.user.update', $user->idUser)}}" method="POST">
+                @else
+                    <form action="{{route('coordinator.user.update', $user->idUser)}}" method="POST">
+                @endif    
+                        {{ csrf_field() }}
 
                         Nombre
                         <input type="text" class="form-control" required name="firstname" value="{{$user->firstname}}">
@@ -31,7 +35,11 @@
                         <input type="text" class="form-control" required name="username" value="{{$user->username}}">
                     <br><br>
                     <input type="submit" class="btn btn-success" value="Actualizar">
-                    <a href="{{route('admin.user.index',$user->idRole)}}" class="btn btn-info">Regresar</a>
+                    @if(auth()->user()->isAdministrator())
+                        <a href="{{route('administrator.user.index',$user->idRole)}}" class="btn btn-info">Regresar</a>
+                    @else
+                    <a href="{{route('coordinator.user.index',$user->idRole)}}" class="btn btn-info">Regresar</a>
+                    @endif
                     <br>
                     <br>
                 </form>

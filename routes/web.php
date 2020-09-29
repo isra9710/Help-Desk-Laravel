@@ -32,7 +32,7 @@ Route::get('Usuario',function(){
 
 
 Route::get('Prueba', function(){
-    return view('prueba.prueba');
+    return view('help.layouts.app');
 });
 
 

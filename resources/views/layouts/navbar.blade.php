@@ -6,10 +6,11 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        @if(Auth::user(->isAdmin()))
+        @if(auth()->user()->isAdministrator())
         <a href="{{route('administrator.home')}}" class="nav-link">Home</a>
-        elseif@(Auth::user()->isCoordinator)
-        <a href="{{route('coordinator.home')}}" class="nav-link">Home</a>
+        @else
+          <a href="{{route('coordinator.home')}}" class="nav-link">Home</a>
+        @endif
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Contact</a>

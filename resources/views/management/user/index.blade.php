@@ -18,7 +18,7 @@
     </div>-->
     <div class="row">
         <div class="col-sm-4">
-            @if($role==3)
+            @if($role==5)
                 <h4 class="text-center alert alert-info ">Agregar nuevo empleado</h4>
             @else
                 <h4 class="text-center alert alert-info ">Agregar nuevo tecnico</h4>
@@ -34,10 +34,6 @@
                     <input type="text" class="form-control" required name="name">
 
                 <br><br>
-
-                  <!--  Apellidos
-                    <input type="text" class="form-control" required name="lastname">
-                <br><br>-->
 
                     Correo electronico
                     <input type="email" class="form-control" required name="email">
@@ -71,9 +67,8 @@
                     <tr>
                         <th>ID</th>
                         <th scope="col">Nombre </th>
-                        <th scope="col">Apellidos</th>
                         <th scope="col">Correo electronico</th>
-                        <th scope="col">Nombre de usuario</th>
+                        <th scope="col">Número de empleado</th>
                         <th scope="col"></th>
                         <th scope="col"></th>
                     </tr>
@@ -82,8 +77,7 @@
                     @foreach ($users as $user)
                         <tr>
                             <td>{{$user->idUser}}</td>
-                            <td>{{ $user->firstname}}</td>
-                            <td>{{$user->lastname }}</td>
+                            <td>{{ $user->name}}</td>
                             <td>{{$user->email }}</td>
                             <td>{{$user->username}}</td>
                             <td>
@@ -110,7 +104,7 @@
                     </tbody>
                 </table>
             {{$users->render()}}
-            @elseif($role==3)
+            @elseif($role==5)
                 <h4 class="text-center aler alert-warning"> No hay registro de empleados</h4>
             @else
                 <h4 class="text-center aler alert-warning"> No hay registro de técnicos</h4>
