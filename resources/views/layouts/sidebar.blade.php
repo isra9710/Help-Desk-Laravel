@@ -18,7 +18,7 @@
         <div class="info">
         <a href="#" class="d-block">Hola {{auth()->user()->name}}</a>
         @if(auth()->user()->idRole <= 4 )
-          <a href="#" class="d-block">{{auth()->user()->idRole}}</a>
+          <a href="#" class="d-block">{{auth()->user()->idRole->nameRole}}</a>
           @endif
         </div>
       </div>
@@ -74,10 +74,14 @@
               </p>
             </a>
           </li>
-          <li class="nav-header">CONFIGURACIÓN</li>
+
+
+
+          @if(auth()->user()->isAdministrator())
+          <li class="nav-header">Gestión de departamentos</li>
           <li class="nav-item">
             <a href="../calendar.html" class="nav-link">
-            <i class="fas fa-map-signs"></i>
+            <i class="fas fa-building"></i>
               <p>
                 Tipos
                 <span class="badge badge-info right">2</span>
@@ -92,6 +96,12 @@
               </p>
             </a>
           </li>
+          @endif
+
+
+
+
+
           <li class="nav-header">REPORTES</li>
           <li class="nav-item">
             <a href="../calendar.html" class="nav-link">
@@ -116,7 +126,7 @@
               dependiedo del nivel de permiso, se le muestran tipos de usuario
           -->
         @if(auth()->user()->isAdministrator() || auth()->user()->isCoordinator() || auth()->user()->isAssistant())
-            <li class="nav-header">Administración</li>
+            <li class="nav-header">Gestión de personal</li>
             <!--Si el usuario es un administrador, se le va a mostrar la sección dividida por 
                 departamentos y después por roles haciendo excepción con los usuarios y los invitados
                 porque éstos se le muestran a dos tipos de usuario, administrador y coordinador
@@ -149,12 +159,14 @@
                 @endif
               @endif
 
-               <!--Ahora si el usuario es coordinador, solamente se le van a mostrar los roles de su departamento
+
+
+               <!--Si el usuario es coordinador, solamente se le van a mostrar los roles de su departamento
                   técnico, asistente.
               -->
               @if(auth()->user()->isCoordinator())
                 @foreach ($roles as $role)
-                @if($role->idRole!=1 && $role->idRole!=5 && $role->idRole!=6 )
+                @if($role->idRole!=1 && $role->idRole!=2 && $role->idRole!=5 && $role->idRole!=6 )
                   <li class="nav-item">
                     <a href="{{route('administrator.user.index',['role'=>$role->idRole, 'department'=> Auth()->user()->idDepartment])}}" class="nav-link">
                       <i class="fas fa-user-cog"></i>
@@ -165,6 +177,28 @@
               @endforeach
               @endif
 
+
+
+               <!--Por último, si el usuario que se logueo es un asistente, sólo podrá hacer gestión de 
+                los técnicos correspondientes a su departamento
+                -->
+                @if(auth()->user()->isAssistant())
+                  @foreach ($roles as $role)
+                    @if($role->idRole!=1 && $role->idRole!=2 &&$role->idRole!=3 && $role->idRole!=5 && $role->idRole!=6 )
+                      <li class="nav-item">
+                        <a href="{{route('administrator.user.index',['role'=>$role->idRole, 'department'=> Auth()->user()->idDepartment])}}" class="nav-link">
+                          <i class="fas fa-user-cog"></i>
+                        <p>{{$role->roleName}}</p>
+                        </a>
+                      </li>
+                    @endif
+                  @endforeach
+                @endif
+              
+              
+              
+              
+              
               <!--Aquí es donde se muestran los usuarios y los invitados
               -->
               @if(auth()->user()->isAdministrator() || auth()->user()->isCoordinator())
@@ -179,7 +213,7 @@
                     @endif
                   @endforeach
               @endif
-             
+            
                  
         @endif          
 

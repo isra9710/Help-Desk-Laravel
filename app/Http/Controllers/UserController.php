@@ -61,6 +61,11 @@ class UserController extends Controller
         return view('home',['roles' => $roles]);
     }
 
+    function homeAssistant()
+    {
+        $roles =Role::all();
+        return view('home',['roles' => $roles]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -80,7 +85,7 @@ class UserController extends Controller
         }
         $departments = Department::all();
         $roles = Role::all();
-        return view('management.user.index',[ 'users'=>$users,'role'=>$role, 'departments'=>$departments, 'roles'=>$roles]);
+        return view('management.user.index',[ 'users'=>$users,'role'=>$role, 'departments'=>$departments, 'roles'=>$roles, 'department'=>$department]);
     }
 
 
@@ -99,14 +104,23 @@ class UserController extends Controller
         $user->email=$request->email;
         $user->username=$request->username;
         $user->password=bcrypt($request->password);
-        $user->idRole=$request->type;
+        $user->idRole=$request->idRole;
         $user->extension=$request->extension;
         $user->status=TRUE;
-        if(Auth()->user()->isAdmin()){
-
+        $idDepartment = $request->idDepartment;
+        if(!($idDepartment == null)){
+            $user->idDepartment = $idDepartment;
         }
         $user->save();
-        return redirect()->route('administrator.user.index',$user->role);
+        if(Auth()->user()->isAdministrator()){
+            return redirect()->route('administrator.user.index',$user->role);
+        }
+        elseif(Auth()->user()->isCoordinator()){
+            return redirect()->route('coordinator.user.index',$user->role);
+        }
+        else{
+            return redirect()->route('assistant.user.index',$user->role);
+        }
     }
 
 
@@ -172,10 +186,15 @@ class UserController extends Controller
         $user->email=$request->email;
         $user->username=$request->username;
         $user->save();
-        if(auth()->user()->isAdministrator())
-            return redirect()->route('administrator.user.index',$user->idRole);
-        else    
-            return redirect()->route('coordinator.user.index',$user->idRole);
+        if(Auth()->user()->isAdministrator()){
+            return redirect()->route('administrator.user.index',$user->role);
+        }
+        elseif(Auth()->user()->isCoordinator()){
+            return redirect()->route('coordinator.user.index',$user->role);
+        }
+        else{
+            return redirect()->route('assistant.user.index',$user->role);
+        }
     }
 
     /**
@@ -190,10 +209,15 @@ class UserController extends Controller
         $user = User::where('idUser', $id)->first();
         $role = $user->idRole;
         User::destroy($id);
-        if(auth()->user()->isAdministrator())
-            return redirect()->route('administrator.user.index',$user->idRole);
-        else    
-            return redirect()->route('coordinator.user.index',$user->idRole);
+        if(Auth()->user()->isAdministrator()){
+            return redirect()->route('administrator.user.index',$user->role);
+        }
+        elseif(Auth()->user()->isCoordinator()){
+            return redirect()->route('coordinator.user.index',$user->role);
+        }
+        else{
+            return redirect()->route('assistant.user.index',$user->role);
+        }
     }
 
 
