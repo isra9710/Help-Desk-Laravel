@@ -18,7 +18,8 @@
         <div class="info">
         <a href="#" class="d-block">Hola {{auth()->user()->name}}</a>
         @if(auth()->user()->idRole <= 4 )
-          <a href="#" class="d-block">{{auth()->user()->idRole->nameRole}}</a>
+          <a href="#" class="d-block">{{auth()->user()->role->roleName}}</a>
+          <a href="#" class="d-block">{{auth()->user()->department->departmentName}}</a>
           @endif
         </div>
       </div>
@@ -80,10 +81,10 @@
           @if(auth()->user()->isAdministrator())
           <li class="nav-header">Gestión de departamentos</li>
           <li class="nav-item">
-            <a href="../calendar.html" class="nav-link">
+            <a href="{{route('administrator.department.index')}}" class="nav-link">
             <i class="fas fa-building"></i>
               <p>
-                Tipos
+                Departamentos
                 <span class="badge badge-info right">2</span>
               </p>
             </a>
@@ -168,7 +169,7 @@
                 @foreach ($roles as $role)
                 @if($role->idRole!=1 && $role->idRole!=2 && $role->idRole!=5 && $role->idRole!=6 )
                   <li class="nav-item">
-                    <a href="{{route('administrator.user.index',['role'=>$role->idRole, 'department'=> Auth()->user()->idDepartment])}}" class="nav-link">
+                    <a href="{{route('coordinator.user.index',['role'=>$role->idRole, 'department'=> Auth()->user()->idDepartment])}}" class="nav-link">
                       <i class="fas fa-user-cog"></i>
                     <p>{{$role->roleName}}</p>
                     </a>
@@ -205,7 +206,11 @@
                   @foreach ($roles as $role)
                     @if($role->idRole==5 ||$role->idRole==6 )
                       <li class="nav-item">
+                        @if(auth()->user()->isAdministrator())
                         <a href="{{route('administrator.user.index',['role'=>$role->idRole, 'department'=> 'null'])}}" class="nav-link">
+                        @else
+                        <a href="{{route('coordinator.user.index',['role'=>$role->idRole, 'department'=> 'null'])}}" class="nav-link">
+                          @endif  
                           <i class="fas fa-user-cog"></i>
                         <p>{{$role->roleName}}</p>
                         </a>

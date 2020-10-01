@@ -1,13 +1,13 @@
 @extends('layouts.main')
-@if($role==2)
+@if($idRole==2)
     @section('title', 'Coordinadores')
-@elseif($role==3)
+@elseif($idRole==3)
     @section('title', 'Agentes')
-@elseif($role==4)
+@elseif($idRole==4)
     @section('title', 'Asistentes')
-@elseif($role==5)
+@elseif($idRole==5)
     @section('title','Usuarios')
-@elseif($role==6)
+@elseif($idRole==6)
     @section('title', 'Invitados')
 @endif
 
@@ -24,11 +24,11 @@
     </div>-->
     <div class="row">
         <div class="col-sm-4">
-            @if($role==2)
+            @if($idRole==2)
                 <h4 class="text-center alert alert-info ">Agregar nuevo coordinador</h4>
-            @elseif($role==3)
+            @elseif($idRole==3)
                 <h4 class="text-center alert alert-info ">Agregar nuevo asistente</h4>
-            @elseif($role==4)
+            @elseif($idRole==4)
                 <h4 class="text-center alert alert-info ">Agregar nuevo agente</h4>
             @else
                 <h4 class="text-center alert alert-info ">Agregar nuevo usuario</h4>
@@ -41,21 +41,22 @@
                 <form action="{{route('assistant.user.create')}}" method="POST">
             @endif
                 {{ csrf_field() }}
-                @if($role==2 || $role==3 || $role==4)
-                <input type="hidden" value="{{$department}}" name="idDepartment">
+                @if($idRole==2 || $idRole==3 || $idRole==4)
+                    <input type="hidden" value="{{$idDepartment}}" name="idDepartment">
                 @endif
                     Nombre
                     <input type="text" class="form-control" required name="name">
 
+                <br><br>
+                Número de empleado
+                <input type="text" class="form-control" required name="username">
                 <br><br>
 
                     Correo electronico
                     <input type="email" class="form-control" required name="email">
                 <br><br>
 
-                    Número de empleado
-                    <input type="text" class="form-control" required name="username">
-                <br><br>
+                    
                     Extensión telefónica
                     <input type="text" class="form-control" required name="extension">
                     <br><br>
@@ -65,7 +66,7 @@
                 <input type="submit" class="btn btn-success" value="Agregar">
                 <br>
                 <br>
-                <input type="hidden" value="{{$role}}" name="idRole">
+                <input type="hidden" value="{{$idRole}}" name="idRole">
             </form>
         </div>
 
@@ -73,11 +74,11 @@
 
 
             
-            @if($role==2)
+            @if($idRole==2)
                  <h4 class="text-center alert alert-info ">Agregar nuevo coordinador</h4>
-            @elseif($role==3)
+            @elseif($idRole==3)
                 <h4 class="text-center alert alert-info ">Agregar nuevo asistente</h4>
-            @elseif($role==4)
+            @elseif($idRole==4)
                 <h4 class="text-center alert alert-info ">Agregar nuevo agente</h4>
             @else
                 <h4 class="text-center alert alert-info ">Agregar nuevo usuario</h4>
@@ -107,18 +108,22 @@
                             <td>{{$user->username}}</td>
                             <td>
                                 @if(auth()->user()->isAdministrator())
-                                    <a href="{{route('administrator.user.show', $user->idUser)}}" class="btn
-                                        btn-warning btn-sm">Editar</a>
+                                <a href="{{route('administrator.user.show',$user->idUser)}}" class="btn
+                                        btn-warning btn-sm">Editar Administrador</a>
+                                       <!-- <form action="{{--route('administrator.user.show',$user->idUser)--}}" method="POST">-->
                                 @else
                                     <a href="{{route('coordinator.user.show', $user->idUser)}}" class="btn
-                                        btn-warning btn-sm">Editar</a>   
+                                        btn-warning btn-sm">Editar Coordinador</a>   
+                                       <!-- <form action="{{--route('coordinator.user.show', $user->idUser)--}}" method="POST">-->
                                 @endif
+                                <!--<input type="submit"  class="btn btn-warning btn-sm" value="Editar">-->
+                           <!-- </form>-->
                             </td>
                             <td>
                                 @if(auth()->user()->isAdministrator())
                                     <form action="{{route('administrator.user.destroy', $user->idUser)}}" method="POST">
                                 @else
-                                    <form action="{{route('coordinator.user.destroy', $user->idUser)}}" method="POST">   
+                                    <form action="{{route('coordinator.user.destroy', $user->idUser)}}" method="POST">
                                 @endif
                                 {{ csrf_field() }}
                                     <input type="submit" onclick="return confirm('¿Seguro que desa borrar?');" class="btn btn-danger btn-sm" value="Eliminar">
@@ -129,10 +134,14 @@
                     </tbody>
                 </table>
             {{$users->render()}}
-            @elseif($role==5)
-                <h4 class="text-center aler alert-warning"> No hay registro de empleados</h4>
+            @elseif($idRole==2)
+                <h4 class="text-center aler alert-warning"> No hay registro de coordinadores</h4>
+            @elseif($idRole==3)
+                <h4 class="text-center aler alert-warning"> No hay registro de asistentes</h4>
+            @elseif($idRole==4)
+                <h4 class="text-center aler alert-warning"> No hay registro de agentes</h4>
             @else
-                <h4 class="text-center aler alert-warning"> No hay registro de técnicos</h4>
+                <h4 class="text-center aler alert-warning"> No hay registro de usuarios</h4>
             @endif
         </div>
 
