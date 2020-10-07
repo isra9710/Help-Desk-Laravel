@@ -27,9 +27,9 @@
             @if($idRole==2)
                 <h4 class="text-center alert alert-info ">Agregar nuevo coordinador</h4>
             @elseif($idRole==3)
-                <h4 class="text-center alert alert-info ">Agregar nuevo asistente</h4>
-            @elseif($idRole==4)
                 <h4 class="text-center alert alert-info ">Agregar nuevo agente</h4>
+            @elseif($idRole==4)
+                <h4 class="text-center alert alert-info ">Agregar nuevo asistente</h4>
             @else
                 <h4 class="text-center alert alert-info ">Agregar nuevo usuario</h4>
             @endif
@@ -103,17 +103,17 @@
                     @foreach ($users as $user)
                         <tr>
                             <td>{{$user->idUser}}</td>
-                            <td>{{ $user->name}}</td>
+                            <td>{{$user->name}}</td>
                             <td>{{$user->email }}</td>
                             <td>{{$user->username}}</td>
                             <td>
                                 @if(auth()->user()->isAdministrator())
-                                <a href="{{route('administrator.user.show',$user->idUser)}}" class="btn
-                                        btn-warning btn-sm">Editar Administrador</a>
+                                <a href="{{route('administrator.user.show',['user'=>$user])}}" class="btn
+                                        btn-warning btn-sm">Editar</a>
                                        <!-- <form action="{{--route('administrator.user.show',$user->idUser)--}}" method="POST">-->
                                 @else
-                                    <a href="{{route('coordinator.user.show', $user->idUser)}}" class="btn
-                                        btn-warning btn-sm">Editar Coordinador</a>   
+                                    <a href="{{route('coordinator.user.show', ['user'=>$user])}}" class="btn
+                                        btn-warning btn-sm">Editar</a>   
                                        <!-- <form action="{{--route('coordinator.user.show', $user->idUser)--}}" method="POST">-->
                                 @endif
                                 <!--<input type="submit"  class="btn btn-warning btn-sm" value="Editar">-->
@@ -121,9 +121,9 @@
                             </td>
                             <td>
                                 @if(auth()->user()->isAdministrator())
-                                    <form action="{{route('administrator.user.destroy', $user->idUser)}}" method="POST">
+                                    <form action="{{route('administrator.user.destroy',['user'=>$user])}}" method="POST">
                                 @else
-                                    <form action="{{route('coordinator.user.destroy', $user->idUser)}}" method="POST">
+                                    <form action="{{route('coordinator.user.destroy', ['user'=>$user])}}" method="POST">
                                 @endif
                                 {{ csrf_field() }}
                                     <input type="submit" onclick="return confirm('¿Seguro que desa borrar?');" class="btn btn-danger btn-sm" value="Eliminar">

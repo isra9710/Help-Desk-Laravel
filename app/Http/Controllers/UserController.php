@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Models\User;
 use App\Models\Department;
 use App\Models\Role;
+use App\Models\Subarea;
 
 class UserController extends Controller
 {
@@ -29,61 +30,63 @@ class UserController extends Controller
             return redirect()->route('coordinator.home');
         }
         elseif(Auth()->user()->isAssistant()) {
-            return redirect()->route('assistant.home');;
+            return redirect()->route('assistant.home');
         }
-        elseif(Auth()->user()->hasRole("Agente")) {
-            return '/Agente';
+        elseif(Auth()->user()->isAgent()) {
+            return redirect()->route('agent.home');
         }
-        elseif(Auth()->user()->hasRole("Usuario")) {
-            return '/Usuario';
+        elseif(Auth()->user()->isUser()) {
+            return redirect()->route('user.home');
         }
         else {
             return '/Invitado';
         }
         return view('welcome');
     }
+
+
+    
     //Nos retornara a la página principal del administrador, trayendo consigo, departamentos, roles de usuario
     function homeAdministrator()
     {
-        $departments = Department::all();
-        $roles = Role::all();
-        return view('home', ['departments'=>$departments,'roles'=>$roles]);
+        $departmentsSideBar = Department::all();
+        $rolesSideBar = Role::all();
+        $subareasSideBar = Subarea::all();
+        return view('home', ['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar]);
     }
 
+    
     //Nos retornará a la página principal del coordinador de departamento, trayendo consigo los roles de usuario del departamento
 
     function homeCoordinator()
     {
-        $roles =Role::all();
-        return view('home',['roles' => $roles]);
+        $rolesSideBar =Role::all();
+        return view('home',['rolesSideBar' => $rolesSideBar]);
     }
 
     //Nos retornará a la página principal del asistente trayendo consigo roles de usuario
     function homeAssistant()
     {
-        $roles =Role::all();
-        return view('home',['roles' => $roles]);
+        $rolesSideBar=Role::all();
+        return view('home',['rolesSideBar' => $rolesSideBar]);
     }
 
 
     function homeAgent()
     {
-        $roles =Role::all();
-        return view('home',['roles' => $roles]);
+        return view('home');
     }
 
 
     function homeUser()
     {
-        $roles =Role::all();
-        return view('home',['roles' => $roles]);
+        return view('home');
     }
 
 
     function homeGuest()
     {
-        $roles =Role::all();
-        return view('home',['roles' => $roles]);
+        return view('home');
     }
     /**
      * Display a listing of the resource.
@@ -99,7 +102,7 @@ class UserController extends Controller
      porque el coordinador sólo puede hacer gestión de los usuarios que pertenecen a su departamento
      y por último el asistente sólo podrá hacer gestión de los agentes de su departamento
     */
-    public function index($idRole, $idDepartment=null)
+    public function index($idRole=null, $idDepartment=null)
     {
         //
         $users = "";
@@ -114,10 +117,10 @@ class UserController extends Controller
         Hacemos estas consultas sólo para la parte estetica, si se trata de un administrador
         necesitaremos departamentos, si se trata de un coordinador o asistente, sólo necesitaremos roles
         */
-        $departments = Department::all();
-        $roles = Role::all();
-        
-        return view('management.user.index',[ 'users'=>$users,'idRole'=>$idRole, 'departments'=>$departments, 'roles'=>$roles, 'idDepartment'=>$idDepartment]);
+        $departmentsSideBar = Department::all();
+        $rolesSideBar = Role::all();
+        $subareasSideBar = Subarea::all();
+        return view('management.user.index',['departmentsSideBar'=>$departmentsSideBar, 'rolesSideBar'=>$rolesSideBar, 'subareasSideBar'=>$subareasSideBar,'users'=>$users,'idDepartment'=>$idDepartment,'idRole'=>$idRole,]);
     }
 
 
@@ -154,10 +157,10 @@ class UserController extends Controller
             return redirect()->route('administrator.user.index',[$user->role,$user->idDepartment]);
         }
         elseif(Auth()->user()->isCoordinator()){
-            return redirect()->route('coordinator.user.index',[$user->role,$user->idRole]);
+            return redirect()->route('coordinator.user.index',[$user->role,$user->idDepartment]);
         }
         else{
-            return redirect()->route('assistant.user.index',[$user->role,$user->idRole]);
+            return redirect()->route('assistant.user.index',[$user->role,$user->idDepartment]);
         }
     }
 
@@ -187,17 +190,16 @@ class UserController extends Controller
     
     */
     
-     public function show( $idUsuario=null){
+     public function show(User $user){
         /*
             De nueva cuenta hacemos la consulta de todos los departamentos para no perderlos
             y si es un usuario administrador, que no los pierda, igual si es un usuario coordinador o asistente
             para éso se hace la consulta de los roles
         */
-        $departments = Department::all();
-        $roles = Role::all();
-        $user = User::where('idUser', $idUsuario)->first();
-        $role = $user->idRole;
-        return view('management.user.edit', compact('user','roles','departments'));
+        $departmentsSideBar = Department::all();
+        $rolesSideBar = Role::all();
+        $subareasSideBar = Subarea::all();
+        return view('management.user.edit',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'user'=>$user]);
     }
 
     /**
@@ -225,31 +227,31 @@ class UserController extends Controller
         La siguiente función es la que realmente actualiza los datos del usuario
         recolectando estos mismos del formulario ubicado en managment.user.edit
     */
-    public function update($id,Request $request)
+    public function update(User $user,Request $request)
     {
         //
         /*
             Se hace la consulta del usuario que queremos editar, la función first nos permite obtener un solo
             objeto para no obtener una colección de la consulta
         */
-        $user = User::where('idUser', $request->id)->first();
-        $user->firstname= $request->firstname;
-        $user->lastname=$request->lastname;
-        $user->email=$request->email;
+        $idRole = $user->idRole;
+        $idDepartment = $user->idDepartment;
         $user->username=$request->username;
-        $user->save();
-
+        $user->name=$request->name;
+        $user->email=$request->email;
+        $user->update();
+       
         /*En las siguientes líneas se redirige al usuario a su dirección correspondiente 
           dependiendo del rol que éste tenga
         */
         if(Auth()->user()->isAdministrator()){
-            return redirect()->route('administrator.user.index',$user->role);
+            return redirect()->route('administrator.user.index',['idRole'=>$idRole, 'idDepartment'=>$idDepartment]);
         }
         elseif(Auth()->user()->isCoordinator()){
-            return redirect()->route('coordinator.user.index',$user->role);
+            return redirect()->route('coordinator.user.index',['idRole'=>$idRole, 'idDepartment'=>$idDepartment]);
         }
         else{
-            return redirect()->route('assistant.user.index',$user->role);
+            return redirect()->route('assistant.user.index',['idRole'=>$idRole, 'idDepartment'=>$idDepartment]);
         }
     }
 
@@ -264,21 +266,22 @@ class UserController extends Controller
      a buscarlo para después eliminarlo
      
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
-        $user = User::where('idUser', $id)->first();
-        $role = $user->idRole;
-        $department=$user->idDepartment;
-        User::destroy($id);
+        
+        $idRole = $user->idRole;
+        $idDepartment=$user->idDepartment;
+        
+        User::destroy($user->idUser);
+       
         if(Auth()->user()->isAdministrator()){
-            return redirect()->route('administrator.user.index',['role'=>$role, 'department'=>$department]);
+            return redirect()->route('administrator.user.index',['idRole'=>$idRole, 'idDepartment'=>$idDepartment]);
         }
         elseif(Auth()->user()->isCoordinator()){
-            return redirect()->route('coordinator.user.index',['role'=>$role, 'department'=>$department]);
+            return redirect()->route('coordinator.user.index',['idRole'=>$idRole, 'idDepartment'=>$idDepartment]);
         }
         else{
-            return redirect()->route('assistant.user.index',['role'=>$role, 'department'=>$department]);
+            return redirect()->route('assistant.user.index',['idRole'=>$idRole, 'idDepartment'=>$idDepartment]);
         }
     }
 

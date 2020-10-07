@@ -1,27 +1,21 @@
 @extends('layouts.main')
-
-@section('title', 'Subáreas')
-
+@section('title', 'Departamentos')
+ 
 @section('icon_title')
-<i class="fas fa-monument"></i>
-
+<i class="far fa-building"></i>
 @endsection
-
 
 @section('content')
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
-   <!-- <div class="container mt-5">
-        <h2 class="text-center alert alert-danger">Gestión Empleados</h2>
-    </div>-->
     <div class="row">
         <div class="col-sm-4">
-                <h4 class="text-center alert alert-info ">Agregar nueva subárea para {{$department->departmentName}}</h4>
-                <form action="{{route('administrator.subarea.create',['department'=>$department])}}" method="POST">
+                <h4 class="text-center alert alert-info ">Agregar nuevo departamento</h4>
+
+                <form action="{{route('administrator.department.create')}}" method="POST">
                 {{ csrf_field() }}
 
                     Nombre
-                    <input type="text" class="form-control" required name="subareaName">
+                    <input type="text" class="form-control" required name="departmentName">
 
                 <br><br>
 
@@ -35,29 +29,30 @@
         </div>
 
         <div class="col-sm-7 offset-1">
-                <h4 class="text-center aler alert-info">Subáreas Registradas</h4>
-                @if(count($subareas)>0)
+                <h4 class="text-center aler alert-info">Departamentos Registrados</h4>
+                @if(count($departments)>0)
                 <table class="table table-hover">
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th scope="col">Nombre de subárea </th>
+                        <th scope="col">Nombre </th>
                         <th scope="col">Descripción</th>
                         <th scope="col"></th>
                         <th scope="col"></th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach ($subareas as $subarea)
+                    @foreach ($departments as $department)
                         <tr>
-                            <td>{{$subarea->idSubarea}}</td>
-                            <td>{{ $subarea->subareaName}}</td>
+                            <td>{{$department->idDepartment}}</td>
+                            <td>{{ $department->departmentName}}</td>
+                            <td>{{$department->description }}</td>
                             <td>
-                                <a href="{{route('administrator.subarea.show', ['department'=>$department,'subarea'=>$subarea])}}" class="btn
+                                <a href="{{route('administrator.department.show', $department)}}" class="btn
                                 btn-warning btn-sm">Editar</a>
                             </td>
                             <td>
-                                <form action="{{route('administrator.subarea.destroy', ['department'=>$department,'subarea'=>$subarea])}}"
+                                <form action="{{route('administrator.department.destroy', $department)}}"
                                       method="POST" class="d-inline">
                                     {{ csrf_field() }}
                                     <input type="submit" onclick="return confirm('¿Seguro que desa borrar?');" class="btn btn-danger btn-sm" value="Eliminar">
@@ -67,9 +62,9 @@
                     @endforeach
                     </tbody>
                 </table>
-            {{$subareas->render()}}
+            {{$departments->render()}}
             @else
-            <h4 class="text-center aler alert-warning"> No hay registro de subáreas para {{$department->departmentName}}</h4>
+                <h4 class="text-center aler alert-warning"> No hay registro de departamentos</h4>
             @endif
         </div>
 

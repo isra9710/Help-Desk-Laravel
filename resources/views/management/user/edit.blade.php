@@ -3,7 +3,7 @@
 @section('title', 'Empleados')
 
 @section('icon_title')
-    <i class="fa fa-fw fa-user"></i>
+<i class="fas fa-user-edit"></i>
 @endsection
 
 
@@ -12,11 +12,11 @@
             <div class="col-sm-8 offset-2">
                 <h4 class="text-center alert alert-info ">Editar empleado</h4>
                 @if(auth()->user()->isAdministrator())
-                    <form action="{{route('administrator.user.update', $user->idUser)}}" method="POST">
+                    <form action="{{route('administrator.user.update', ['user'=>$user])}}" method="POST">
                 @elseif(auth()->user()->isAdministrator())
-                    <form action="{{route('coordinator.user.update', $user->idUser)}}" method="POST">
+                    <form action="{{route('coordinator.user.update', ['user'=>$user])}}" method="POST">
                 @else
-                    <form action="{{route('assistant.user.update', $user->idUser)}}" method="POST">
+                    <form action="{{route('assistant.user.update',['user'=>$user])}}" method="POST">
                 @endif    
                         {{ csrf_field() }}
 
@@ -25,7 +25,7 @@
                     <br><br>
                         
                         Nombre
-                        <input type="text" class="form-control" required name="firstname" value="{{$user->firstname}}">
+                        <input type="text" class="form-control" required name="name" value="{{$user->name}}">
 
                     <br><br>
 

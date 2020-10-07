@@ -57,7 +57,7 @@ Route::middleware('auth')->group(function(){
         /*En la siguiente ruta mandamos llamar la función index, la que nos listará usuarios,
          pero se hará un filtro por departamento y role, para no cargar de información la plantilla
         */
-        Route::get('/Usuarios/{role}/{department?}', 'UserController@index')->name('user.index');
+        Route::get('/Usuarios/{idRole}/{idDepartment?}', 'UserController@index')->name('user.index');
 
 
         /*La siguiente función sirve para crear un Usuario, gracias a la función anterior,
@@ -69,46 +69,46 @@ Route::middleware('auth')->group(function(){
           cuando la plantilla cargue, tendrá en ella adjuntada el objeto que se está deseando editar
         */
         
-        Route::get('/Usuarios/Ver/{idUsuario?}/Usuario', 'UserController@show')->name('user.show');
+        Route::get('/Usuarios/Ver/{user}/Usuario', 'UserController@show')->name('user.show');
 
 
         /*La siguiente ruta es la que realmente se va a encargar de editar, después de modificados los datos
           se encarga de recolectarlos del formulario para enviar una consulta
         */
-        Route::post('/Usuarios/EditarUsuario/{id}','UserController@update')->name('user.update');
+        Route::post('/Usuarios/EditarUsuario/{user}','UserController@update')->name('user.update');
 
 
         /*La siguiente ruta se va a encargar de eliminar pasando como parametro el id del usuario
          éste se va a obtener gracias a la ruta index, que nos proporciona los datos necesarios del
          usuario para su edición, eliminación o visualización
         */
-        Route::post('/Usuarios/EliminarUsuario/{id}','UserController@destroy')->name('user.destroy');
+        Route::post('/Usuarios/EliminarUsuario/{user}','UserController@destroy')->name('user.destroy');
 
         
         
         //La siguiente sección es para la gestión de departamentos
         Route::get('/Departamentos', 'DepartmentController@index')->name('department.index');
         Route::post('/Departamentos/Agregar','DepartmentController@create')->name('department.create');
-        Route::get('/Departamentos/VerDepartamento/{idDepartamento}', 'DepartamentController@show')->name('department.show');
-        Route::post('/Departamentos/EditarDepartamento/{id}','DepartmentController@update')->name('department.update');
-        Route::post('/Departamentos/EliminarDepartamento/{id}','DepartmentController@destroy')->name('department.destroy');
+        Route::get('/Departamentos/VerDepartamento/{department}', 'DepartmentController@show')->name('department.show');
+        Route::post('/Departamentos/EditarDepartamento/{department}','DepartmentController@update')->name('department.update');
+        Route::post('/Departamentos/EliminarDepartamento/{department}','DepartmentController@destroy')->name('department.destroy');
 
 
         //La siguiente sección es para la gestión de subáreas 
-        Route::get('/SubAreas', 'SubAreaController@index')->name('subarea.index');
-        Route::post('/SubAreas/Agregar','SubAreaController@create')->name('subarea.create');
-        Route::get('/SubAreas/VerSubArea/{idSubArea}', 'SubAreaController@show')->name('subarea.show');
-        Route::post('/SubAreas/EditarSubArea/{id}','SubAreaController@update')->name('subarea.update');
-        Route::post('/SubAreas/EliminarSubArea/{id}','SubAreaController@destroy')->name('subarea.destroy');
+        Route::get('/SubAreas/{department}', 'SubareaController@index')->name('subarea.index');
+        Route::post('/SubAreas/Agregar/{department}','SubareaController@create')->name('subarea.create');
+        Route::get('/SubAreas/VerSubArea/{department}/{subarea}', 'SubareaController@show')->name('subarea.show');
+        Route::post('/SubAreas/EditarSubArea/{department}/{subarea}','SubareaController@update')->name('subarea.update');
+        Route::post('/SubAreas/EliminarSubArea/{department}/{subarea}','SubareaController@destroy')->name('subarea.destroy');
 
 
 
         //La siguiente sección es para la gestión de actividades
-        Route::get('/Actividades', 'ActivityController@index')->name('activity.index');
-        Route::post('/Actividades/Agregar','ActivityController@create')->name('activity.create');
-        Route::get('/Actividades/VerActividad/{idActividad}', 'ActivityController@show')->name('activity.show');
-        Route::post('/Actividades/EditarActividad/{id}','ActivityController@update')->name('activity.update');
-        Route::post('/Actividades/EliminarActividad/{id}','ActivityController@destroy')->name('activity.destroy');
+        Route::get('/Actividades/{subarea}', 'ActivityController@index')->name('activity.index');
+        Route::post('/Actividades/Agregar/{subarea}','ActivityController@create')->name('activity.create');
+        Route::get('/Actividades/VerActividad/{subarea}/{activity}', 'ActivityController@show')->name('activity.show');
+        Route::post('/Actividades/EditarActividad/{subarea}/{activity}','ActivityController@update')->name('activity.update');
+        Route::post('/Actividades/EliminarActividad/{subarea}/{activity}','ActivityController@destroy')->name('activity.destroy');
 
 
         //La siguiente es para gestión de tickets
@@ -123,18 +123,21 @@ Route::middleware('auth')->group(function(){
 
 
 
+
+
+
+
     Route::prefix('Coordinador')->name('coordinator.')->group(function()
     {
         
         Route::get('','UserController@homeCoordinator')->name('home');
         
         //En esta parte va la gestión de todo tipo de usuario, coordinador, técnico, usuario
-        Route::get('/Usuarios/{role}/{department?}', 'UserController@index')->name('user.index');
+        Route::get('/Usuarios/{idRole}/{idDepartment?}', 'UserController@index')->name('user.index');
         Route::post('/Usuarios/Agregar','UserController@create')->name('user.create');
-        Route::get('/Usuarios/Ver/{idUsuario?}/Usuario', 'UserController@show')->name('user.show');
-        Route::post('/Usuarios/EditarUsuario/{id}','UserController@update')->name('user.update');
-        Route::post('/Usuarios/EliminarUsuario/{id}','UserController@destroy')->name('user.destroy');
-        Route::resource('Usuarios', 'UserController');
+        Route::get('/Usuarios/Ver/{user}/Usuario', 'UserController@show')->name('user.show');
+        Route::post('/Usuarios/EditarUsuario/{user}','UserController@update')->name('user.update');
+        Route::post('/Usuarios/EliminarUsuario/{user}','UserController@destroy')->name('user.destroy');
 
 
 
@@ -148,9 +151,9 @@ Route::middleware('auth')->group(function(){
         //La siguiente sección es para la gestión de actividades
         Route::get('/Actividades', 'ActivityController@index')->name('activity.index');
         Route::post('/Actividades/Agregar','ActivityController@create')->name('activity.create');
-        Route::get('/Actividades/VerActividad/{idActividad}', 'ActivityController@show')->name('activity.show');
-        Route::post('/Actividades/EditarActividad/{id}','ActivityController@update')->name('activity.update');
-        Route::post('/Actividades/EliminarActividad/{id}','ActivityController@destroy')->name('activity.destroy');
+        Route::get('/Actividades/VerActividad/{activity}', 'ActivityController@show')->name('activity.show');
+        Route::post('/Actividades/EditarActividad/{activity}','ActivityController@update')->name('activity.update');
+        Route::post('/Actividades/EliminarActividad/{activity}','ActivityController@destroy')->name('activity.destroy');
 
 
 
@@ -166,9 +169,9 @@ Route::middleware('auth')->group(function(){
         //En esta parte va el CRUD de todo tipo de usuario, coordinador, técnico, usuario
         Route::get('/Usuarios/{role}', 'UserController@index')->name('user.index');
         Route::post('/Usuarios/Agregar','UserController@create')->name('user.create');
-        Route::get('/Usuarios/VerUsuario/{id}', 'UserController@show')->name('uer.show');
-        Route::post('/Usuarios/EditarUsuario/{id}','UserController@update')->name('user.update');
-        Route::post('/Usuarios/EliminarUsuario/{id}','UserController@destroy')->name('user.destroy');
+        Route::get('/Usuarios/VerUsuario/{user}', 'UserController@show')->name('uer.show');
+        Route::post('/Usuarios/EditarUsuario/{user}','UserController@update')->name('user.update');
+        Route::post('/Usuarios/EliminarUsuario/{user}','UserController@destroy')->name('user.destroy');
 
 
         //La siguiente es para gestión de tickets

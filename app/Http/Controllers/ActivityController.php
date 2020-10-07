@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
+use App\Models\Department;
+use App\Models\Subarea;
+use App\Models\Role;
 use Illuminate\Http\Request;
 
 class ActivityController extends Controller
@@ -12,9 +15,14 @@ class ActivityController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Subarea $subarea)
     {
         //
+        $departmentsSideBar = Department::all();
+        $rolesSideBar = Role::all();
+        $subareasSideBar = Subarea::all();
+        $activities = Activity::where('idSubarea',$subarea->idSubarea)->paginate(3);
+        return view('management.activity.index',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'activities'=>$activities,'subarea'=>$subarea]);
     }
 
     /**
@@ -22,9 +30,14 @@ class ActivityController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Subarea $subarea, Request $request)
     {
         //
+        $activity = new Activity();
+        $activity->activityName = $request->activityName;
+        $activity->idSubarea =  $subarea->idSubarea;
+        $activity->save();
+        return redirect()->route('administrator.activity.index',['subarea'=>$subarea]);
     }
 
     /**
@@ -44,9 +57,13 @@ class ActivityController extends Controller
      * @param  \App\Activity  $activity
      * @return \Illuminate\Http\Response
      */
-    public function show(Activity $activity)
+    public function show(Subarea $subarea, Activity $activity)
     {
         //
+        $departmentsSideBar = Department::all();
+        $rolesSideBar = Role::all();
+        $subareasSideBar = Subarea::all();
+        return view('management.activity.edit',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subarea'=>$subarea,'activity'=>$activity]);
     }
 
     /**
@@ -67,9 +84,12 @@ class ActivityController extends Controller
      * @param  \App\Activity  $activity
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Activity $activity)
+    public function update(Request $request, Subarea $subarea, Activity $activity)
     {
         //
+        $activity->activityName = $request->activityName;
+        $activity->update();
+        return redirect()->route('administrator.activity.index',['subarea'=>$subarea]);
     }
 
     /**
@@ -78,8 +98,10 @@ class ActivityController extends Controller
      * @param  \App\Activity  $activity
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Activity $activity)
+    public function destroy(Subarea $subarea, Activity $activity)
     {
         //
+        Activity::destroy($activity->idActivity);
+        return redirect()->route('administrator.activity.index',['subarea'=>$subarea]);
     }
 }

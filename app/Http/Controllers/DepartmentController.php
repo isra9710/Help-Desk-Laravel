@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
+use App\Models\Role;
+use App\Models\Subarea;
 use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
@@ -15,6 +17,11 @@ class DepartmentController extends Controller
     public function index()
     {
         //
+        $departments = Department::paginate(2);
+        $departmentsSideBar = Department::all();
+        $rolesSideBar = Role::all();
+        $subareasSideBar = Subarea::all();
+        return view('management.department.index',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'departments'=>$departments]);
     }
 
     /**
@@ -22,9 +29,13 @@ class DepartmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         //
+        $department = new Department();
+        $department->departmentName =$request->departmentName;
+        $department->save();
+        return redirect()->route('administrator.department.index');
     }
 
     /**
@@ -47,6 +58,10 @@ class DepartmentController extends Controller
     public function show(Department $department)
     {
         //
+        $departmentsSideBar = Department::all();
+        $rolesSideBar = Role::all();
+        $subareasSideBar = Subarea::all();
+        return view('management.department.edit',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'department'=>$department]);
     }
 
     /**
@@ -70,6 +85,9 @@ class DepartmentController extends Controller
     public function update(Request $request, Department $department)
     {
         //
+        $department->departmentName=$request->departmentName;
+        $department->save();
+        return redirect()->route('administrator.department.index');
     }
 
     /**
@@ -81,5 +99,8 @@ class DepartmentController extends Controller
     public function destroy(Department $department)
     {
         //
+        
+        Department::destroy($department->idDepartment);
+        return redirect()->route('administrator.department.index');
     }
 }

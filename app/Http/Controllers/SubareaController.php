@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Subarea;
+use App\Models\Subarea;
+use App\Models\Department;
+use App\Models\Role;
 use Illuminate\Http\Request;
 
 class SubareaController extends Controller
@@ -12,9 +14,14 @@ class SubareaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Department $department)
     {
         //
+        $subareas = Subarea::where('idDepartment', $department->idDepartment)->paginate(3);
+        $subareasSideBar = Subarea::all();
+        $departmentsSideBar = Department::all();
+        $rolesSideBar = Role::all();
+        return view('management.subarea.index',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'subareas'=>$subareas,'department'=>$department]);
     }
 
     /**
@@ -22,9 +29,15 @@ class SubareaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Department $department, Request $request)
     {
         //
+        $subarea = new Subarea();
+        $subarea->subareaName = $request->subareaName;
+        $subarea->idDepartment= $department->idDepartment;
+        $subarea->save();
+        return redirect()->route('administrator.subarea.index',['department'=>$department]);
+
     }
 
     /**
@@ -44,9 +57,13 @@ class SubareaController extends Controller
      * @param  \App\Subarea  $subarea
      * @return \Illuminate\Http\Response
      */
-    public function show(Subarea $subarea)
+    public function show(Department $department,Subarea $subarea)
     {
         //
+        $subareasSideBar = Subarea::all();
+        $departmentsSideBar = Department::all();
+        $rolesSideBar = Role::all();
+        return view ('management.subarea.edit',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'subarea'=>$subarea,'department'=>$department]);
     }
 
     /**
@@ -67,9 +84,13 @@ class SubareaController extends Controller
      * @param  \App\Subarea  $subarea
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Subarea $subarea)
+    public function update(Request $request, Department $department,Subarea $subarea)
     {
         //
+        $subarea->subareaName = $request->subareaName;
+        $subarea->update();
+        return redirect()->route('administrator.subarea.index',['department'=>$department]); 
+        
     }
 
     /**
@@ -78,8 +99,10 @@ class SubareaController extends Controller
      * @param  \App\Subarea  $subarea
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Subarea $subarea)
+    public function destroy(Department $department,Subarea $subarea)
     {
         //
+        Subarea::destroy($subarea->idSubarea);
+        return redirect()->route('administrator.subarea.index',['department'=>$department]);
     }
 }
