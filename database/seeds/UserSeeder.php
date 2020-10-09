@@ -54,6 +54,6 @@ class UserSeeder extends Seeder
 		$user->idDepartment=1;
 		$user->status=TRUE;
         $user -> save();
-		factory('App\Models\User',50)->create();
+		factory('App\Models\User',150)->create();
     }
 }

@@ -61,7 +61,10 @@ class UserController extends Controller
     function homeCoordinator()
     {
         $rolesSideBar =Role::all();
-        return view('home',['rolesSideBar' => $rolesSideBar]);
+        $subareasSideBar = Subarea::all();
+    
+        
+        return view('home',['rolesSideBar' => $rolesSideBar,'subareasSideBar'=>$subareasSideBar]);
     }
 
     //Nos retornará a la página principal del asistente trayendo consigo roles de usuario

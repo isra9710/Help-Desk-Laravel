@@ -30,6 +30,8 @@
           <!-- Todo el código a continuación es lo que aparece del lado izquierdo del navegador
               dependiendo del tipo de usuario que inició sesión, son los segmentos que se mostrarán
           -->
+
+          <li class="nav-header">Estadisticas y reportes</li>
                <li class="nav-item has-treeview">
                 <a href="#" class="nav-link">
                   <i class="fas fa-building"></i>
@@ -59,23 +61,84 @@
                   </li>
                 </ul>
               </li>
+
+          <li class="nav-header">Gestión de tickets</li>
+          @if(auth()->user()->isAdministrator() || auth()->user()->isCoordinator())
           <li class="nav-item">
-            <a href="../calendar.html" class="nav-link">
-              <i class="nav-icon fas fa-arrows-alt"></i>
+            @if(auth()->user()->isAdministrator())
+            <a href="{{route('administrator.ticket.index')}}" class="nav-link">
+            @elseif(auth()->user()->isCoordinator())
+            <a href="{{route('coordinator.ticket.index',['department'=>auth()->user()->department])}}" class="nav-link">
+              @else
+              <a href="{{route('assistant.ticket.index',['department'=>auth()->user()->department])}}" class="nav-link">
+              @endif
+              <i class="fas fa-inbox"></i>
               <p>
-                Gestión
-                <span class="badge badge-info right">2</span>
+                Bandeja de histórico
               </p>
             </a>
           </li>
+          @endif
+          
           <li class="nav-item">
             <a href="../gallery.html" class="nav-link">
-            <i class="fas fa-ticket-alt"></i>
+              <i class="fas fa-ticket-alt"></i>
               <p>
                 Tickets
               </p>
             </a>
           </li>
+          @if(auth()->user()->isCoordinator() || auth()->user()->isCoordinator())
+          <li class="nav-item">
+            <a href="../gallery.html" class="nav-link">
+              <i class="far fa-bell"></i>
+              <p>
+                Tickets no asignados
+              </p>
+            </a>
+          </li>
+          @endif
+
+          @if(auth()->user()->isAdministrator())
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="far fa-bell"></i>
+              <p>
+                Tickets no asignados
+              <i class="right fas fa-angle-left"></i>
+              </p>
+             </a>
+             @foreach ($departmentsSideBar as $department)
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{{route('administrator.ticket.index',['department'=>$department])}}" class="nav-link">
+                      <i class="fas fa-monument"></i>
+                    <p>{{$department->departmentName}}</p>
+                    </a>
+                  </li>
+                </ul>
+              @endforeach
+          </li>
+          @endif
+
+
+
+
+
+
+
+
+
+          <li class="nav-item">
+            <a href="../gallery.html" class="nav-link">
+              <i class="fas fa-phone-alt"></i>
+              <p>
+                Ticket para alguien más
+              </p>
+            </a>
+          </li>
+
+
 
 
 
@@ -148,25 +211,53 @@
 
 
 
-          <li class="nav-header">REPORTES</li>
-          <li class="nav-item">
-            <a href="../calendar.html" class="nav-link">
-            <i class="fas fa-folder-plus"></i>
-              <p>
-                Nuevos Creados
-                <span class="badge badge-info right">2</span>
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="../gallery.html" class="nav-link">
-            <i class="fas fa-tasks"></i>
-              <p>
-                Pendientes
-              </p>
-            </a>
-          </li>
 
+          
+
+          @if(auth()->user()->isCoordinator())
+           <li class="nav-header">Gestión de subareas</li>
+           <li class="nav-item">
+            <a href="{{route('coordinator.subarea.index',['department'=>auth()->user()->department])}}" class="nav-link">
+              <i class="fas fa-hotel"></i>
+              <p>
+                Subáreas
+                <span class="badge badge-info right">100</span>
+              </p>
+            </a>
+          </li>
+           <li class="nav-header">Gestión de actividades</li>
+           <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="fas fa-gopuram"></i>
+              <p>
+                Subareas
+              <i class="right fas fa-angle-left"></i>
+              </p>
+             </a>
+             @foreach ($subareasSideBar as $subarea)
+              @if(auth()->user()->idDepartment==$subarea->idDepartment)   
+              <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{{route('coordinator.activity.index',['subarea'=>$subarea])}}" class="nav-link">
+                      <i class="fas fa-monument"></i>
+                    <p>{{$subarea->subareaName}}</p>
+                    </a>
+                  </li>
+                </ul>
+                @endif
+              @endforeach
+          </li>
+          @endif
+
+
+
+
+
+
+
+
+
+          
           <!-- La siguiente sección es para hacer gestión de usuarios, dependiendo del tipo de permisos
               que se tengan, sólo los administradores, coordinadores y asistentes pueden hacer uso de lo siguiente
               dependiedo del nivel de permiso, se le muestran tipos de usuario

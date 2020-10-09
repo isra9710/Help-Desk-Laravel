@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $idStaff
  * @property int|null $idTechnician
  * @property int|null $idStatus
+ * @property int|null $idActivity
  * @property Carbon $startDate
  * @property Carbon $limitDate
  * @property string $firstPhoto
@@ -24,9 +25,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool|null $doubt
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property int|null $created_by
- * @property int|null $updated_by
  * 
+ * @property Activity $activity
  * @property User $user
  * @property Status $status
  * @property Collection|Message[] $messages
@@ -43,9 +43,8 @@ class Ticket extends Model
 		'idStaff' => 'int',
 		'idTechnician' => 'int',
 		'idStatus' => 'int',
-		'doubt' => 'bool',
-		'created_by' => 'int',
-		'updated_by' => 'int'
+		'idActivity' => 'int',
+		'doubt' => 'bool'
 	];
 
 	protected $dates = [
@@ -57,14 +56,18 @@ class Ticket extends Model
 		'idStaff',
 		'idTechnician',
 		'idStatus',
+		'idActivity',
 		'startDate',
 		'limitDate',
 		'firstPhoto',
 		'secondPhoto',
-		'doubt',
-		'created_by',
-		'updated_by'
+		'doubt'
 	];
+
+	public function activity()
+	{
+		return $this->belongsTo(Activity::class, 'idActivity');
+	}
 
 	public function user()
 	{

@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Priority $priority
  * @property Subarea $subarea
  * @property Collection|Assignment[] $assignments
+ * @property Collection|Ticket[] $tickets
  *
  * @package App\Models
  */
@@ -55,5 +56,10 @@ class Activity extends Model
 	public function assignments()
 	{
 		return $this->hasMany(Assignment::class, 'idActivity');
+	}
+
+	public function tickets()
+	{
+		return $this->hasMany(Ticket::class, 'idActivity');
 	}
 }

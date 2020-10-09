@@ -5,9 +5,20 @@
  */
 
 require('./bootstrap');
+require('./pages/dashboard');
+require('./pages/dashboard2');
+require('./pages/dashboard3');
+require('./jsgrid.min');
+/*require('./select2.full.min');
+require('./jquery.bootstrap-duallistbox.min');
+require('./moment.min');
+require('./jquery.inputmask.bundle.min');
+require('./daterangepicker');
+require('./bootstrap-colorpicker.min');
+require('./tempusdominus-bootstrap-4.min');
+require('./bootstrap-switch.min');*/
+require('./demo');
 require('./adminlte');
-require('./demo')
-
 window.Vue = require('vue');
 
 /**

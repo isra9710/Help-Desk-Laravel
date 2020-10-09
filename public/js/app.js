@@ -33706,9 +33706,26 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
  */
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
-__webpack_require__(/*! ./adminlte */ "./resources/js/adminlte.js");
+__webpack_require__(/*! ./pages/dashboard */ "./resources/js/pages/dashboard.js");
+
+__webpack_require__(/*! ./pages/dashboard2 */ "./resources/js/pages/dashboard2.js");
+
+__webpack_require__(/*! ./pages/dashboard3 */ "./resources/js/pages/dashboard3.js");
+
+__webpack_require__(/*! ./jsgrid.min */ "./resources/js/jsgrid.min.js");
+/*require('./select2.full.min');
+require('./jquery.bootstrap-duallistbox.min');
+require('./moment.min');
+require('./jquery.inputmask.bundle.min');
+require('./daterangepicker');
+require('./bootstrap-colorpicker.min');
+require('./tempusdominus-bootstrap-4.min');
+require('./bootstrap-switch.min');*/
+
 
 __webpack_require__(/*! ./demo */ "./resources/js/demo.js");
+
+__webpack_require__(/*! ./adminlte */ "./resources/js/adminlte.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /**
@@ -34184,6 +34201,2250 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     $(this).addClass('active');
   });
 })(jQuery);
+
+/***/ }),
+
+/***/ "./resources/js/jsgrid.min.js":
+/*!************************************!*\
+  !*** ./resources/js/jsgrid.min.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+/*
+ * jsGrid v1.5.3 (http://js-grid.com)
+ * (c) 2016 Artem Tabalin
+ * Licensed under MIT (https://github.com/tabalinas/jsgrid/blob/master/LICENSE)
+ */
+!function (a, b, c) {
+  function d(a, c) {
+    var d = b(a);
+    d.data(f, this), this._container = d, this.data = [], this.fields = [], this._editingRow = null, this._sortField = null, this._sortOrder = i, this._firstDisplayingPage = 1, this._init(c), this.render();
+  }
+
+  var e = "JSGrid",
+      f = e,
+      g = "JSGridItem",
+      h = "JSGridEditRow",
+      i = "asc",
+      j = "desc",
+      k = "{first}",
+      l = "{pages}",
+      m = "{prev}",
+      n = "{next}",
+      o = "{last}",
+      p = "{pageIndex}",
+      q = "{pageCount}",
+      r = "{itemCount}",
+      s = "javascript:void(0);",
+      t = function t(a, c) {
+    return b.isFunction(a) ? a.apply(c, b.makeArray(arguments).slice(2)) : a;
+  },
+      u = function u(a) {
+    var c = b.Deferred();
+    return a && a.then ? a.then(function () {
+      c.resolve.apply(c, arguments);
+    }, function () {
+      c.reject.apply(c, arguments);
+    }) : c.resolve(a), c.promise();
+  },
+      v = {
+    loadData: b.noop,
+    insertItem: b.noop,
+    updateItem: b.noop,
+    deleteItem: b.noop
+  };
+
+  d.prototype = {
+    width: "auto",
+    height: "auto",
+    updateOnResize: !0,
+    rowClass: b.noop,
+    rowRenderer: null,
+    rowClick: function rowClick(a) {
+      this.editing && this.editItem(b(a.event.target).closest("tr"));
+    },
+    rowDoubleClick: b.noop,
+    noDataContent: "Not found",
+    noDataRowClass: "jsgrid-nodata-row",
+    heading: !0,
+    headerRowRenderer: null,
+    headerRowClass: "jsgrid-header-row",
+    headerCellClass: "jsgrid-header-cell",
+    filtering: !1,
+    filterRowRenderer: null,
+    filterRowClass: "jsgrid-filter-row",
+    inserting: !1,
+    insertRowRenderer: null,
+    insertRowClass: "jsgrid-insert-row",
+    editing: !1,
+    editRowRenderer: null,
+    editRowClass: "jsgrid-edit-row",
+    confirmDeleting: !0,
+    deleteConfirm: "Are you sure?",
+    selecting: !0,
+    selectedRowClass: "jsgrid-selected-row",
+    oddRowClass: "jsgrid-row",
+    evenRowClass: "jsgrid-alt-row",
+    cellClass: "jsgrid-cell",
+    sorting: !1,
+    sortableClass: "jsgrid-header-sortable",
+    sortAscClass: "jsgrid-header-sort jsgrid-header-sort-asc",
+    sortDescClass: "jsgrid-header-sort jsgrid-header-sort-desc",
+    paging: !1,
+    pagerContainer: null,
+    pageIndex: 1,
+    pageSize: 20,
+    pageButtonCount: 15,
+    pagerFormat: "Pages: {first} {prev} {pages} {next} {last} &nbsp;&nbsp; {pageIndex} of {pageCount}",
+    pagePrevText: "Prev",
+    pageNextText: "Next",
+    pageFirstText: "First",
+    pageLastText: "Last",
+    pageNavigatorNextText: "...",
+    pageNavigatorPrevText: "...",
+    pagerContainerClass: "jsgrid-pager-container",
+    pagerClass: "jsgrid-pager",
+    pagerNavButtonClass: "jsgrid-pager-nav-button",
+    pagerNavButtonInactiveClass: "jsgrid-pager-nav-inactive-button",
+    pageClass: "jsgrid-pager-page",
+    currentPageClass: "jsgrid-pager-current-page",
+    customLoading: !1,
+    pageLoading: !1,
+    autoload: !1,
+    controller: v,
+    loadIndication: !0,
+    loadIndicationDelay: 500,
+    loadMessage: "Please, wait...",
+    loadShading: !0,
+    invalidMessage: "Invalid data entered!",
+    invalidNotify: function invalidNotify(c) {
+      var d = b.map(c.errors, function (a) {
+        return a.message || null;
+      });
+      a.alert([this.invalidMessage].concat(d).join("\n"));
+    },
+    onInit: b.noop,
+    onRefreshing: b.noop,
+    onRefreshed: b.noop,
+    onPageChanged: b.noop,
+    onItemDeleting: b.noop,
+    onItemDeleted: b.noop,
+    onItemInserting: b.noop,
+    onItemInserted: b.noop,
+    onItemEditing: b.noop,
+    onItemUpdating: b.noop,
+    onItemUpdated: b.noop,
+    onItemInvalid: b.noop,
+    onDataLoading: b.noop,
+    onDataLoaded: b.noop,
+    onOptionChanging: b.noop,
+    onOptionChanged: b.noop,
+    onError: b.noop,
+    invalidClass: "jsgrid-invalid",
+    containerClass: "jsgrid",
+    tableClass: "jsgrid-table",
+    gridHeaderClass: "jsgrid-grid-header",
+    gridBodyClass: "jsgrid-grid-body",
+    _init: function _init(a) {
+      b.extend(this, a), this._initLoadStrategy(), this._initController(), this._initFields(), this._attachWindowLoadResize(), this._attachWindowResizeCallback(), this._callEventHandler(this.onInit);
+    },
+    loadStrategy: function loadStrategy() {
+      return this.pageLoading ? new jsGrid.loadStrategies.PageLoadingStrategy(this) : new jsGrid.loadStrategies.DirectLoadingStrategy(this);
+    },
+    _initLoadStrategy: function _initLoadStrategy() {
+      this._loadStrategy = t(this.loadStrategy, this);
+    },
+    _initController: function _initController() {
+      this._controller = b.extend({}, v, t(this.controller, this));
+    },
+    renderTemplate: function renderTemplate(a, b, d) {
+      args = [];
+
+      for (var e in d) {
+        args.push(d[e]);
+      }
+
+      return args.unshift(a, b), a = t.apply(null, args), a === c || null === a ? "" : a;
+    },
+    loadIndicator: function loadIndicator(a) {
+      return new jsGrid.LoadIndicator(a);
+    },
+    validation: function validation(a) {
+      return jsGrid.Validation && new jsGrid.Validation(a);
+    },
+    _initFields: function _initFields() {
+      var a = this;
+      a.fields = b.map(a.fields, function (c) {
+        if (b.isPlainObject(c)) {
+          var d = c.type && jsGrid.fields[c.type] || jsGrid.Field;
+          c = new d(c);
+        }
+
+        return c._grid = a, c;
+      });
+    },
+    _attachWindowLoadResize: function _attachWindowLoadResize() {
+      b(a).on("load", b.proxy(this._refreshSize, this));
+    },
+    _attachWindowResizeCallback: function _attachWindowResizeCallback() {
+      this.updateOnResize && b(a).on("resize", b.proxy(this._refreshSize, this));
+    },
+    _detachWindowResizeCallback: function _detachWindowResizeCallback() {
+      b(a).off("resize", this._refreshSize);
+    },
+    option: function option(a, b) {
+      var c, d;
+      return 1 === arguments.length ? this[a] : (c = {
+        option: a,
+        oldValue: this[a],
+        newValue: b
+      }, this._callEventHandler(this.onOptionChanging, c), this._handleOptionChange(c.option, c.newValue), d = {
+        option: c.option,
+        value: c.newValue
+      }, void this._callEventHandler(this.onOptionChanged, d));
+    },
+    fieldOption: function fieldOption(a, b, c) {
+      return a = this._normalizeField(a), 2 === arguments.length ? a[b] : (a[b] = c, void this._renderGrid());
+    },
+    _handleOptionChange: function _handleOptionChange(a, b) {
+      switch (this[a] = b, a) {
+        case "width":
+        case "height":
+          this._refreshSize();
+
+          break;
+
+        case "rowClass":
+        case "rowRenderer":
+        case "rowClick":
+        case "rowDoubleClick":
+        case "noDataRowClass":
+        case "noDataContent":
+        case "selecting":
+        case "selectedRowClass":
+        case "oddRowClass":
+        case "evenRowClass":
+          this._refreshContent();
+
+          break;
+
+        case "pageButtonCount":
+        case "pagerFormat":
+        case "pagePrevText":
+        case "pageNextText":
+        case "pageFirstText":
+        case "pageLastText":
+        case "pageNavigatorNextText":
+        case "pageNavigatorPrevText":
+        case "pagerClass":
+        case "pagerNavButtonClass":
+        case "pageClass":
+        case "currentPageClass":
+        case "pagerRenderer":
+          this._refreshPager();
+
+          break;
+
+        case "fields":
+          this._initFields(), this.render();
+          break;
+
+        case "data":
+        case "editing":
+        case "heading":
+        case "filtering":
+        case "inserting":
+        case "paging":
+          this.refresh();
+          break;
+
+        case "loadStrategy":
+        case "pageLoading":
+          this._initLoadStrategy(), this.search();
+          break;
+
+        case "pageIndex":
+          this.openPage(b);
+          break;
+
+        case "pageSize":
+          this.refresh(), this.search();
+          break;
+
+        case "editRowRenderer":
+        case "editRowClass":
+          this.cancelEdit();
+          break;
+
+        case "updateOnResize":
+          this._detachWindowResizeCallback(), this._attachWindowResizeCallback();
+          break;
+
+        case "invalidNotify":
+        case "invalidMessage":
+          break;
+
+        default:
+          this.render();
+      }
+    },
+    destroy: function destroy() {
+      this._detachWindowResizeCallback(), this._clear(), this._container.removeData(f);
+    },
+    render: function render() {
+      return this._renderGrid(), this.autoload ? this.loadData() : b.Deferred().resolve().promise();
+    },
+    _renderGrid: function _renderGrid() {
+      this._clear(), this._container.addClass(this.containerClass).css("position", "relative").append(this._createHeader()).append(this._createBody()), this._pagerContainer = this._createPagerContainer(), this._loadIndicator = this._createLoadIndicator(), this._validation = this._createValidation(), this.refresh();
+    },
+    _createLoadIndicator: function _createLoadIndicator() {
+      return t(this.loadIndicator, this, {
+        message: this.loadMessage,
+        shading: this.loadShading,
+        container: this._container
+      });
+    },
+    _createValidation: function _createValidation() {
+      return t(this.validation, this);
+    },
+    _clear: function _clear() {
+      this.cancelEdit(), clearTimeout(this._loadingTimer), this._pagerContainer && this._pagerContainer.empty(), this._container.empty().css({
+        position: "",
+        width: "",
+        height: ""
+      });
+    },
+    _createHeader: function _createHeader() {
+      var a = this._headerRow = this._createHeaderRow(),
+          c = this._filterRow = this._createFilterRow(),
+          d = this._insertRow = this._createInsertRow(),
+          e = this._headerGrid = b("<table>").addClass(this.tableClass).append(a).append(c).append(d),
+          f = this._header = b("<div>").addClass(this.gridHeaderClass).addClass(this._scrollBarWidth() ? "jsgrid-header-scrollbar" : "").append(e);
+
+      return f;
+    },
+    _createBody: function _createBody() {
+      var a = this._content = b("<tbody>"),
+          c = this._bodyGrid = b("<table>").addClass(this.tableClass).append(a),
+          d = this._body = b("<div>").addClass(this.gridBodyClass).append(c).on("scroll", b.proxy(function (a) {
+        this._header.scrollLeft(a.target.scrollLeft);
+      }, this));
+      return d;
+    },
+    _createPagerContainer: function _createPagerContainer() {
+      var a = this.pagerContainer || b("<div>").appendTo(this._container);
+      return b(a).addClass(this.pagerContainerClass);
+    },
+    _eachField: function _eachField(a) {
+      var c = this;
+      b.each(this.fields, function (b, d) {
+        d.visible && a.call(c, d, b);
+      });
+    },
+    _createHeaderRow: function _createHeaderRow() {
+      if (b.isFunction(this.headerRowRenderer)) return b(this.renderTemplate(this.headerRowRenderer, this));
+      var a = b("<tr>").addClass(this.headerRowClass);
+      return this._eachField(function (c, d) {
+        var e = this._prepareCell("<th>", c, "headercss", this.headerCellClass).append(this.renderTemplate(c.headerTemplate, c)).appendTo(a);
+
+        this.sorting && c.sorting && e.addClass(this.sortableClass).on("click", b.proxy(function () {
+          this.sort(d);
+        }, this));
+      }), a;
+    },
+    _prepareCell: function _prepareCell(a, c, d, e) {
+      return b(a).css("width", c.width).addClass(e || this.cellClass).addClass(d && c[d] || c.css).addClass(c.align ? "jsgrid-align-" + c.align : "");
+    },
+    _createFilterRow: function _createFilterRow() {
+      if (b.isFunction(this.filterRowRenderer)) return b(this.renderTemplate(this.filterRowRenderer, this));
+      var a = b("<tr>").addClass(this.filterRowClass);
+      return this._eachField(function (b) {
+        this._prepareCell("<td>", b, "filtercss").append(this.renderTemplate(b.filterTemplate, b)).appendTo(a);
+      }), a;
+    },
+    _createInsertRow: function _createInsertRow() {
+      if (b.isFunction(this.insertRowRenderer)) return b(this.renderTemplate(this.insertRowRenderer, this));
+      var a = b("<tr>").addClass(this.insertRowClass);
+      return this._eachField(function (b) {
+        this._prepareCell("<td>", b, "insertcss").append(this.renderTemplate(b.insertTemplate, b)).appendTo(a);
+      }), a;
+    },
+    _callEventHandler: function _callEventHandler(a, c) {
+      return a.call(this, b.extend(c, {
+        grid: this
+      })), c;
+    },
+    reset: function reset() {
+      return this._resetSorting(), this._resetPager(), this._loadStrategy.reset();
+    },
+    _resetPager: function _resetPager() {
+      this._firstDisplayingPage = 1, this._setPage(1);
+    },
+    _resetSorting: function _resetSorting() {
+      this._sortField = null, this._sortOrder = i, this._clearSortingCss();
+    },
+    refresh: function refresh() {
+      this._callEventHandler(this.onRefreshing), this.cancelEdit(), this._refreshHeading(), this._refreshFiltering(), this._refreshInserting(), this._refreshContent(), this._refreshPager(), this._refreshSize(), this._callEventHandler(this.onRefreshed);
+    },
+    _refreshHeading: function _refreshHeading() {
+      this._headerRow.toggle(this.heading);
+    },
+    _refreshFiltering: function _refreshFiltering() {
+      this._filterRow.toggle(this.filtering);
+    },
+    _refreshInserting: function _refreshInserting() {
+      this._insertRow.toggle(this.inserting);
+    },
+    _refreshContent: function _refreshContent() {
+      var a = this._content;
+      if (a.empty(), !this.data.length) return a.append(this._createNoDataRow()), this;
+
+      for (var b = this._loadStrategy.firstDisplayIndex(), c = this._loadStrategy.lastDisplayIndex(), d = b; c > d; d++) {
+        var e = this.data[d];
+        a.append(this._createRow(e, d));
+      }
+    },
+    _createNoDataRow: function _createNoDataRow() {
+      var a = 0;
+      return this._eachField(function () {
+        a++;
+      }), b("<tr>").addClass(this.noDataRowClass).append(b("<td>").addClass(this.cellClass).attr("colspan", a).append(this.renderTemplate(this.noDataContent, this)));
+    },
+    _createRow: function _createRow(a, c) {
+      var d;
+      return b.isFunction(this.rowRenderer) ? d = this.renderTemplate(this.rowRenderer, this, {
+        item: a,
+        itemIndex: c
+      }) : (d = b("<tr>"), this._renderCells(d, a)), d.addClass(this._getRowClasses(a, c)).data(g, a).on("click", b.proxy(function (b) {
+        this.rowClick({
+          item: a,
+          itemIndex: c,
+          event: b
+        });
+      }, this)).on("dblclick", b.proxy(function (b) {
+        this.rowDoubleClick({
+          item: a,
+          itemIndex: c,
+          event: b
+        });
+      }, this)), this.selecting && this._attachRowHover(d), d;
+    },
+    _getRowClasses: function _getRowClasses(a, b) {
+      var c = [];
+      return c.push((b + 1) % 2 ? this.oddRowClass : this.evenRowClass), c.push(t(this.rowClass, this, a, b)), c.join(" ");
+    },
+    _attachRowHover: function _attachRowHover(a) {
+      var c = this.selectedRowClass;
+      a.hover(function () {
+        b(this).addClass(c);
+      }, function () {
+        b(this).removeClass(c);
+      });
+    },
+    _renderCells: function _renderCells(a, b) {
+      return this._eachField(function (c) {
+        a.append(this._createCell(b, c));
+      }), this;
+    },
+    _createCell: function _createCell(a, c) {
+      var d,
+          e = this._getItemFieldValue(a, c),
+          f = {
+        value: e,
+        item: a
+      };
+
+      return d = b.isFunction(c.cellRenderer) ? this.renderTemplate(c.cellRenderer, c, f) : b("<td>").append(this.renderTemplate(c.itemTemplate || e, c, f)), this._prepareCell(d, c);
+    },
+    _getItemFieldValue: function _getItemFieldValue(a, b) {
+      for (var c = b.name.split("."), d = a[c.shift()]; d && c.length;) {
+        d = d[c.shift()];
+      }
+
+      return d;
+    },
+    _setItemFieldValue: function _setItemFieldValue(a, b, c) {
+      for (var d = b.name.split("."), e = a, f = d[0]; e && d.length;) {
+        a = e, f = d.shift(), e = a[f];
+      }
+
+      if (!e) for (; d.length;) {
+        a = a[f] = {}, f = d.shift();
+      }
+      a[f] = c;
+    },
+    sort: function sort(a, c) {
+      return b.isPlainObject(a) && (c = a.order, a = a.field), this._clearSortingCss(), this._setSortingParams(a, c), this._setSortingCss(), this._loadStrategy.sort();
+    },
+    _clearSortingCss: function _clearSortingCss() {
+      this._headerRow.find("th").removeClass(this.sortAscClass).removeClass(this.sortDescClass);
+    },
+    _setSortingParams: function _setSortingParams(a, b) {
+      a = this._normalizeField(a), b = b || (this._sortField === a ? this._reversedSortOrder(this._sortOrder) : i), this._sortField = a, this._sortOrder = b;
+    },
+    _normalizeField: function _normalizeField(a) {
+      return b.isNumeric(a) ? this.fields[a] : "string" == typeof a ? b.grep(this.fields, function (b) {
+        return b.name === a;
+      })[0] : a;
+    },
+    _reversedSortOrder: function _reversedSortOrder(a) {
+      return a === i ? j : i;
+    },
+    _setSortingCss: function _setSortingCss() {
+      var a = this._visibleFieldIndex(this._sortField);
+
+      this._headerRow.find("th").eq(a).addClass(this._sortOrder === i ? this.sortAscClass : this.sortDescClass);
+    },
+    _visibleFieldIndex: function _visibleFieldIndex(a) {
+      return b.inArray(a, b.grep(this.fields, function (a) {
+        return a.visible;
+      }));
+    },
+    _sortData: function _sortData() {
+      var a = this._sortFactor(),
+          b = this._sortField;
+
+      b && this.data.sort(function (c, d) {
+        return a * b.sortingFunc(c[b.name], d[b.name]);
+      });
+    },
+    _sortFactor: function _sortFactor() {
+      return this._sortOrder === i ? 1 : -1;
+    },
+    _itemsCount: function _itemsCount() {
+      return this._loadStrategy.itemsCount();
+    },
+    _pagesCount: function _pagesCount() {
+      var a = this._itemsCount(),
+          b = this.pageSize;
+
+      return Math.floor(a / b) + (a % b ? 1 : 0);
+    },
+    _refreshPager: function _refreshPager() {
+      var a = this._pagerContainer;
+      a.empty(), this.paging && a.append(this._createPager());
+      var b = this.paging && this._pagesCount() > 1;
+      a.toggle(b);
+    },
+    _createPager: function _createPager() {
+      var a;
+      return a = b.isFunction(this.pagerRenderer) ? b(this.pagerRenderer({
+        pageIndex: this.pageIndex,
+        pageCount: this._pagesCount()
+      })) : b("<div>").append(this._createPagerByFormat()), a.addClass(this.pagerClass), a;
+    },
+    _createPagerByFormat: function _createPagerByFormat() {
+      var a = this.pageIndex,
+          c = this._pagesCount(),
+          d = this._itemsCount(),
+          e = this.pagerFormat.split(" ");
+
+      return b.map(e, b.proxy(function (e) {
+        var f = e;
+        return e === l ? f = this._createPages() : e === k ? f = this._createPagerNavButton(this.pageFirstText, 1, a > 1) : e === m ? f = this._createPagerNavButton(this.pagePrevText, a - 1, a > 1) : e === n ? f = this._createPagerNavButton(this.pageNextText, a + 1, c > a) : e === o ? f = this._createPagerNavButton(this.pageLastText, c, c > a) : e === p ? f = a : e === q ? f = c : e === r && (f = d), b.isArray(f) ? f.concat([" "]) : [f, " "];
+      }, this));
+    },
+    _createPages: function _createPages() {
+      var a = this._pagesCount(),
+          b = this.pageButtonCount,
+          c = this._firstDisplayingPage,
+          d = [];
+
+      c > 1 && d.push(this._createPagerPageNavButton(this.pageNavigatorPrevText, this.showPrevPages));
+
+      for (var e = 0, f = c; b > e && a >= f; e++, f++) {
+        d.push(f === this.pageIndex ? this._createPagerCurrentPage() : this._createPagerPage(f));
+      }
+
+      return a > c + b - 1 && d.push(this._createPagerPageNavButton(this.pageNavigatorNextText, this.showNextPages)), d;
+    },
+    _createPagerNavButton: function _createPagerNavButton(a, c, d) {
+      return this._createPagerButton(a, this.pagerNavButtonClass + (d ? "" : " " + this.pagerNavButtonInactiveClass), d ? function () {
+        this.openPage(c);
+      } : b.noop);
+    },
+    _createPagerPageNavButton: function _createPagerPageNavButton(a, b) {
+      return this._createPagerButton(a, this.pagerNavButtonClass, b);
+    },
+    _createPagerPage: function _createPagerPage(a) {
+      return this._createPagerButton(a, this.pageClass, function () {
+        this.openPage(a);
+      });
+    },
+    _createPagerButton: function _createPagerButton(a, c, d) {
+      var e = b("<a>").attr("href", s).html(a).on("click", b.proxy(d, this));
+      return b("<span>").addClass(c).append(e);
+    },
+    _createPagerCurrentPage: function _createPagerCurrentPage() {
+      return b("<span>").addClass(this.pageClass).addClass(this.currentPageClass).text(this.pageIndex);
+    },
+    _refreshSize: function _refreshSize() {
+      this._refreshHeight(), this._refreshWidth();
+    },
+    _refreshWidth: function _refreshWidth() {
+      var a = "auto" === this.width ? this._getAutoWidth() : this.width;
+
+      this._container.width(a);
+    },
+    _getAutoWidth: function _getAutoWidth() {
+      var a = this._headerGrid,
+          b = this._header;
+      a.width("auto");
+      var c = a.outerWidth(),
+          d = b.outerWidth() - b.innerWidth();
+      return a.width(""), c + d;
+    },
+    _scrollBarWidth: function () {
+      var a;
+      return function () {
+        if (a === c) {
+          var d = b("<div style='width:50px;height:50px;overflow:hidden;position:absolute;top:-10000px;left:-10000px;'></div>"),
+              e = b("<div style='height:100px;'></div>");
+          d.append(e).appendTo("body");
+          var f = e.innerWidth();
+          d.css("overflow-y", "auto");
+          var g = e.innerWidth();
+          d.remove(), a = f - g;
+        }
+
+        return a;
+      };
+    }(),
+    _refreshHeight: function _refreshHeight() {
+      var a,
+          b = this._container,
+          c = this._pagerContainer,
+          d = this.height;
+      b.height(d), "auto" !== d && (d = b.height(), a = this._header.outerHeight(!0), c.parents(b).length && (a += c.outerHeight(!0)), this._body.outerHeight(d - a));
+    },
+    showPrevPages: function showPrevPages() {
+      var a = this._firstDisplayingPage,
+          b = this.pageButtonCount;
+      this._firstDisplayingPage = a > b ? a - b : 1, this._refreshPager();
+    },
+    showNextPages: function showNextPages() {
+      var a = this._firstDisplayingPage,
+          b = this.pageButtonCount,
+          c = this._pagesCount();
+
+      this._firstDisplayingPage = a + 2 * b > c ? c - b + 1 : a + b, this._refreshPager();
+    },
+    openPage: function openPage(a) {
+      1 > a || a > this._pagesCount() || (this._setPage(a), this._loadStrategy.openPage(a));
+    },
+    _setPage: function _setPage(a) {
+      var b = this._firstDisplayingPage,
+          c = this.pageButtonCount;
+      this.pageIndex = a, b > a && (this._firstDisplayingPage = a), a > b + c - 1 && (this._firstDisplayingPage = a - c + 1), this._callEventHandler(this.onPageChanged, {
+        pageIndex: a
+      });
+    },
+    _controllerCall: function _controllerCall(a, c, d, e) {
+      if (d) return b.Deferred().reject().promise();
+
+      this._showLoading();
+
+      var f = this._controller;
+      if (!f || !f[a]) throw Error("controller has no method '" + a + "'");
+      return u(f[a](c)).done(b.proxy(e, this)).fail(b.proxy(this._errorHandler, this)).always(b.proxy(this._hideLoading, this));
+    },
+    _errorHandler: function _errorHandler() {
+      this._callEventHandler(this.onError, {
+        args: b.makeArray(arguments)
+      });
+    },
+    _showLoading: function _showLoading() {
+      this.loadIndication && (clearTimeout(this._loadingTimer), this._loadingTimer = setTimeout(b.proxy(function () {
+        this._loadIndicator.show();
+      }, this), this.loadIndicationDelay));
+    },
+    _hideLoading: function _hideLoading() {
+      this.loadIndication && (clearTimeout(this._loadingTimer), this._loadIndicator.hide());
+    },
+    search: function search(a) {
+      return this._resetSorting(), this._resetPager(), this.loadData(a);
+    },
+    loadData: function loadData(a) {
+      a = a || (this.filtering ? this.getFilter() : {}), b.extend(a, this._loadStrategy.loadParams(), this._sortingParams());
+
+      var c = this._callEventHandler(this.onDataLoading, {
+        filter: a
+      });
+
+      return this._controllerCall("loadData", a, c.cancel, function (a) {
+        a && (this._loadStrategy.finishLoad(a), this._callEventHandler(this.onDataLoaded, {
+          data: a
+        }));
+      });
+    },
+    getFilter: function getFilter() {
+      var a = {};
+      return this._eachField(function (b) {
+        b.filtering && this._setItemFieldValue(a, b, b.filterValue());
+      }), a;
+    },
+    _sortingParams: function _sortingParams() {
+      return this.sorting && this._sortField ? {
+        sortField: this._sortField.name,
+        sortOrder: this._sortOrder
+      } : {};
+    },
+    getSorting: function getSorting() {
+      var a = this._sortingParams();
+
+      return {
+        field: a.sortField,
+        order: a.sortOrder
+      };
+    },
+    clearFilter: function clearFilter() {
+      var a = this._createFilterRow();
+
+      return this._filterRow.replaceWith(a), this._filterRow = a, this.search();
+    },
+    insertItem: function insertItem(a) {
+      var c = a || this._getValidatedInsertItem();
+
+      if (!c) return b.Deferred().reject().promise();
+
+      var d = this._callEventHandler(this.onItemInserting, {
+        item: c
+      });
+
+      return this._controllerCall("insertItem", c, d.cancel, function (a) {
+        a = a || c, this._loadStrategy.finishInsert(a), this._callEventHandler(this.onItemInserted, {
+          item: a
+        });
+      });
+    },
+    _getValidatedInsertItem: function _getValidatedInsertItem() {
+      var a = this._getInsertItem();
+
+      return this._validateItem(a, this._insertRow) ? a : null;
+    },
+    _getInsertItem: function _getInsertItem() {
+      var a = {};
+      return this._eachField(function (b) {
+        b.inserting && this._setItemFieldValue(a, b, b.insertValue());
+      }), a;
+    },
+    _validateItem: function _validateItem(a, c) {
+      var d = [],
+          e = {
+        item: a,
+        itemIndex: this._rowIndex(c),
+        row: c
+      };
+      if (this._eachField(function (f) {
+        if (f.validate && (c !== this._insertRow || f.inserting) && (c !== this._getEditRow() || f.editing)) {
+          var g = this._getItemFieldValue(a, f),
+              h = this._validation.validate(b.extend({
+            value: g,
+            rules: f.validate
+          }, e));
+
+          this._setCellValidity(c.children().eq(this._visibleFieldIndex(f)), h), h.length && d.push.apply(d, b.map(h, function (a) {
+            return {
+              field: f,
+              message: a
+            };
+          }));
+        }
+      }), !d.length) return !0;
+      var f = b.extend({
+        errors: d
+      }, e);
+      return this._callEventHandler(this.onItemInvalid, f), this.invalidNotify(f), !1;
+    },
+    _setCellValidity: function _setCellValidity(a, b) {
+      a.toggleClass(this.invalidClass, !!b.length).attr("title", b.join("\n"));
+    },
+    clearInsert: function clearInsert() {
+      var a = this._createInsertRow();
+
+      this._insertRow.replaceWith(a), this._insertRow = a, this.refresh();
+    },
+    editItem: function editItem(a) {
+      var b = this.rowByItem(a);
+      b.length && this._editRow(b);
+    },
+    rowByItem: function rowByItem(a) {
+      return a.jquery || a.nodeType ? b(a) : this._content.find("tr").filter(function () {
+        return b.data(this, g) === a;
+      });
+    },
+    _editRow: function _editRow(a) {
+      if (this.editing) {
+        var b = a.data(g),
+            c = this._callEventHandler(this.onItemEditing, {
+          row: a,
+          item: b,
+          itemIndex: this._itemIndex(b)
+        });
+
+        if (!c.cancel) {
+          this._editingRow && this.cancelEdit();
+
+          var d = this._createEditRow(b);
+
+          this._editingRow = a, a.hide(), d.insertBefore(a), a.data(h, d);
+        }
+      }
+    },
+    _createEditRow: function _createEditRow(a) {
+      if (b.isFunction(this.editRowRenderer)) return b(this.renderTemplate(this.editRowRenderer, this, {
+        item: a,
+        itemIndex: this._itemIndex(a)
+      }));
+      var c = b("<tr>").addClass(this.editRowClass);
+      return this._eachField(function (b) {
+        var d = this._getItemFieldValue(a, b);
+
+        this._prepareCell("<td>", b, "editcss").append(this.renderTemplate(b.editTemplate || "", b, {
+          value: d,
+          item: a
+        })).appendTo(c);
+      }), c;
+    },
+    updateItem: function updateItem(a, b) {
+      1 === arguments.length && (b = a);
+      var c = a ? this.rowByItem(a) : this._editingRow;
+      return (b = b || this._getValidatedEditedItem()) ? this._updateRow(c, b) : void 0;
+    },
+    _getValidatedEditedItem: function _getValidatedEditedItem() {
+      var a = this._getEditedItem();
+
+      return this._validateItem(a, this._getEditRow()) ? a : null;
+    },
+    _updateRow: function _updateRow(a, c) {
+      var d = a.data(g),
+          e = this._itemIndex(d),
+          f = b.extend(!0, {}, d, c),
+          h = this._callEventHandler(this.onItemUpdating, {
+        row: a,
+        item: f,
+        itemIndex: e,
+        previousItem: d
+      });
+
+      return this._controllerCall("updateItem", f, h.cancel, function (g) {
+        var h = b.extend(!0, {}, d);
+        f = g || b.extend(!0, d, c);
+
+        var i = this._finishUpdate(a, f, e);
+
+        this._callEventHandler(this.onItemUpdated, {
+          row: i,
+          item: f,
+          itemIndex: e,
+          previousItem: h
+        });
+      });
+    },
+    _rowIndex: function _rowIndex(a) {
+      return this._content.children().index(b(a));
+    },
+    _itemIndex: function _itemIndex(a) {
+      return b.inArray(a, this.data);
+    },
+    _finishUpdate: function _finishUpdate(a, b, c) {
+      this.cancelEdit(), this.data[c] = b;
+
+      var d = this._createRow(b, c);
+
+      return a.replaceWith(d), d;
+    },
+    _getEditedItem: function _getEditedItem() {
+      var a = {};
+      return this._eachField(function (b) {
+        b.editing && this._setItemFieldValue(a, b, b.editValue());
+      }), a;
+    },
+    cancelEdit: function cancelEdit() {
+      this._editingRow && (this._getEditRow().remove(), this._editingRow.show(), this._editingRow = null);
+    },
+    _getEditRow: function _getEditRow() {
+      return this._editingRow && this._editingRow.data(h);
+    },
+    deleteItem: function deleteItem(b) {
+      var c = this.rowByItem(b);
+      if (c.length && (!this.confirmDeleting || a.confirm(t(this.deleteConfirm, this, c.data(g))))) return this._deleteRow(c);
+    },
+    _deleteRow: function _deleteRow(a) {
+      var b = a.data(g),
+          c = this._itemIndex(b),
+          d = this._callEventHandler(this.onItemDeleting, {
+        row: a,
+        item: b,
+        itemIndex: c
+      });
+
+      return this._controllerCall("deleteItem", b, d.cancel, function () {
+        this._loadStrategy.finishDelete(b, c), this._callEventHandler(this.onItemDeleted, {
+          row: a,
+          item: b,
+          itemIndex: c
+        });
+      });
+    }
+  }, b.fn.jsGrid = function (a) {
+    var e = b.makeArray(arguments),
+        g = e.slice(1),
+        h = this;
+    return this.each(function () {
+      var e,
+          i = b(this),
+          j = i.data(f);
+      if (j) {
+        if ("string" == typeof a) {
+          if (e = j[a].apply(j, g), e !== c && e !== j) return h = e, !1;
+        } else j._detachWindowResizeCallback(), j._init(a), j.render();
+      } else new d(i, a);
+    }), h;
+  };
+
+  var w = {},
+      x = function x(a) {
+    var c;
+    b.isPlainObject(a) ? c = d.prototype : (c = w[a].prototype, a = arguments[1] || {}), b.extend(c, a);
+  },
+      y = {},
+      z = function z(a) {
+    var c = b.isPlainObject(a) ? a : y[a];
+    if (!c) throw Error("unknown locale " + a);
+    A(jsGrid, c);
+  },
+      A = function A(a, c) {
+    b.each(c, function (c, d) {
+      return b.isPlainObject(d) ? void A(a[c] || a[c[0].toUpperCase() + c.slice(1)], d) : void (a.hasOwnProperty(c) ? a[c] = d : a.prototype[c] = d);
+    });
+  };
+
+  a.jsGrid = {
+    Grid: d,
+    fields: w,
+    setDefaults: x,
+    locales: y,
+    locale: z,
+    version: "1.5.3"
+  };
+}(window, jQuery), function (a, b) {
+  function c(a) {
+    this._init(a);
+  }
+
+  c.prototype = {
+    container: "body",
+    message: "Loading...",
+    shading: !0,
+    zIndex: 1e3,
+    shaderClass: "jsgrid-load-shader",
+    loadPanelClass: "jsgrid-load-panel",
+    _init: function _init(a) {
+      b.extend(!0, this, a), this._initContainer(), this._initShader(), this._initLoadPanel();
+    },
+    _initContainer: function _initContainer() {
+      this._container = b(this.container);
+    },
+    _initShader: function _initShader() {
+      this.shading && (this._shader = b("<div>").addClass(this.shaderClass).hide().css({
+        position: "absolute",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        zIndex: this.zIndex
+      }).appendTo(this._container));
+    },
+    _initLoadPanel: function _initLoadPanel() {
+      this._loadPanel = b("<div>").addClass(this.loadPanelClass).text(this.message).hide().css({
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        zIndex: this.zIndex
+      }).appendTo(this._container);
+    },
+    show: function show() {
+      var a = this._loadPanel.show(),
+          b = a.outerWidth(),
+          c = a.outerHeight();
+
+      a.css({
+        marginTop: -c / 2,
+        marginLeft: -b / 2
+      }), this._shader.show();
+    },
+    hide: function hide() {
+      this._loadPanel.hide(), this._shader.hide();
+    }
+  }, a.LoadIndicator = c;
+}(jsGrid, jQuery), function (a, b) {
+  function c(a) {
+    this._grid = a;
+  }
+
+  function d(a) {
+    this._grid = a, this._itemsCount = 0;
+  }
+
+  c.prototype = {
+    firstDisplayIndex: function firstDisplayIndex() {
+      var a = this._grid;
+      return a.option("paging") ? (a.option("pageIndex") - 1) * a.option("pageSize") : 0;
+    },
+    lastDisplayIndex: function lastDisplayIndex() {
+      var a = this._grid,
+          b = a.option("data").length;
+      return a.option("paging") ? Math.min(a.option("pageIndex") * a.option("pageSize"), b) : b;
+    },
+    itemsCount: function itemsCount() {
+      return this._grid.option("data").length;
+    },
+    openPage: function openPage() {
+      this._grid.refresh();
+    },
+    loadParams: function loadParams() {
+      return {};
+    },
+    sort: function sort() {
+      return this._grid._sortData(), this._grid.refresh(), b.Deferred().resolve().promise();
+    },
+    reset: function reset() {
+      return this._grid.refresh(), b.Deferred().resolve().promise();
+    },
+    finishLoad: function finishLoad(a) {
+      this._grid.option("data", a);
+    },
+    finishInsert: function finishInsert(a) {
+      var b = this._grid;
+      b.option("data").push(a), b.refresh();
+    },
+    finishDelete: function finishDelete(a, b) {
+      var c = this._grid;
+      c.option("data").splice(b, 1), c.reset();
+    }
+  }, d.prototype = {
+    firstDisplayIndex: function firstDisplayIndex() {
+      return 0;
+    },
+    lastDisplayIndex: function lastDisplayIndex() {
+      return this._grid.option("data").length;
+    },
+    itemsCount: function itemsCount() {
+      return this._itemsCount;
+    },
+    openPage: function openPage() {
+      this._grid.loadData();
+    },
+    loadParams: function loadParams() {
+      var a = this._grid;
+      return {
+        pageIndex: a.option("pageIndex"),
+        pageSize: a.option("pageSize")
+      };
+    },
+    reset: function reset() {
+      return this._grid.loadData();
+    },
+    sort: function sort() {
+      return this._grid.loadData();
+    },
+    finishLoad: function finishLoad(a) {
+      this._itemsCount = a.itemsCount, this._grid.option("data", a.data);
+    },
+    finishInsert: function finishInsert() {
+      this._grid.search();
+    },
+    finishDelete: function finishDelete() {
+      this._grid.search();
+    }
+  }, a.loadStrategies = {
+    DirectLoadingStrategy: c,
+    PageLoadingStrategy: d
+  };
+}(jsGrid, jQuery), function (a) {
+  var b = function b(a) {
+    return "undefined" != typeof a && null !== a;
+  },
+      c = {
+    string: function string(a, c) {
+      return b(a) || b(c) ? b(a) ? b(c) ? ("" + a).localeCompare("" + c) : 1 : -1 : 0;
+    },
+    number: function number(a, b) {
+      return a - b;
+    },
+    date: function date(a, b) {
+      return a - b;
+    },
+    numberAsString: function numberAsString(a, b) {
+      return parseFloat(a) - parseFloat(b);
+    }
+  };
+
+  a.sortStrategies = c;
+}(jsGrid, jQuery), function (a, b, c) {
+  function d(a) {
+    this._init(a);
+  }
+
+  d.prototype = {
+    _init: function _init(a) {
+      b.extend(!0, this, a);
+    },
+    validate: function validate(a) {
+      var c = [];
+      return b.each(this._normalizeRules(a.rules), function (d, e) {
+        if (!e.validator(a.value, a.item, e.param)) {
+          var f = b.isFunction(e.message) ? e.message(a.value, a.item) : e.message;
+          c.push(f);
+        }
+      }), c;
+    },
+    _normalizeRules: function _normalizeRules(a) {
+      return b.isArray(a) || (a = [a]), b.map(a, b.proxy(function (a) {
+        return this._normalizeRule(a);
+      }, this));
+    },
+    _normalizeRule: function _normalizeRule(a) {
+      if ("string" == typeof a && (a = {
+        validator: a
+      }), b.isFunction(a) && (a = {
+        validator: a
+      }), !b.isPlainObject(a)) throw Error("wrong validation config specified");
+      return a = b.extend({}, a), b.isFunction(a.validator) ? a : this._applyNamedValidator(a, a.validator);
+    },
+    _applyNamedValidator: function _applyNamedValidator(a, c) {
+      delete a.validator;
+      var d = e[c];
+      if (!d) throw Error('unknown validator "' + c + '"');
+      return b.isFunction(d) && (d = {
+        validator: d
+      }), b.extend({}, d, a);
+    }
+  }, a.Validation = d;
+  var e = {
+    required: {
+      message: "Field is required",
+      validator: function validator(a) {
+        return a !== c && null !== a && "" !== a;
+      }
+    },
+    rangeLength: {
+      message: "Field value length is out of the defined range",
+      validator: function validator(a, b, c) {
+        return a.length >= c[0] && a.length <= c[1];
+      }
+    },
+    minLength: {
+      message: "Field value is too short",
+      validator: function validator(a, b, c) {
+        return a.length >= c;
+      }
+    },
+    maxLength: {
+      message: "Field value is too long",
+      validator: function validator(a, b, c) {
+        return a.length <= c;
+      }
+    },
+    pattern: {
+      message: "Field value is not matching the defined pattern",
+      validator: function validator(a, b, c) {
+        return "string" == typeof c && (c = new RegExp("^(?:" + c + ")$")), c.test(a);
+      }
+    },
+    range: {
+      message: "Field value is out of the defined range",
+      validator: function validator(a, b, c) {
+        return a >= c[0] && a <= c[1];
+      }
+    },
+    min: {
+      message: "Field value is too small",
+      validator: function validator(a, b, c) {
+        return a >= c;
+      }
+    },
+    max: {
+      message: "Field value is too large",
+      validator: function validator(a, b, c) {
+        return c >= a;
+      }
+    }
+  };
+  a.validators = e;
+}(jsGrid, jQuery), function (a, b, c) {
+  function d(a) {
+    b.extend(!0, this, a), this.sortingFunc = this._getSortingFunc();
+  }
+
+  d.prototype = {
+    name: "",
+    title: null,
+    css: "",
+    align: "",
+    width: 100,
+    visible: !0,
+    filtering: !0,
+    inserting: !0,
+    editing: !0,
+    sorting: !0,
+    sorter: "string",
+    headerTemplate: function headerTemplate() {
+      return this.title === c || null === this.title ? this.name : this.title;
+    },
+    itemTemplate: function itemTemplate(a) {
+      return a;
+    },
+    filterTemplate: function filterTemplate() {
+      return "";
+    },
+    insertTemplate: function insertTemplate() {
+      return "";
+    },
+    editTemplate: function editTemplate(a, b) {
+      return this._value = a, this.itemTemplate(a, b);
+    },
+    filterValue: function filterValue() {
+      return "";
+    },
+    insertValue: function insertValue() {
+      return "";
+    },
+    editValue: function editValue() {
+      return this._value;
+    },
+    _getSortingFunc: function _getSortingFunc() {
+      var c = this.sorter;
+      if (b.isFunction(c)) return c;
+      if ("string" == typeof c) return a.sortStrategies[c];
+      throw Error('wrong sorter for the field "' + this.name + '"!');
+    }
+  }, a.Field = d;
+}(jsGrid, jQuery), function (a, b) {
+  function c(a) {
+    d.call(this, a);
+  }
+
+  var d = a.Field;
+  c.prototype = new d({
+    autosearch: !0,
+    readOnly: !1,
+    filterTemplate: function filterTemplate() {
+      if (!this.filtering) return "";
+
+      var a = this._grid,
+          b = this.filterControl = this._createTextBox();
+
+      return this.autosearch && b.on("keypress", function (b) {
+        13 === b.which && (a.search(), b.preventDefault());
+      }), b;
+    },
+    insertTemplate: function insertTemplate() {
+      return this.inserting ? this.insertControl = this._createTextBox() : "";
+    },
+    editTemplate: function editTemplate(a) {
+      if (!this.editing) return this.itemTemplate.apply(this, arguments);
+
+      var b = this.editControl = this._createTextBox();
+
+      return b.val(a), b;
+    },
+    filterValue: function filterValue() {
+      return this.filterControl.val();
+    },
+    insertValue: function insertValue() {
+      return this.insertControl.val();
+    },
+    editValue: function editValue() {
+      return this.editControl.val();
+    },
+    _createTextBox: function _createTextBox() {
+      return b("<input>").attr("type", "text").prop("readonly", !!this.readOnly);
+    }
+  }), a.fields.text = a.TextField = c;
+}(jsGrid, jQuery), function (a, b, c) {
+  function d(a) {
+    e.call(this, a);
+  }
+
+  var e = a.TextField;
+  d.prototype = new e({
+    sorter: "number",
+    align: "right",
+    readOnly: !1,
+    filterValue: function filterValue() {
+      return this.filterControl.val() ? parseInt(this.filterControl.val() || 0, 10) : c;
+    },
+    insertValue: function insertValue() {
+      return this.insertControl.val() ? parseInt(this.insertControl.val() || 0, 10) : c;
+    },
+    editValue: function editValue() {
+      return this.editControl.val() ? parseInt(this.editControl.val() || 0, 10) : c;
+    },
+    _createTextBox: function _createTextBox() {
+      return b("<input>").attr("type", "number").prop("readonly", !!this.readOnly);
+    }
+  }), a.fields.number = a.NumberField = d;
+}(jsGrid, jQuery), function (a, b) {
+  function c(a) {
+    d.call(this, a);
+  }
+
+  var d = a.TextField;
+  c.prototype = new d({
+    insertTemplate: function insertTemplate() {
+      return this.inserting ? this.insertControl = this._createTextArea() : "";
+    },
+    editTemplate: function editTemplate(a) {
+      if (!this.editing) return this.itemTemplate.apply(this, arguments);
+
+      var b = this.editControl = this._createTextArea();
+
+      return b.val(a), b;
+    },
+    _createTextArea: function _createTextArea() {
+      return b("<textarea>").prop("readonly", !!this.readOnly);
+    }
+  }), a.fields.textarea = a.TextAreaField = c;
+}(jsGrid, jQuery), function (a, b, c) {
+  function d(a) {
+    if (this.items = [], this.selectedIndex = -1, this.valueField = "", this.textField = "", a.valueField && a.items.length) {
+      var b = a.items[0][a.valueField];
+      this.valueType = _typeof(b) === f ? f : g;
+    }
+
+    this.sorter = this.valueType, e.call(this, a);
+  }
+
+  var e = a.NumberField,
+      f = "number",
+      g = "string";
+  d.prototype = new e({
+    align: "center",
+    valueType: f,
+    itemTemplate: function itemTemplate(a) {
+      var d,
+          e = this.items,
+          f = this.valueField,
+          g = this.textField;
+      d = f ? b.grep(e, function (b) {
+        return b[f] === a;
+      })[0] || {} : e[a];
+      var h = g ? d[g] : d;
+      return h === c || null === h ? "" : h;
+    },
+    filterTemplate: function filterTemplate() {
+      if (!this.filtering) return "";
+
+      var a = this._grid,
+          b = this.filterControl = this._createSelect();
+
+      return this.autosearch && b.on("change", function () {
+        a.search();
+      }), b;
+    },
+    insertTemplate: function insertTemplate() {
+      return this.inserting ? this.insertControl = this._createSelect() : "";
+    },
+    editTemplate: function editTemplate(a) {
+      if (!this.editing) return this.itemTemplate.apply(this, arguments);
+
+      var b = this.editControl = this._createSelect();
+
+      return a !== c && b.val(a), b;
+    },
+    filterValue: function filterValue() {
+      var a = this.filterControl.val();
+      return this.valueType === f ? parseInt(a || 0, 10) : a;
+    },
+    insertValue: function insertValue() {
+      var a = this.insertControl.val();
+      return this.valueType === f ? parseInt(a || 0, 10) : a;
+    },
+    editValue: function editValue() {
+      var a = this.editControl.val();
+      return this.valueType === f ? parseInt(a || 0, 10) : a;
+    },
+    _createSelect: function _createSelect() {
+      var a = b("<select>"),
+          c = this.valueField,
+          d = this.textField,
+          e = this.selectedIndex;
+      return b.each(this.items, function (f, g) {
+        var h = c ? g[c] : f,
+            i = d ? g[d] : g,
+            j = b("<option>").attr("value", h).text(i).appendTo(a);
+        j.prop("selected", e === f);
+      }), a.prop("disabled", !!this.readOnly), a;
+    }
+  }), a.fields.select = a.SelectField = d;
+}(jsGrid, jQuery), function (a, b, c) {
+  function d(a) {
+    e.call(this, a);
+  }
+
+  var e = a.Field;
+  d.prototype = new e({
+    sorter: "number",
+    align: "center",
+    autosearch: !0,
+    itemTemplate: function itemTemplate(a) {
+      return this._createCheckbox().prop({
+        checked: a,
+        disabled: !0
+      });
+    },
+    filterTemplate: function filterTemplate() {
+      if (!this.filtering) return "";
+
+      var a = this._grid,
+          c = this.filterControl = this._createCheckbox();
+
+      return c.prop({
+        readOnly: !0,
+        indeterminate: !0
+      }), c.on("click", function () {
+        var a = b(this);
+        a.prop("readOnly") ? a.prop({
+          checked: !1,
+          readOnly: !1
+        }) : a.prop("checked") || a.prop({
+          readOnly: !0,
+          indeterminate: !0
+        });
+      }), this.autosearch && c.on("click", function () {
+        a.search();
+      }), c;
+    },
+    insertTemplate: function insertTemplate() {
+      return this.inserting ? this.insertControl = this._createCheckbox() : "";
+    },
+    editTemplate: function editTemplate(a) {
+      if (!this.editing) return this.itemTemplate.apply(this, arguments);
+
+      var b = this.editControl = this._createCheckbox();
+
+      return b.prop("checked", a), b;
+    },
+    filterValue: function filterValue() {
+      return this.filterControl.get(0).indeterminate ? c : this.filterControl.is(":checked");
+    },
+    insertValue: function insertValue() {
+      return this.insertControl.is(":checked");
+    },
+    editValue: function editValue() {
+      return this.editControl.is(":checked");
+    },
+    _createCheckbox: function _createCheckbox() {
+      return b("<input>").attr("type", "checkbox");
+    }
+  }), a.fields.checkbox = a.CheckboxField = d;
+}(jsGrid, jQuery), function (a, b) {
+  function c(a) {
+    d.call(this, a), this._configInitialized = !1;
+  }
+
+  var d = a.Field;
+  c.prototype = new d({
+    css: "jsgrid-control-field",
+    align: "center",
+    width: 50,
+    filtering: !1,
+    inserting: !1,
+    editing: !1,
+    sorting: !1,
+    buttonClass: "jsgrid-button",
+    modeButtonClass: "jsgrid-mode-button",
+    modeOnButtonClass: "jsgrid-mode-on-button",
+    searchModeButtonClass: "jsgrid-search-mode-button",
+    insertModeButtonClass: "jsgrid-insert-mode-button",
+    editButtonClass: "jsgrid-edit-button",
+    deleteButtonClass: "jsgrid-delete-button",
+    searchButtonClass: "jsgrid-search-button",
+    clearFilterButtonClass: "jsgrid-clear-filter-button",
+    insertButtonClass: "jsgrid-insert-button",
+    updateButtonClass: "jsgrid-update-button",
+    cancelEditButtonClass: "jsgrid-cancel-edit-button",
+    searchModeButtonTooltip: "Switch to searching",
+    insertModeButtonTooltip: "Switch to inserting",
+    editButtonTooltip: "Edit",
+    deleteButtonTooltip: "Delete",
+    searchButtonTooltip: "Search",
+    clearFilterButtonTooltip: "Clear filter",
+    insertButtonTooltip: "Insert",
+    updateButtonTooltip: "Update",
+    cancelEditButtonTooltip: "Cancel edit",
+    editButton: !0,
+    deleteButton: !0,
+    clearFilterButton: !0,
+    modeSwitchButton: !0,
+    _initConfig: function _initConfig() {
+      this._hasFiltering = this._grid.filtering, this._hasInserting = this._grid.inserting, this._hasInserting && this.modeSwitchButton && (this._grid.inserting = !1), this._configInitialized = !0;
+    },
+    headerTemplate: function headerTemplate() {
+      this._configInitialized || this._initConfig();
+      var a = this._hasFiltering,
+          b = this._hasInserting;
+      return this.modeSwitchButton && (a || b) ? a && !b ? this._createFilterSwitchButton() : b && !a ? this._createInsertSwitchButton() : this._createModeSwitchButton() : "";
+    },
+    itemTemplate: function itemTemplate(a, c) {
+      var d = b([]);
+      return this.editButton && (d = d.add(this._createEditButton(c))), this.deleteButton && (d = d.add(this._createDeleteButton(c))), d;
+    },
+    filterTemplate: function filterTemplate() {
+      var a = this._createSearchButton();
+
+      return this.clearFilterButton ? a.add(this._createClearFilterButton()) : a;
+    },
+    insertTemplate: function insertTemplate() {
+      return this._createInsertButton();
+    },
+    editTemplate: function editTemplate() {
+      return this._createUpdateButton().add(this._createCancelEditButton());
+    },
+    _createFilterSwitchButton: function _createFilterSwitchButton() {
+      return this._createOnOffSwitchButton("filtering", this.searchModeButtonClass, !0);
+    },
+    _createInsertSwitchButton: function _createInsertSwitchButton() {
+      return this._createOnOffSwitchButton("inserting", this.insertModeButtonClass, !1);
+    },
+    _createOnOffSwitchButton: function _createOnOffSwitchButton(a, c, d) {
+      var e = d,
+          f = b.proxy(function () {
+        g.toggleClass(this.modeOnButtonClass, e);
+      }, this),
+          g = this._createGridButton(this.modeButtonClass + " " + c, "", function (b) {
+        e = !e, b.option(a, e), f();
+      });
+
+      return f(), g;
+    },
+    _createModeSwitchButton: function _createModeSwitchButton() {
+      var a = !1,
+          c = b.proxy(function () {
+        d.attr("title", a ? this.searchModeButtonTooltip : this.insertModeButtonTooltip).toggleClass(this.insertModeButtonClass, !a).toggleClass(this.searchModeButtonClass, a);
+      }, this),
+          d = this._createGridButton(this.modeButtonClass, "", function (b) {
+        a = !a, b.option("inserting", a), b.option("filtering", !a), c();
+      });
+
+      return c(), d;
+    },
+    _createEditButton: function _createEditButton(a) {
+      return this._createGridButton(this.editButtonClass, this.editButtonTooltip, function (b, c) {
+        b.editItem(a), c.stopPropagation();
+      });
+    },
+    _createDeleteButton: function _createDeleteButton(a) {
+      return this._createGridButton(this.deleteButtonClass, this.deleteButtonTooltip, function (b, c) {
+        b.deleteItem(a), c.stopPropagation();
+      });
+    },
+    _createSearchButton: function _createSearchButton() {
+      return this._createGridButton(this.searchButtonClass, this.searchButtonTooltip, function (a) {
+        a.search();
+      });
+    },
+    _createClearFilterButton: function _createClearFilterButton() {
+      return this._createGridButton(this.clearFilterButtonClass, this.clearFilterButtonTooltip, function (a) {
+        a.clearFilter();
+      });
+    },
+    _createInsertButton: function _createInsertButton() {
+      return this._createGridButton(this.insertButtonClass, this.insertButtonTooltip, function (a) {
+        a.insertItem().done(function () {
+          a.clearInsert();
+        });
+      });
+    },
+    _createUpdateButton: function _createUpdateButton() {
+      return this._createGridButton(this.updateButtonClass, this.updateButtonTooltip, function (a, b) {
+        a.updateItem(), b.stopPropagation();
+      });
+    },
+    _createCancelEditButton: function _createCancelEditButton() {
+      return this._createGridButton(this.cancelEditButtonClass, this.cancelEditButtonTooltip, function (a, b) {
+        a.cancelEdit(), b.stopPropagation();
+      });
+    },
+    _createGridButton: function _createGridButton(a, c, d) {
+      var e = this._grid;
+      return b("<input>").addClass(this.buttonClass).addClass(a).attr({
+        type: "button",
+        title: c
+      }).on("click", function (a) {
+        d(e, a);
+      });
+    },
+    editValue: function editValue() {
+      return "";
+    }
+  }), a.fields.control = a.ControlField = c;
+}(jsGrid, jQuery);
+
+/***/ }),
+
+/***/ "./resources/js/pages/dashboard.js":
+/*!*****************************************!*\
+  !*** ./resources/js/pages/dashboard.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/*
+ * Author: Abdullah A Almsaeed
+ * Date: 4 Jan 2014
+ * Description:
+ *      This is a demo file used only for the main dashboard (index.html)
+ **/
+$(function () {
+  'use strict'; // Make the dashboard widgets sortable Using jquery UI
+
+  $('.connectedSortable').sortable({
+    placeholder: 'sort-highlight',
+    connectWith: '.connectedSortable',
+    handle: '.card-header, .nav-tabs',
+    forcePlaceholderSize: true,
+    zIndex: 999999
+  });
+  $('.connectedSortable .card-header, .connectedSortable .nav-tabs-custom').css('cursor', 'move'); // jQuery UI sortable for the todo list
+
+  $('.todo-list').sortable({
+    placeholder: 'sort-highlight',
+    handle: '.handle',
+    forcePlaceholderSize: true,
+    zIndex: 999999
+  }); // bootstrap WYSIHTML5 - text editor
+
+  $('.textarea').summernote();
+  $('.daterange').daterangepicker({
+    ranges: {
+      'Today': [moment(), moment()],
+      'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+      'This Month': [moment().startOf('month'), moment().endOf('month')],
+      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    },
+    startDate: moment().subtract(29, 'days'),
+    endDate: moment()
+  }, function (start, end) {
+    window.alert('You chose: ' + start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+  });
+  /* jQueryKnob */
+
+  $('.knob').knob(); // jvectormap data
+
+  var visitorsData = {
+    'US': 398,
+    //USA
+    'SA': 400,
+    //Saudi Arabia
+    'CA': 1000,
+    //Canada
+    'DE': 500,
+    //Germany
+    'FR': 760,
+    //France
+    'CN': 300,
+    //China
+    'AU': 700,
+    //Australia
+    'BR': 600,
+    //Brazil
+    'IN': 800,
+    //India
+    'GB': 320,
+    //Great Britain
+    'RU': 3000 //Russia
+
+  }; // World map by jvectormap
+
+  $('#world-map').vectorMap({
+    map: 'usa_en',
+    backgroundColor: 'transparent',
+    regionStyle: {
+      initial: {
+        fill: 'rgba(255, 255, 255, 0.7)',
+        'fill-opacity': 1,
+        stroke: 'rgba(0,0,0,.2)',
+        'stroke-width': 1,
+        'stroke-opacity': 1
+      }
+    },
+    series: {
+      regions: [{
+        values: visitorsData,
+        scale: ['#ffffff', '#0154ad'],
+        normalizeFunction: 'polynomial'
+      }]
+    },
+    onRegionLabelShow: function onRegionLabelShow(e, el, code) {
+      if (typeof visitorsData[code] != 'undefined') el.html(el.html() + ': ' + visitorsData[code] + ' new visitors');
+    }
+  }); // Sparkline charts
+
+  var sparkline1 = new Sparkline($("#sparkline-1")[0], {
+    width: 80,
+    height: 50,
+    lineColor: '#92c1dc',
+    endColor: '#ebf4f9'
+  });
+  var sparkline2 = new Sparkline($("#sparkline-2")[0], {
+    width: 80,
+    height: 50,
+    lineColor: '#92c1dc',
+    endColor: '#ebf4f9'
+  });
+  var sparkline3 = new Sparkline($("#sparkline-3")[0], {
+    width: 80,
+    height: 50,
+    lineColor: '#92c1dc',
+    endColor: '#ebf4f9'
+  });
+  sparkline1.draw([1000, 1200, 920, 927, 931, 1027, 819, 930, 1021]);
+  sparkline2.draw([515, 519, 520, 522, 652, 810, 370, 627, 319, 630, 921]);
+  sparkline3.draw([15, 19, 20, 22, 33, 27, 31, 27, 19, 30, 21]); // The Calender
+
+  $('#calendar').datetimepicker({
+    format: 'L',
+    inline: true
+  }); // SLIMSCROLL FOR CHAT WIDGET
+
+  $('#chat-box').overlayScrollbars({
+    height: '250px'
+  });
+  /* Chart.js Charts */
+  // Sales chart
+
+  var salesChartCanvas = document.getElementById('revenue-chart-canvas').getContext('2d'); //$('#revenue-chart').get(0).getContext('2d');
+
+  var salesChartData = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [{
+      label: 'Digital Goods',
+      backgroundColor: 'rgba(60,141,188,0.9)',
+      borderColor: 'rgba(60,141,188,0.8)',
+      pointRadius: false,
+      pointColor: '#3b8bba',
+      pointStrokeColor: 'rgba(60,141,188,1)',
+      pointHighlightFill: '#fff',
+      pointHighlightStroke: 'rgba(60,141,188,1)',
+      data: [28, 48, 40, 19, 86, 27, 90]
+    }, {
+      label: 'Electronics',
+      backgroundColor: 'rgba(210, 214, 222, 1)',
+      borderColor: 'rgba(210, 214, 222, 1)',
+      pointRadius: false,
+      pointColor: 'rgba(210, 214, 222, 1)',
+      pointStrokeColor: '#c1c7d1',
+      pointHighlightFill: '#fff',
+      pointHighlightStroke: 'rgba(220,220,220,1)',
+      data: [65, 59, 80, 81, 56, 55, 40]
+    }]
+  };
+  var salesChartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    legend: {
+      display: false
+    },
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false
+        }
+      }],
+      yAxes: [{
+        gridLines: {
+          display: false
+        }
+      }]
+    }
+  }; // This will get the first returned node in the jQuery collection.
+
+  var salesChart = new Chart(salesChartCanvas, {
+    type: 'line',
+    data: salesChartData,
+    options: salesChartOptions
+  }); // Donut Chart
+
+  var pieChartCanvas = $('#sales-chart-canvas').get(0).getContext('2d');
+  var pieData = {
+    labels: ['Instore Sales', 'Download Sales', 'Mail-Order Sales'],
+    datasets: [{
+      data: [30, 12, 20],
+      backgroundColor: ['#f56954', '#00a65a', '#f39c12']
+    }]
+  };
+  var pieOptions = {
+    legend: {
+      display: false
+    },
+    maintainAspectRatio: false,
+    responsive: true
+  }; //Create pie or douhnut chart
+  // You can switch between pie and douhnut using the method below.
+
+  var pieChart = new Chart(pieChartCanvas, {
+    type: 'doughnut',
+    data: pieData,
+    options: pieOptions
+  }); // Sales graph chart
+
+  var salesGraphChartCanvas = $('#line-chart').get(0).getContext('2d'); //$('#revenue-chart').get(0).getContext('2d');
+
+  var salesGraphChartData = {
+    labels: ['2011 Q1', '2011 Q2', '2011 Q3', '2011 Q4', '2012 Q1', '2012 Q2', '2012 Q3', '2012 Q4', '2013 Q1', '2013 Q2'],
+    datasets: [{
+      label: 'Digital Goods',
+      fill: false,
+      borderWidth: 2,
+      lineTension: 0,
+      spanGaps: true,
+      borderColor: '#efefef',
+      pointRadius: 3,
+      pointHoverRadius: 7,
+      pointColor: '#efefef',
+      pointBackgroundColor: '#efefef',
+      data: [2666, 2778, 4912, 3767, 6810, 5670, 4820, 15073, 10687, 8432]
+    }]
+  };
+  var salesGraphChartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    legend: {
+      display: false
+    },
+    scales: {
+      xAxes: [{
+        ticks: {
+          fontColor: '#efefef'
+        },
+        gridLines: {
+          display: false,
+          color: '#efefef',
+          drawBorder: false
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          stepSize: 5000,
+          fontColor: '#efefef'
+        },
+        gridLines: {
+          display: true,
+          color: '#efefef',
+          drawBorder: false
+        }
+      }]
+    }
+  }; // This will get the first returned node in the jQuery collection.
+
+  var salesGraphChart = new Chart(salesGraphChartCanvas, {
+    type: 'line',
+    data: salesGraphChartData,
+    options: salesGraphChartOptions
+  });
+});
+
+/***/ }),
+
+/***/ "./resources/js/pages/dashboard2.js":
+/*!******************************************!*\
+  !*** ./resources/js/pages/dashboard2.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(function () {
+  'use strict';
+  /* ChartJS
+   * -------
+   * Here we will create a few charts using ChartJS
+   */
+  //-----------------------
+  //- MONTHLY SALES CHART -
+  //-----------------------
+  // Get context with jQuery - using jQuery's .get() method.
+
+  var salesChartCanvas = $('#salesChart').get(0).getContext('2d');
+  var salesChartData = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [{
+      label: 'Digital Goods',
+      backgroundColor: 'rgba(60,141,188,0.9)',
+      borderColor: 'rgba(60,141,188,0.8)',
+      pointRadius: false,
+      pointColor: '#3b8bba',
+      pointStrokeColor: 'rgba(60,141,188,1)',
+      pointHighlightFill: '#fff',
+      pointHighlightStroke: 'rgba(60,141,188,1)',
+      data: [28, 48, 40, 19, 86, 27, 90]
+    }, {
+      label: 'Electronics',
+      backgroundColor: 'rgba(210, 214, 222, 1)',
+      borderColor: 'rgba(210, 214, 222, 1)',
+      pointRadius: false,
+      pointColor: 'rgba(210, 214, 222, 1)',
+      pointStrokeColor: '#c1c7d1',
+      pointHighlightFill: '#fff',
+      pointHighlightStroke: 'rgba(220,220,220,1)',
+      data: [65, 59, 80, 81, 56, 55, 40]
+    }]
+  };
+  var salesChartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    legend: {
+      display: false
+    },
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false
+        }
+      }],
+      yAxes: [{
+        gridLines: {
+          display: false
+        }
+      }]
+    }
+  }; // This will get the first returned node in the jQuery collection.
+
+  var salesChart = new Chart(salesChartCanvas, {
+    type: 'line',
+    data: salesChartData,
+    options: salesChartOptions
+  }); //---------------------------
+  //- END MONTHLY SALES CHART -
+  //---------------------------
+  //-------------
+  //- PIE CHART -
+  //-------------
+  // Get context with jQuery - using jQuery's .get() method.
+
+  var pieChartCanvas = $('#pieChart').get(0).getContext('2d');
+  var pieData = {
+    labels: ['Chrome', 'IE', 'FireFox', 'Safari', 'Opera', 'Navigator'],
+    datasets: [{
+      data: [700, 500, 400, 600, 300, 100],
+      backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de']
+    }]
+  };
+  var pieOptions = {
+    legend: {
+      display: false
+    }
+  }; //Create pie or douhnut chart
+  // You can switch between pie and douhnut using the method below.
+
+  var pieChart = new Chart(pieChartCanvas, {
+    type: 'doughnut',
+    data: pieData,
+    options: pieOptions
+  }); //-----------------
+  //- END PIE CHART -
+  //-----------------
+
+  /* jVector Maps
+   * ------------
+   * Create a world map with markers
+   */
+
+  $('#world-map-markers').mapael({
+    map: {
+      name: "usa_states",
+      zoom: {
+        enabled: true,
+        maxLevel: 10
+      }
+    }
+  }); // $('#world-map-markers').vectorMap({
+  //   map              : 'world_en',
+  //   normalizeFunction: 'polynomial',
+  //   hoverOpacity     : 0.7,
+  //   hoverColor       : false,
+  //   backgroundColor  : 'transparent',
+  //   regionStyle      : {
+  //     initial      : {
+  //       fill            : 'rgba(210, 214, 222, 1)',
+  //       'fill-opacity'  : 1,
+  //       stroke          : 'none',
+  //       'stroke-width'  : 0,
+  //       'stroke-opacity': 1
+  //     },
+  //     hover        : {
+  //       'fill-opacity': 0.7,
+  //       cursor        : 'pointer'
+  //     },
+  //     selected     : {
+  //       fill: 'yellow'
+  //     },
+  //     selectedHover: {}
+  //   },
+  //   markerStyle      : {
+  //     initial: {
+  //       fill  : '#00a65a',
+  //       stroke: '#111'
+  //     }
+  //   },
+  //   markers          : [
+  //     {
+  //       latLng: [41.90, 12.45],
+  //       name  : 'Vatican City'
+  //     },
+  //     {
+  //       latLng: [43.73, 7.41],
+  //       name  : 'Monaco'
+  //     },
+  //     {
+  //       latLng: [-0.52, 166.93],
+  //       name  : 'Nauru'
+  //     },
+  //     {
+  //       latLng: [-8.51, 179.21],
+  //       name  : 'Tuvalu'
+  //     },
+  //     {
+  //       latLng: [43.93, 12.46],
+  //       name  : 'San Marino'
+  //     },
+  //     {
+  //       latLng: [47.14, 9.52],
+  //       name  : 'Liechtenstein'
+  //     },
+  //     {
+  //       latLng: [7.11, 171.06],
+  //       name  : 'Marshall Islands'
+  //     },
+  //     {
+  //       latLng: [17.3, -62.73],
+  //       name  : 'Saint Kitts and Nevis'
+  //     },
+  //     {
+  //       latLng: [3.2, 73.22],
+  //       name  : 'Maldives'
+  //     },
+  //     {
+  //       latLng: [35.88, 14.5],
+  //       name  : 'Malta'
+  //     },
+  //     {
+  //       latLng: [12.05, -61.75],
+  //       name  : 'Grenada'
+  //     },
+  //     {
+  //       latLng: [13.16, -61.23],
+  //       name  : 'Saint Vincent and the Grenadines'
+  //     },
+  //     {
+  //       latLng: [13.16, -59.55],
+  //       name  : 'Barbados'
+  //     },
+  //     {
+  //       latLng: [17.11, -61.85],
+  //       name  : 'Antigua and Barbuda'
+  //     },
+  //     {
+  //       latLng: [-4.61, 55.45],
+  //       name  : 'Seychelles'
+  //     },
+  //     {
+  //       latLng: [7.35, 134.46],
+  //       name  : 'Palau'
+  //     },
+  //     {
+  //       latLng: [42.5, 1.51],
+  //       name  : 'Andorra'
+  //     },
+  //     {
+  //       latLng: [14.01, -60.98],
+  //       name  : 'Saint Lucia'
+  //     },
+  //     {
+  //       latLng: [6.91, 158.18],
+  //       name  : 'Federated States of Micronesia'
+  //     },
+  //     {
+  //       latLng: [1.3, 103.8],
+  //       name  : 'Singapore'
+  //     },
+  //     {
+  //       latLng: [1.46, 173.03],
+  //       name  : 'Kiribati'
+  //     },
+  //     {
+  //       latLng: [-21.13, -175.2],
+  //       name  : 'Tonga'
+  //     },
+  //     {
+  //       latLng: [15.3, -61.38],
+  //       name  : 'Dominica'
+  //     },
+  //     {
+  //       latLng: [-20.2, 57.5],
+  //       name  : 'Mauritius'
+  //     },
+  //     {
+  //       latLng: [26.02, 50.55],
+  //       name  : 'Bahrain'
+  //     },
+  //     {
+  //       latLng: [0.33, 6.73],
+  //       name  : 'São Tomé and Príncipe'
+  //     }
+  //   ]
+  // })
+});
+
+/***/ }),
+
+/***/ "./resources/js/pages/dashboard3.js":
+/*!******************************************!*\
+  !*** ./resources/js/pages/dashboard3.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(function () {
+  'use strict';
+
+  var ticksStyle = {
+    fontColor: '#495057',
+    fontStyle: 'bold'
+  };
+  var mode = 'index';
+  var intersect = true;
+  var $salesChart = $('#sales-chart');
+  var salesChart = new Chart($salesChart, {
+    type: 'bar',
+    data: {
+      labels: ['JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+      datasets: [{
+        backgroundColor: '#007bff',
+        borderColor: '#007bff',
+        data: [1000, 2000, 3000, 2500, 2700, 2500, 3000]
+      }, {
+        backgroundColor: '#ced4da',
+        borderColor: '#ced4da',
+        data: [700, 1700, 2700, 2000, 1800, 1500, 2000]
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      tooltips: {
+        mode: mode,
+        intersect: intersect
+      },
+      hover: {
+        mode: mode,
+        intersect: intersect
+      },
+      legend: {
+        display: false
+      },
+      scales: {
+        yAxes: [{
+          // display: false,
+          gridLines: {
+            display: true,
+            lineWidth: '4px',
+            color: 'rgba(0, 0, 0, .2)',
+            zeroLineColor: 'transparent'
+          },
+          ticks: $.extend({
+            beginAtZero: true,
+            // Include a dollar sign in the ticks
+            callback: function callback(value, index, values) {
+              if (value >= 1000) {
+                value /= 1000;
+                value += 'k';
+              }
+
+              return '$' + value;
+            }
+          }, ticksStyle)
+        }],
+        xAxes: [{
+          display: true,
+          gridLines: {
+            display: false
+          },
+          ticks: ticksStyle
+        }]
+      }
+    }
+  });
+  var $visitorsChart = $('#visitors-chart');
+  var visitorsChart = new Chart($visitorsChart, {
+    data: {
+      labels: ['18th', '20th', '22nd', '24th', '26th', '28th', '30th'],
+      datasets: [{
+        type: 'line',
+        data: [100, 120, 170, 167, 180, 177, 160],
+        backgroundColor: 'transparent',
+        borderColor: '#007bff',
+        pointBorderColor: '#007bff',
+        pointBackgroundColor: '#007bff',
+        fill: false // pointHoverBackgroundColor: '#007bff',
+        // pointHoverBorderColor    : '#007bff'
+
+      }, {
+        type: 'line',
+        data: [60, 80, 70, 67, 80, 77, 100],
+        backgroundColor: 'tansparent',
+        borderColor: '#ced4da',
+        pointBorderColor: '#ced4da',
+        pointBackgroundColor: '#ced4da',
+        fill: false // pointHoverBackgroundColor: '#ced4da',
+        // pointHoverBorderColor    : '#ced4da'
+
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      tooltips: {
+        mode: mode,
+        intersect: intersect
+      },
+      hover: {
+        mode: mode,
+        intersect: intersect
+      },
+      legend: {
+        display: false
+      },
+      scales: {
+        yAxes: [{
+          // display: false,
+          gridLines: {
+            display: true,
+            lineWidth: '4px',
+            color: 'rgba(0, 0, 0, .2)',
+            zeroLineColor: 'transparent'
+          },
+          ticks: $.extend({
+            beginAtZero: true,
+            suggestedMax: 200
+          }, ticksStyle)
+        }],
+        xAxes: [{
+          display: true,
+          gridLines: {
+            display: false
+          },
+          ticks: ticksStyle
+        }]
+      }
+    }
+  });
+});
 
 /***/ }),
 

@@ -32,9 +32,15 @@ Route::get('Usuario',function(){
 
 
 Route::get('Prueba', function(){
-    return view('help.layouts.app');
+    return view('management.ticket.addTicketG');
 });
 
+Route::get('Prueba1', function(){
+    return view('management.ticket.historicalTickets');
+});
+Route::get('Dashboard', function(){
+    return view('dashboard.index');
+});
 
 
 Route::middleware('auth')->group(function(){
@@ -114,10 +120,12 @@ Route::middleware('auth')->group(function(){
         //La siguiente es para gestión de tickets
 
         Route::get('/Tickets', 'TicketController@index')->name('ticket.index');
-        Route::post('/Tickets/Agregar','TicketController@create')->name('ticket.create');
-        Route::get('/Tickets/VerActividad/{idActividad}', 'TicketController@show')->name('ticket.show');
-        Route::post('/Tickets/EditarActividad/{id}','TicketController@update')->name('ticket.update');
-        Route::post('/Tickets/EliminarActividad/{id}','TicketController@destroy')->name('ticket.destroy');
+        Route::post('/Tickets/Crear','TicketController@create')->name('ticket.create');
+        Route::post('/Tickets/Agregar','TicketController@storage')->name('ticket.storage');
+        Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@show')->name('ticket.show');
+        Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@edite')->name('ticket.edite');
+        Route::post('/Tickets/EditarTicket/{ticket}','TicketController@update')->name('ticket.update');
+        Route::post('/Tickets/EliminarTicket/{ticket}','TicketController@destroy')->name('ticket.destroy');
         
     });
 
@@ -142,20 +150,31 @@ Route::middleware('auth')->group(function(){
 
 
         //La siguiente sección es para la gestión de subáreas 
-        Route::get('/SubAreas', 'SubAreaController@index')->name('subarea.index');
+
+        Route::get('/SubAreas/{department}', 'SubareaController@index')->name('subarea.index');
         Route::post('/SubAreas/Agregar','SubAreaController@create')->name('subarea.create');
-        Route::get('/SubAreas/VerSubArea/{idSubArea}', 'SubAreaController@show')->name('subarea.show');
-        Route::post('/SubAreas/EditarSubArea/{id}','SubAreaController@update')->name('subarea.update');
-        Route::post('/SubAreas/EliminarSubArea/{id}','SubAreaController@destroy')->name('subarea.destroy');
+        Route::get('/SubAreas/VerSubArea/{subarea?}', 'SubareaController@show')->name('subarea.show');
+        Route::post('/SubAreas/EditarSubArea/{subarea}','SubareaController@update')->name('subarea.update');
+        Route::post('/SubAreas/EliminarSubArea/{subarea}','SubareaController@destroy')->name('subarea.destroy');
 
         //La siguiente sección es para la gestión de actividades
-        Route::get('/Actividades', 'ActivityController@index')->name('activity.index');
+        Route::get('/Actividades/{subarea}', 'ActivityController@index')->name('activity.index');
         Route::post('/Actividades/Agregar','ActivityController@create')->name('activity.create');
         Route::get('/Actividades/VerActividad/{activity}', 'ActivityController@show')->name('activity.show');
         Route::post('/Actividades/EditarActividad/{activity}','ActivityController@update')->name('activity.update');
         Route::post('/Actividades/EliminarActividad/{activity}','ActivityController@destroy')->name('activity.destroy');
 
 
+           //La siguiente es para gestión de tickets
+
+           Route::get('/Tickets/{department?}', 'TicketController@index')->name('ticket.index');
+           Route::get('/Tickets/{department?}/{noAsignados?}', 'TicketController@index')->name('ticket.index');
+           Route::post('/Tickets/Crear','TicketController@create')->name('ticket.create');
+           Route::post('/Tickets/Agregar','TicketController@storage')->name('ticket.storage');
+           Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@show')->name('ticket.show');
+           Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@edite')->name('ticket.edite');
+           Route::post('/Tickets/EditarTicket/{ticket}','TicketController@update')->name('ticket.update');
+           Route::post('/Tickets/EliminarTicket/{ticket}','TicketController@destroy')->name('ticket.destroy');
 
 
         //
@@ -176,11 +195,13 @@ Route::middleware('auth')->group(function(){
 
         //La siguiente es para gestión de tickets
 
-        Route::get('/Tickets', 'TicketController@index')->name('ticket.index');
-        Route::post('/Tickets/Agregar','TicketController@create')->name('ticket.create');
-        Route::get('/Tickets/VerActividad/{idActividad}', 'TicketController@show')->name('ticket.show');
-        Route::post('/Tickets/EditarActividad/{id}','TicketController@update')->name('ticket.update');
-        Route::post('/Tickets/EliminarActividad/{id}','TicketController@destroy')->name('ticket.destroy');
+        Route::get('/Tickets/{department}', 'TicketController@index')->name('ticket.index');
+        Route::post('/Tickets/Crear','TicketController@create')->name('ticket.create');
+        Route::post('/Tickets/Agregar','TicketController@storage')->name('ticket.storage');
+        Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@show')->name('ticket.show');
+        Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@edite')->name('ticket.edite');
+        Route::post('/Tickets/EditarTicket/{ticket}','TicketController@update')->name('ticket.update');
+        Route::post('/Tickets/EliminarTicket/{ticket}','TicketController@destroy')->name('ticket.destroy');
 
 
         //
@@ -194,15 +215,17 @@ Route::middleware('auth')->group(function(){
         Route::get('','UserController@homeAgent')->name('home');
         //La siguiente es para gestión de tickets
 
-        Route::get('/Tickets', 'TicketController@index')->name('ticket.index');
-        Route::post('/Tickets/Agregar','TicketController@create')->name('ticket.create');
-        Route::get('/Tickets/VerActividad/{idActividad}', 'TicketController@show')->name('ticket.show');
-        Route::post('/Tickets/EditarActividad/{id}','TicketController@update')->name('ticket.update');
-        Route::post('/Tickets/EliminarActividad/{id}','TicketController@destroy')->name('ticket.destroy');
+        Route::get('/Tickets/{department}/{subarea}', 'TicketController@index')->name('ticket.index');
+        Route::post('/Tickets/Crear','TicketController@create')->name('ticket.create');
+        Route::post('/Tickets/Agregar','TicketController@storage')->name('ticket.storage');
+        Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@show')->name('ticket.show');
+        Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@edite')->name('ticket.edite');
+        Route::post('/Tickets/EditarTicket/{ticket}','TicketController@update')->name('ticket.update');
+        Route::post('/Tickets/EliminarTicket/{ticket}','TicketController@destroy')->name('ticket.destroy');
     });
 
 
-    Route::prefix('Agente')->name('agent.')->group(function()
+    Route::prefix('Usuario')->name('user.')->group(function()
     {
 
     });

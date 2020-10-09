@@ -35,17 +35,16 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
  * @property Department $department
  * @property Role $role
  * @property Collection|Assignment[] $assignments
- * @property Collection|Substitution[] $substitutions
  * @property Collection|Ticket[] $tickets
  *
  * @package App\Models
  */
 class User extends Authenticatable
 {
+	use Notifiable;
 	protected $table = 'users';
 	protected $primaryKey = 'idUser';
 	public $timestamps = false;
-	use Notifiable;
 
 	protected $casts = [
 		'idRole' => 'int',
@@ -94,17 +93,12 @@ class User extends Authenticatable
 		return $this->hasMany(Assignment::class, 'idUser');
 	}
 
-	public function substitutions()
-	{
-		return $this->hasMany(Substitution::class, 'idYes');
-	}
-
 	public function tickets()
 	{
 		return $this->hasMany(Ticket::class, 'idTechnician');
 	}
 
-	
+
 
 
 	public function hasRole($role){
@@ -144,33 +138,6 @@ class User extends Authenticatable
 	public function isAssistant()
 	{
 		if (Auth()->user()->hasRole("Asistente")) {
-			return true;
-		 }
-		return false;
-	}
-
-
-	public function isAgent()
-	{
-		if (Auth()->user()->hasRole("Agente")) {
-			return true;
-		 }
-		return false;
-	}
-
-
-	public function isUser()
-	{
-		if (Auth()->user()->hasRole("Usuario")) {
-			return true;
-		 }
-		return false;
-	}
-
-
-	public function isAGuest()
-	{
-		if (Auth()->user()->hasRole("Invitado")) {
 			return true;
 		 }
 		return false;

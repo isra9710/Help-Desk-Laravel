@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class Status
  * 
  * @property int $idStatus
- * @property string $nameStatus
+ * @property string $statusName
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
@@ -28,7 +28,7 @@ class Status extends Model
 	protected $primaryKey = 'idStatus';
 
 	protected $fillable = [
-		'nameStatus'
+		'statusName'
 	];
 
 	public function tickets()
