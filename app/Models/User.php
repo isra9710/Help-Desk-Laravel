@@ -142,4 +142,22 @@ class User extends Authenticatable
 		 }
 		return false;
 	}
+
+
+	public function isAgent()
+	{
+		if (Auth()->user()->hasRole("Agente")) {
+			return true;
+		 }
+		return false;
+	}
+
+
+	public function isUser()
+	{
+		if (Auth()->user()->hasRole("Usuario")) {
+			return true;
+		 }
+		return false;
+	}
 }

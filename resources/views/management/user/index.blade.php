@@ -1,10 +1,11 @@
 @extends('layouts.main')
 @if($idRole==2)
     @section('title', 'Coordinadores')
+
 @elseif($idRole==3)
-    @section('title', 'Agentes')
-@elseif($idRole==4)
     @section('title', 'Asistentes')
+@elseif($idRole==4)
+    @section('title', 'Agentes')
 @elseif($idRole==5)
     @section('title','Usuarios')
 @elseif($idRole==6)
@@ -19,7 +20,7 @@
 @section('content')
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-   <!-- <div class="container mt-5">
+    <!--<div class="container mt-5">
         <h2 class="text-center alert alert-danger">Gestión Empleados</h2>
     </div>-->
     <div class="row">
@@ -27,16 +28,16 @@
             @if($idRole==2)
                 <h4 class="text-center alert alert-info ">Agregar nuevo coordinador</h4>
             @elseif($idRole==3)
-                <h4 class="text-center alert alert-info ">Agregar nuevo agente</h4>
+                <h4 class="text-center alert alert-info ">Agregar nuevo  asistente</h4>
             @elseif($idRole==4)
-                <h4 class="text-center alert alert-info ">Agregar nuevo asistente</h4>
+                <h4 class="text-center alert alert-info ">Agregar nuevo agente</h4>
             @else
                 <h4 class="text-center alert alert-info ">Agregar nuevo usuario</h4>
             @endif
             @if(auth()->user()->isAdministrator())
                 <form action="{{route('administrator.user.create')}}" method="POST">
             @elseif(auth()->user()->isCoordinator())
-                <form action="{{route('coordinator.user.create')}}" method="POST">   
+                <form action="{{route('coordinator.user.create')}}" method="POST">
             @else
                 <form action="{{route('assistant.user.create')}}" method="POST">
             @endif
@@ -56,7 +57,7 @@
                     <input type="email" class="form-control" required name="email">
                 <br><br>
 
-                    
+
                     Extensión telefónica
                     <input type="text" class="form-control" required name="extension">
                     <br><br>
@@ -70,18 +71,19 @@
             </form>
         </div>
 
+
         <div class="col-sm-7 offset-1">
 
 
-            
+
             @if($idRole==2)
-                 <h4 class="text-center alert alert-info ">Agregar nuevo coordinador</h4>
+                 <h4 class="text-center alert alert-info ">Coordinadores registrados</h4>
             @elseif($idRole==3)
-                <h4 class="text-center alert alert-info ">Agregar nuevo asistente</h4>
+                <h4 class="text-center alert alert-info ">Asistentes registrados</h4>
             @elseif($idRole==4)
-                <h4 class="text-center alert alert-info ">Agregar nuevo agente</h4>
+                <h4 class="text-center alert alert-info ">Agentes registrados</h4>
             @else
-                <h4 class="text-center alert alert-info ">Agregar nuevo usuario</h4>
+                <h4 class="text-center alert alert-info ">Usuarios registrados</h4>
             @endif
 
 
@@ -113,7 +115,7 @@
                                        <!-- <form action="{{--route('administrator.user.show',$user->idUser)--}}" method="POST">-->
                                 @else
                                     <a href="{{route('coordinator.user.show', ['user'=>$user])}}" class="btn
-                                        btn-warning btn-sm">Editar</a>   
+                                        btn-warning btn-sm">Editar</a>
                                        <!-- <form action="{{--route('coordinator.user.show', $user->idUser)--}}" method="POST">-->
                                 @endif
                                 <!--<input type="submit"  class="btn btn-warning btn-sm" value="Editar">-->
@@ -126,9 +128,9 @@
                                     <form action="{{route('coordinator.user.destroy', ['user'=>$user])}}" method="POST">
                                 @endif
                                 {{ csrf_field() }}
-                                    <input type="submit" onclick="return confirm('¿Seguro que desa borrar?');" class="btn btn-danger btn-sm" value="Eliminar">
+                                    <input type="submit" onclick="return confirm('¿Seguro que desa desactivar usuario?');" class="btn btn-danger btn-sm" value="Desactivar">
                                 </form>
-                            </td>
+                            <td>
                         </tr>
                     @endforeach
                     </tbody>

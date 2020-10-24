@@ -70,11 +70,7 @@
           <!-- /.col -->
         </div>
 
-        @if (Route::has('password.request'))
-        <p class="mb-1">
-          <a href="{{ route('password.request') }}">Recuper contraseña</a>
-        </p>
-        @endif
+       
         @if (Route::has('register'))
         <p class="mb-0">
           <a href="{{ route('register') }}" class="text-center">Registrarse</a>

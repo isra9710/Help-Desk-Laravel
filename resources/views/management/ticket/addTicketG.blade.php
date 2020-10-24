@@ -8,7 +8,7 @@
 
 @section('content')
 <div class="col-sm-12 offset-0">
-  <h4 class="text-center alert alert-info ">Agregar nueva subárea para {{--$department->departmentName--}}</h4>
+<h4 class="text-center alert alert-info ">Registra un ticket para alguien más</h4>
   <form action="{{--route('administrator.subarea.create',['department'=>$department])--}}" method="POST">
   {{ csrf_field() }}
 

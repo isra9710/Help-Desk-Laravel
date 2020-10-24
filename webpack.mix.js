@@ -17,14 +17,6 @@ En este archivo se están compilando todos los archivos para usar en la parte de
 mix
     .styles([
         'resources/vendor/fontawesome-free-5.14.0-web/css/all.min.css',
-        'resources/css/jsgrid.min.css',
-        'resources/css/jsgrid-theme.min.css',
-        /*'resources/css/daterangepicker.css',
-        'resources/css/bootstrap-colorpicker.min.css',
-        'resources/css/tempusdominus-bootstrap-4.min.css',
-        'resources/css/select2.min.css',
-        'resources/css/select2-bootstrap4.min.css',
-        'resources/css/bootstrap-duallistbox.min.css',*/
         'resources/vendor/icheck-bootstrap/icheck-bootstrap.min.css',
         'resources/css/adminlte.min.css'
     ], 'public/css/app.css')

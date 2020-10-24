@@ -17,7 +17,7 @@ class StatusSeeder extends Seeder
         $status->statusName ="Abierto";
         $status->save();
         $status = new Status();
-        $status->statusName ="Reapertura";
+        $status->statusName ="En proceso";
         $status->save();
         $status = new Status();
         $status->statusName ="Cancelado";

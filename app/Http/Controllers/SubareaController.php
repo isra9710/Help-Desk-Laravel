@@ -24,6 +24,20 @@ class SubareaController extends Controller
         return view('management.subarea.index',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'subareas'=>$subareas,'department'=>$department]);
     }
 
+
+    public function getSubareas(Request $request)
+    {
+        if($request->ajax()){
+            $subareas = Subarea::where('idDepartment',$request->idDepartment)->get(); 
+            foreach($subareas as $subarea) {
+                $subareasArray[$subarea->idSubarea]=$subarea->subareaName;
+            }
+            return response()->json($subareasArray);
+        }
+        
+        
+    }
+
     /**
      * Show the form for creating a new resource.
      *

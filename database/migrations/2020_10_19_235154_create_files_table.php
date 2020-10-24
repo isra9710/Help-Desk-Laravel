@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDepartmentsTable extends Migration
+class CreateFilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateDepartmentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('departments', function (Blueprint $table) {
-            $table->bigIncrements('idDepartment');
-
-            $table->string('departmentName');
-            $table->string('departmentDescription')->nullable();
+        Schema::create('files', function (Blueprint $table) {
+            $table->bigIncrements('idFile');
+            $table->unsignedBigInteger('idTicket')->nullable();
             $table->timestamps();
-            $table->boolean('active')->default('1');
+            $table->foreign('idTicket')->references('idTicket')->on('tickets')->onDelete('set null');
         });
     }
 
@@ -30,6 +28,6 @@ class CreateDepartmentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('files');
     }
 }

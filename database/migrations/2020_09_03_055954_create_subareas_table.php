@@ -17,7 +17,9 @@ class CreateSubareasTable extends Migration
             $table->bigIncrements('idSubarea');
             $table->string('subareaName');
             $table->unsignedBigInteger('idDepartment')->nullable();
+            $table->boolean('active')->default('1');
             $table->timestamps();
+            $table->string('subareaDescription')->nullable();
             $table->foreign('idDepartment')->references('idDepartment')->on('departments')->onDelete('set null');
         });
     }

@@ -6,6 +6,7 @@ use App\Models\Activity;
 use App\Models\Department;
 use App\Models\Subarea;
 use App\Models\Role;
+use App\Models\Priority;
 use Illuminate\Http\Request;
 
 class ActivityController extends Controller
@@ -23,6 +24,18 @@ class ActivityController extends Controller
         $subareasSideBar = Subarea::all();
         $activities = Activity::where('idSubarea',$subarea->idSubarea)->paginate(3);
         return view('management.activity.index',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'activities'=>$activities,'subarea'=>$subarea]);
+    }
+
+
+    public function getActivities(Request $request)
+    {
+        if ($request->ajax()) {
+            $activities = Activity::where('idSubarea', $request->idSubarea)->get();
+            foreach ($activities as $activity) {
+                $activitiesArray[$activity->idActivity] = $activity->activityName;
+            }
+            return response()->json($activitiesArray);
+        }
     }
 
     /**
@@ -63,7 +76,10 @@ class ActivityController extends Controller
         $departmentsSideBar = Department::all();
         $rolesSideBar = Role::all();
         $subareasSideBar = Subarea::all();
-        return view('management.activity.edit',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subarea'=>$subarea,'activity'=>$activity]);
+        $subareas = Subarea::where('idDepartment',$activity->subarea->department->idDepartment);
+        //dd($activity->subarea->department->idDepartment);
+        $priorities = Priority::all();
+        return view('management.activity.edit',['departmentsSideBar'=>$departmentsSideBar,'subareasSideBar'=>$subareasSideBar,'rolesSideBar'=>$rolesSideBar,'subarea'=>$subarea,'activity'=>$activity,'subareas'=>$subareas,'priorities'=>$priorities]);
     }
 
     /**

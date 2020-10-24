@@ -32,6 +32,16 @@ class Department extends Model
 		'departmentName'
 	];
 
+
+	public function getDepartments()
+    {
+        $departments = Department::get();
+        $departmentsArray['']= 'Selecciona un departamento';
+        foreach($departments as $department){
+            $departmentsArray[$department->idDepartment] = $department->departmentName;
+        }
+        return $departmentsArray;
+    }
 	public function subareas()
 	{
 		return $this->hasMany(Subarea::class, 'idDepartment');

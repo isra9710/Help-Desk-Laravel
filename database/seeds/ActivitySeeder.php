@@ -16,60 +16,70 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Histoclin";
         $activity->idPriority=1;
         $activity->idSubarea =1;
+        $activity->days= 1;
         $activity->save();
 
         $activity = new Activity();
         $activity->activityName ="Scodap";
         $activity->idPriority=2;
         $activity->idSubarea =1;
+        $activity->days= 1;
         $activity->save();
 
         $activity = new Activity();
         $activity->activityName ="NOI";
         $activity->idPriority=3;
         $activity->idSubarea =1;
+        $activity->days= 1;
         $activity->save();
 
         $activity = new Activity();
         $activity->activityName ="Ris";
         $activity->idPriority=2;
         $activity->idSubarea =1;
+        $activity->days= 1;
         $activity->save();
 
         $activity = new Activity();
         $activity->activityName ="Pacs";
         $activity->idPriority=3;
         $activity->idSubarea =1;
+        $activity->days= 1;
         $activity->save();
 
         $activity = new Activity();
         $activity->activityName ="Otros";
         $activity->idPriority=3;
         $activity->idSubarea =1;
+        $activity->days= 1;
         $activity->save();
 
         $activity = new Activity();
         $activity->activityName ="No Breaks";
         $activity->idPriority=1;
         $activity->idSubarea =2;
+        $activity->days= 1;
         $activity->save();
 
         $activity = new Activity();
         $activity->activityName ="Computadora";
         $activity->idPriority=1;
         $activity->idSubarea =2;
+        $activity->days= 1;
         $activity->save();
 
         $activity = new Activity();
         $activity->activityName ="Impresora";
         $activity->idPriority=3;
         $activity->idSubarea =2;
+        $activity->days= 1;
         $activity->save();
 
         $activity = new Activity();
         $activity->activityName ="Solicitud de clave";
         $activity->idPriority=1;
         $activity->idSubarea =3;
+        $activity->days= 1;
         $activity->save();
 
 
@@ -77,6 +87,7 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Revisión de cámaras";
         $activity->idPriority=1;
         $activity->idSubarea =3;
+        $activity->days= 1;
         $activity->save();
 
 
@@ -84,6 +95,7 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Difusión";
         $activity->idPriority=3;
         $activity->idSubarea =3;
+        $activity->days= 1;
         $activity->save();
 
 
@@ -91,6 +103,7 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Alta de correo";
         $activity->idPriority=2;
         $activity->idSubarea =3;
+        $activity->days= 1;
         $activity->save();
 
 
@@ -98,6 +111,7 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Solicitud de capacitación";
         $activity->idPriority=1;
         $activity->idSubarea =3;
+        $activity->days= 1;
         $activity->save();
 
 
@@ -105,6 +119,7 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Desbloqueo de página web";
         $activity->idPriority=2;
         $activity->idSubarea =3;
+        $activity->days= 1;
         $activity->save();
 
 
@@ -112,6 +127,7 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Limpieza del área";
         $activity->idPriority=2;
         $activity->idSubarea =4;
+        $activity->days= 1;
         $activity->save();
 
 
@@ -119,6 +135,7 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Movimiento de mobiliario";
         $activity->idPriority=2;
         $activity->idSubarea =4;
+        $activity->days= 1;
         $activity->save();
 
 
@@ -126,6 +143,7 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Solicitud de Desinfección Patógena y/o Fumigación";
         $activity->idPriority=1;
         $activity->idSubarea =4;
+        $activity->days= 1;
         $activity->save();
 
 
@@ -133,6 +151,7 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Exhaustivo no programado";
         $activity->idPriority=2;
         $activity->idSubarea =4;
+        $activity->days= 1;
         $activity->save();
 
 
@@ -140,6 +159,7 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Revisión de dispensador de agua";
         $activity->idPriority=2;
         $activity->idSubarea =4;
+        $activity->days= 1;
         $activity->save();
 
 
@@ -147,6 +167,7 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Solicitud de acomodo de mobiliario sesión médica y eventos";
         $activity->idPriority=1;
         $activity->idSubarea =4;
+        $activity->days= 1;
         $activity->save();
 
 
@@ -154,6 +175,7 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Mensajería";
         $activity->idPriority=2;
         $activity->idSubarea =5;
+        $activity->days= 1;
         $activity->save();
 
 
@@ -161,6 +183,7 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Ambulancia";
         $activity->idPriority=1;
         $activity->idSubarea =5;
+        $activity->days= 1;
         $activity->save();
 
 
@@ -168,6 +191,7 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Vehículo oficial";
         $activity->idPriority=1;
         $activity->idSubarea =5;
+        $activity->days= 1;
         $activity->save();
 
 
@@ -175,6 +199,7 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Copias";
         $activity->idPriority=3;
         $activity->idSubarea =6;
+        $activity->days= 1;
         $activity->save();
 
 
@@ -183,6 +208,7 @@ class ActivitySeeder extends Seeder
         $activity->activityName ="Engargolados";
         $activity->idPriority=3;
         $activity->idSubarea =6;
+        $activity->days= 1;
         $activity->save();
     }
 }

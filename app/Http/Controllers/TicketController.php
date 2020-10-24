@@ -8,7 +8,8 @@ use App\Models\Subarea;
 use App\Models\Department;
 use App\Models\User;
 use App\Models\Role;
-
+use Carbon\Carbon;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 use Illuminate\Http\Request;
 
@@ -19,60 +20,118 @@ class TicketController extends Controller
      *boolean $noAsignados
      * @return \Illuminate\Http\Response
      */
-    public function index(Department $department=null, Subarea $subarea=null,$noAsignados=null)
+    public function historical(Department $department)
     {
         //
         $subareasSideBar = Subarea::all();
         $departmentsSideBar = Department::all();
         $rolesSideBar = Role::all();
         $tickets = "";
-        /*Si el departamento no es null, significa que se quieren ver
-            los tickets de un departamento en especifico
+    
+        $tickets=Ticket::join('activities','tickets.idActivity', '=', 'activities.idActivity')
+            ->join('subareas','activities.idSubarea', '=', 'subareas.idSubarea')
+            ->join('departments', 'subareas.idDepartment', '=', 'departments.idDepartment')
+            ->select('tickets.*')->where('departments.idDepartment',$department->idDepartment)->where('tickets.startDate','<',Carbon::now()->subDays(30))
+            ->where(function($query){
+                $query->where('idStatus', '=',3)->orWhere('idStatus', '=',4)->orWhere('idStatus', '=',6);})
+            ->paginate(15);
+            
+               
+       
+        $fechaActual = new \DateTime();
+        //dd($fechaActual->format('d-m-Y'));
+        return view ('management.ticket.historicalTickets',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'department'=>$department,'tickets'=>$tickets]);
+    }
+
+
+
+
+
+
+    /**
+     * Display a listing of the resource.
+     *boolean $noAsignados
+     * @return \Illuminate\Http\Response
+     */
+    public function inbox(Department $department=null)
+    {
+        //
+        $subareasSideBar = Subarea::all();
+        $departmentsSideBar = Department::all();
+        $rolesSideBar = Role::all();
+        $tickets = "";
+       /*Se hace un join para saber todos los tickets    
+        en éstos se muestran los tickets abiertos,
+        reabiertos,
+        cerrados(con menos de 1 mes de antigüedad),
+        vencidos(con menos de 1 mes de antigüedad), cancelados.
         */
-        if($department!=NULL)
-        {
-            if($subarea !=NULL)//Si subarea es diferente de null significa que un agente está solicitando ver sus tickets
-            {
-                $tickets = Ticket::with('subareas')->where('idSubarea',$subarea)->paginate(15);
-            }
-            /*Si no asignados es verdadero, significa que se quiere ver
-                los tickets de usuarios que tienen duda acerca de a qué 
-                subárea asignar su ticket
-            */
-            elseif($noAsignados)
-            {
-                $tickets = Ticket::where('idDepartment',($department->idDepartment))->where('doubt',$noAsignados)->paginate(15);
-            }
-        
-            else//De otro modo se quiere ver el historico de un departamento
-            {
-                
-                $tickets=Ticket::join('activities','tickets.idActivity', '=', 'activities.idActivity')
+        $tickets=Ticket::join('activities','tickets.idActivity', '=', 'activities.idActivity')
+        ->join('subareas','activities.idSubarea', '=', 'subareas.idSubarea')
+        ->join('departments', 'subareas.idDepartment', '=', 'departments.idDepartment')
+        ->select('tickets.*')->where('departments.idDepartment',$department->idDepartment)->where('tickets.startDate','>',Carbon::now()->subDays(30))
+        ->where(function($query){
+            $query->orWhere('idStatus', '=',1)->orWhere('idStatus', '=',2)->orWhere('idStatus', '=',4)->orWhere('idStatus', '=',5)->orWhere('idStatus', '=',6)->orWhere('idStatus', '=',7);;
+
+        })->paginate(15);
+        return view ('management.ticket.inboxTickets',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'department'=>$department,'tickets'=>$tickets]);
+    }
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Display a listing of the resource.
+     *boolean $noAsignados
+     * @return \Illuminate\Http\Response
+     */
+    public function notAssigned(Department $department)
+    {
+        //
+        $subareasSideBar = Subarea::all();
+        $departmentsSideBar = Department::all();
+        $rolesSideBar = Role::all();
+        $tickets=Ticket::join('activities','tickets.idActivity', '=', 'activities.idActivity')
                 ->join('subareas','activities.idSubarea', '=', 'subareas.idSubarea')
                 ->join('departments', 'subareas.idDepartment', '=', 'departments.idDepartment')
-                ->select('tickets.*')->where('departments.idDepartment',$department->idDepartment)
-                ->paginate(15);
-                ;
-                //$tickets = Ticket::where('idDepartment',($department->idDepartment))->paginate(15);
-            }
-            
-        }
-        else//De otro modo es un administrador quien quiere ver  el historico de todos los tickets y no se hace un filtro, se le muestran todos
-        {
-            $tickets = Ticket::paginate(15);
-        }
-
-        return view ('management.ticket.historicalTickets',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'tickets'=>$tickets]);
+                ->select('tickets.*')->where('departments.idDepartment',$department->idDepartment)->where('doubt',TRUE)
+                ->where(function($query){
+                    $query->orWhere('idStatus', '=',1)->orWhere('idStatus', '=',2)->orWhere('idStatus', '=',5)->orWhere('idStatus', '=',7);
+                })
+                ->paginate(15);     
+        return view ('management.ticket.notAssignedTickets',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'department'=>$department,'tickets'=>$tickets]);
     }
+
+
+
+
 
     /**
      * Show the form for creating a new resource.
-     *
+     *@param boolean $guest
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($guest=NULL)
     {
         //
+        $subareasSideBar = Subarea::all();
+        $subareas = Subarea::all();
+        $departmentsSideBar = Department::all();
+        $departments = Department::all();
+        $rolesSideBar = Role::all();
+        if($guest){
+            return view('management.ticket.addTicketG',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar]);
+        }
+        else{
+            return view('management.ticket.addTicket',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar]);
+        }
        
     }
 
@@ -85,6 +144,28 @@ class TicketController extends Controller
     public function store(Request $request)
     {
         //
+        $activity = Activity::where('idActivity', $request->idActivity);
+        $ticket = new Ticket();
+        /*
+        Los siguiente datos los obtenemos del formulario de registro ubicado en managment.user.index
+        */
+        if($request->employeeNumber){
+            $ticket->idStaff = $request->employeeNumber;
+        }
+        else{
+            $ticket->idStaff = Auth::user()->idUser;
+        }
+        $ticket->status=1;
+        $ticket->idActivity = $request->idActivity;
+        $ticket->startDate = Carbon::now();
+        $ticket->limitDate = Carbon::now()->subDays($activity->days);
+        $ticket->ticketDescription = $request->description;
+        $ticket->doubt = $request->doubt;
+        if($request->file)
+        {
+            
+        }
+       
     }
 
     /**

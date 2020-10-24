@@ -60,7 +60,7 @@
                                 <form action="{{route('administrator.subarea.destroy', ['department'=>$department,'subarea'=>$subarea])}}"
                                       method="POST" class="d-inline">
                                     {{ csrf_field() }}
-                                    <input type="submit" onclick="return confirm('¿Seguro que desa borrar?');" class="btn btn-danger btn-sm" value="Eliminar">
+                                    <input type="submit" onclick="return confirm('¿Seguro que desa desactivar?');" class="btn btn-danger btn-sm" value="Desactivar">
                                 </form>
                             </td>
                         </tr>

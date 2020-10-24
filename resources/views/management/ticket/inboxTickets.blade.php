@@ -9,7 +9,7 @@
 @section('content')
           
 <div class="col-sm-12 offset-0">
-    <h4 class="text-center aler alert-info">Bandeja de histórico</h4>
+    <h4 class="text-center aler alert-info">Bandeja de entrada</h4>
     @if(count($tickets)>0)
         <table class="table table-hover">
             <thead>
@@ -42,9 +42,9 @@
                     <td></td>
                     <td>
                         
-                    <a href="{{route('administrator.ticket.edite', ['ticket'=>$ticket])}}" class="btn
-                        btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                        <a href="{{route('administrator.ticket.show', ['ticket'=>$ticket])}}" class="btn
+                    <a href="{{--route('administrator.ticket.show', ['ticket'=>$ticket])--}}" class="btn
+                        btn-warning btn-sm">Editar</a>
+                        <a href="{{--route('administrator.ticket.show', ['ticket'=>$ticket])--}}" class="btn
                         btn-primary btn-sm"><i class="fas fa-eye"></i></a>
 
                     </td>
@@ -52,8 +52,7 @@
                         <form action="{{route('administrator.ticket.destroy', ['ticket'=>$ticket])}}"
                             method="POST" class="d-inline">
                             {{ csrf_field() }}
-                           
-                            <input type="submit" onclick="return confirm('¿Seguro que desa borrar?');" class="btn btn-danger btn-sm"  value="X">
+                            <input type="submit" onclick="return confirm('¿Seguro que desa borrar?');" class="btn btn-danger btn-sm" value="X">
                         </form>
                     </td>
                 </tr>

@@ -24,6 +24,8 @@ class DepartmentController extends Controller
         return view('management.department.index',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'departments'=>$departments]);
     }
 
+
+   
     /**
      * Show the form for creating a new resource.
      *

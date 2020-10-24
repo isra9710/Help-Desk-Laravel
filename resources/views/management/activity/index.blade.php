@@ -25,6 +25,9 @@
                     Descripción
                     <input type="text" class="form-control" required name="lastname">
                     <br><br>
+                    Días asignados para la actividad
+                    <input type="number" min="1" class="form-control" required name="lastname">
+                    <br><br>
              
                 <input type="submit" class="btn btn-success" value="Agregar">
                 <br>
@@ -42,6 +45,8 @@
                     <tr>
                         <th>ID</th>
                         <th scope="col">Nombre de actividad</th>
+                        <th scope="col">Prioridad</th>
+                        <th scope="col">Descripción</th>
                         <th scope="col"></th>
                         <th scope="col"></th>
                     </tr>
@@ -51,15 +56,27 @@
                         <tr>
                             <td>{{$activity->idActivity}}</td>
                             <td>{{ $activity->activityName}}</td>
+                            <td>{{ $activity->priority->priorityName}}</td>
+                            <td>{{ $activity->activityDescription}}</td>
                             <td>
+                                @if(auth()->user()->isAdministrator())
                                 <a href="{{route('administrator.activity.show',['subarea'=>$subarea,'activity'=>$activity])}}" class="btn
                                 btn-warning btn-sm">Editar</a>
+                                @else
+                                <a href="{{route('coordinator.activity.show',['subarea'=>$subarea,'activity'=>$activity])}}" class="btn
+                                    btn-warning btn-sm">Editar</a>
+                                @endif
                             </td>
                             <td>
+                                @if(auth()->user()->isAdministrator())
                                 <form action="{{route('administrator.activity.destroy',['subarea'=>$subarea,'activity'=>$activity])}}"
                                       method="POST" class="d-inline">
-                                    {{ csrf_field() }}
-                                    <input type="submit" onclick="return confirm('¿Seguro que desa borrar?');" class="btn btn-danger btn-sm" value="Eliminar">
+                                @else
+                                <form action="{{route('coordinator.activity.destroy',['subarea'=>$subarea,'activity'=>$activity])}}"
+                                    method="POST" class="d-inline">    
+                                      {{ csrf_field() }}
+                                @endif
+                                    <input type="submit" onclick="return confirm('¿Seguro que desea desactivar actividad?');" class="btn btn-danger btn-sm" value="Desactivar">
                                 </form>
                             </td>
                         </tr>

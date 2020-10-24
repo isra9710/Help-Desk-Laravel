@@ -15,15 +15,14 @@ class CreateTicketsTable extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->bigIncrements('idTicket');
-
             $table->unsignedBigInteger('idStaff')->nullable();
             $table->unsignedBigInteger('idTechnician')->nullable();
             $table->unsignedSmallInteger('idStatus')->nullable();
             $table->unsignedBigInteger('idActivity')->nullable();
             $table->date('startDate');
             $table->date('limitDate');
-            $table->string('firstPhoto');
-            $table->string('secondPhoto');
+            $table->date('closeDate')->nullable();
+            $table->string('ticketDescription')->nullable();
             $table->boolean('doubt')->nullable();
             $table->timestamps();
             $table->foreign('idStatus')->references('idStatus')->on('status')->onDelete('set null');
