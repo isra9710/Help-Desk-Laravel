@@ -21,7 +21,7 @@ class CreateActivitiesTable extends Migration
             $table->unsignedSmallInteger('idPriority')->nullable();
             $table->string('activityDescription')->nullable();
             $table->smallInteger('days')->nulllable();
-            $table->boolean('active')->default('1');
+            $table->boolean('active')->default(TRUE);
             $table->timestamps();
             $table->foreign('idSubarea')->references('idSubarea')->on('subareas')->onDelete('set null');
             $table->foreign('idPriority')->references('idPriority')->on('priorities')->onDelete('set null');

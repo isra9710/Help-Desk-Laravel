@@ -17,6 +17,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $activityName
  * @property int|null $idSubarea
  * @property int|null $idPriority
+ * @property string|null $activityDescription
+ * @property int $days
+ * @property bool $active
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
@@ -34,13 +37,18 @@ class Activity extends Model
 
 	protected $casts = [
 		'idSubarea' => 'int',
-		'idPriority' => 'int'
+		'idPriority' => 'int',
+		'days' => 'int',
+		'active' => 'bool'
 	];
 
 	protected $fillable = [
 		'activityName',
 		'idSubarea',
-		'idPriority'
+		'idPriority',
+		'activityDescription',
+		'days',
+		'active'
 	];
 
 	public function priority()

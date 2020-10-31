@@ -41,7 +41,7 @@ class UserController extends Controller
         else {
             return '/Invitado';
         }
-        return view('welcome');
+        
     }
 
 
@@ -49,9 +49,9 @@ class UserController extends Controller
     //Nos retornara a la página principal del administrador, trayendo consigo, departamentos, roles de usuario
     function homeAdministrator()
     {
-        $departmentsSideBar = Department::all();
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
-        $subareasSideBar = Subarea::all();
         return view('home', ['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar]);
     }
 
@@ -61,9 +61,7 @@ class UserController extends Controller
     function homeCoordinator()
     {
         $rolesSideBar =Role::all();
-        $subareasSideBar = Subarea::all();
-    
-        
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
         return view('home',['rolesSideBar' => $rolesSideBar,'subareasSideBar'=>$subareasSideBar]);
     }
 
@@ -109,20 +107,29 @@ class UserController extends Controller
     {
         //
         $users = "";
-
-        $users = User::where('idRole', $idRole)->where('idDepartment', $idDepartment)->paginate(3);
+        if(auth()->user()->isAdministrator()){
+            $users = User::where('idRole', $idRole)->where('idDepartment', $idDepartment)->paginate(3);
+        }
+        else{
+            $users = User::where('idRole', $idRole)->where('idDepartment', $idDepartment)->where('active',TRUE)->paginate(3);
+        }
+        
         if($idRole == 5 || $idRole ==6) //Si es un usuario o invitado, no necesitamos ningún filtro, pues estos no pertenecen a algún departamento en especificoß
         {
+            if(auth()->user()->isAdministrator()){
             $users = User::where('idRole', $idRole)->paginate(3);
-
+            }
+            else{
+                $users = User::where('idRole', $idRole)->where('active',TRUE)->paginate(3);
+            }
         }
         /*
         Hacemos estas consultas sólo para la parte estetica, si se trata de un administrador
         necesitaremos departamentos, si se trata de un coordinador o asistente, sólo necesitaremos roles
         */
-        $departmentsSideBar = Department::all();
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
-        $subareasSideBar = Subarea::all();
         return view('management.user.index',['departmentsSideBar'=>$departmentsSideBar, 'rolesSideBar'=>$rolesSideBar, 'subareasSideBar'=>$subareasSideBar,'users'=>$users,'idDepartment'=>$idDepartment,'idRole'=>$idRole,]);
     }
 
@@ -134,7 +141,22 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create()
+    {
+        //
+        return null;
+      
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
     {
         //
         $user = new User();
@@ -147,7 +169,6 @@ class UserController extends Controller
         $user->password=bcrypt($request->password);
         $user->idRole=$request->idRole;
         $user->extension=$request->extension;
-        $user->status=TRUE;
         $idDepartment = $request->idDepartment;
         /*Si el departamento no es null, quiere decir que estamos queriendo registrar a un coordinador, agente o 
          asistente, por éso nos importa saber si es null o no, de otro modo, estamos hablando de un usuario normal
@@ -167,21 +188,6 @@ class UserController extends Controller
         }
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function store($id)
-    {
-        //
-        
-        return null;
-    }
-
   
     /**
      * Display the specified resource.
@@ -194,15 +200,11 @@ class UserController extends Controller
     */
     
      public function show(User $user){
-        /*
-            De nueva cuenta hacemos la consulta de todos los departamentos para no perderlos
-            y si es un usuario administrador, que no los pierda, igual si es un usuario coordinador o asistente
-            para éso se hace la consulta de los roles
-        */
-        $departmentsSideBar = Department::all();
-        $rolesSideBar = Role::all();
-        $subareasSideBar = Subarea::all();
-        return view('management.user.edit',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'user'=>$user]);
+
+      $departmentsSideBar = Department::where('active',TRUE)->get();
+      $subareasSideBar = Subarea::where('active',TRUE)->get();
+      $rolesSideBar = Role::all();
+      return view('management.user.details',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'user'=>$user]);
     }
 
     /**
@@ -211,10 +213,18 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edite($id)
+    public function edite(User $user)
     {
         //
-        return null;
+          /*
+            De nueva cuenta hacemos la consulta de todos los departamentos para no perderlos
+            y si es un usuario administrador, que no los pierda, igual si es un usuario coordinador o asistente
+            para éso se hace la consulta de los roles
+        */
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
+        $rolesSideBar = Role::all();
+        return view('management.user.edit',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'user'=>$user]);
     }
 
     /**
@@ -272,20 +282,37 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         
-        $idRole = $user->idRole;
-        $idDepartment=$user->idDepartment;
-        
-        User::destroy($user->idUser);
-       
+        $user->activate= FALSE;
+        $user->update();
         if(Auth()->user()->isAdministrator()){
-            return redirect()->route('administrator.user.index',['idRole'=>$idRole, 'idDepartment'=>$idDepartment]);
+            return redirect()->route('administrator.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
         }
         elseif(Auth()->user()->isCoordinator()){
-            return redirect()->route('coordinator.user.index',['idRole'=>$idRole, 'idDepartment'=>$idDepartment]);
+            return redirect()->route('coordinator.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
         }
         else{
-            return redirect()->route('assistant.user.index',['idRole'=>$idRole, 'idDepartment'=>$idDepartment]);
+            return redirect()->route('assistant.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
         }
+    }
+
+    public function reactivate(User $user)
+    {
+        $user->active = TRUE;
+        $user->update();
+        return redirect()->route('administrator.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
+    }
+
+    public function status(User $user)
+    {
+        if($user->status==TRUE){
+            $user->status = FALSE;
+        }
+        else{
+            $user->status = TRUE;
+        }
+        $user->update();
+        return redirect()->route('assistant.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
+        
     }
 
 

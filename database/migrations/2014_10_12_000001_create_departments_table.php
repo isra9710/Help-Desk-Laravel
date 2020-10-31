@@ -19,7 +19,7 @@ class CreateDepartmentsTable extends Migration
             $table->string('departmentName');
             $table->string('departmentDescription')->nullable();
             $table->timestamps();
-            $table->boolean('active')->default('1');
+            $table->boolean('active')->default(TRUE);
         });
     }
 

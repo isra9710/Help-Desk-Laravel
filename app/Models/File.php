@@ -7,45 +7,35 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Poll
+ * Class File
  * 
- * @property int $idPoll
+ * @property int $idFile
  * @property int|null $idTicket
- * @property int $score
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
  * @property Ticket $ticket
- * @property Collection|Question[] $questions
  *
  * @package App\Models
  */
-class Poll extends Model
+class File extends Model
 {
-	protected $table = 'polls';
-	protected $primaryKey = 'idPoll';
+	protected $table = 'files';
+	protected $primaryKey = 'idFile';
 
 	protected $casts = [
-		'idTicket' => 'int',
-		'score' => 'int'
+		'idTicket' => 'int'
 	];
 
 	protected $fillable = [
-		'idTicket',
-		'score'
+		'idTicket'
 	];
 
 	public function ticket()
 	{
 		return $this->belongsTo(Ticket::class, 'idTicket');
-	}
-
-	public function questions()
-	{
-		return $this->hasMany(Question::class, 'idPoll');
 	}
 }

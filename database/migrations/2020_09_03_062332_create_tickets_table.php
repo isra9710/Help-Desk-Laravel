@@ -15,7 +15,7 @@ class CreateTicketsTable extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->bigIncrements('idTicket');
-            $table->unsignedBigInteger('idStaff')->nullable();
+            $table->unsignedBigInteger('employeeNumber')->nullable();
             $table->unsignedBigInteger('idTechnician')->nullable();
             $table->unsignedSmallInteger('idStatus')->nullable();
             $table->unsignedBigInteger('idActivity')->nullable();
@@ -26,7 +26,7 @@ class CreateTicketsTable extends Migration
             $table->boolean('doubt')->nullable();
             $table->timestamps();
             $table->foreign('idStatus')->references('idStatus')->on('status')->onDelete('set null');
-            $table->foreign('idStaff')->references('idUser')->on('users')->onDelete('set null');
+            $table->foreign('employeeNumber')->references('username')->on('users')->onDelete('set null');
             $table->foreign('idTechnician')->references('idUser')->on('users')->onDelete('set null');
             $table->foreign('idActivity')->references('idActivity')->on('activities')->onDelete('set null');
         });

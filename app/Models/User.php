@@ -14,7 +14,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
-
 /**
  * Class User
  * 
@@ -27,6 +26,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
  * @property int|null $idRole
  * @property int|null $idDepartment
  * @property bool $status
+ * @property bool $active
  * @property Carbon|null $email_verified_at
  * @property string|null $remember_token
  * @property int|null $created_by
@@ -50,6 +50,7 @@ class User extends Authenticatable
 		'idRole' => 'int',
 		'idDepartment' => 'int',
 		'status' => 'bool',
+		'active' => 'bool',
 		'created_by' => 'int',
 		'updated_by' => 'int'
 	];
@@ -72,6 +73,7 @@ class User extends Authenticatable
 		'idRole',
 		'idDepartment',
 		'status',
+		'active',
 		'email_verified_at',
 		'remember_token',
 		'created_by',
@@ -97,8 +99,6 @@ class User extends Authenticatable
 	{
 		return $this->hasMany(Ticket::class, 'idTechnician');
 	}
-
-
 
 
 	public function hasRole($role){

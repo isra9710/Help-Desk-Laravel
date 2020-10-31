@@ -17,9 +17,15 @@ class SubareaController extends Controller
     public function index(Department $department)
     {
         //
-        $subareas = Subarea::where('idDepartment', $department->idDepartment)->paginate(3);
-        $subareasSideBar = Subarea::all();
-        $departmentsSideBar = Department::all();
+        $subareas = "";
+        if(auth()->user()->isAdministrator()){
+            $subareas = Subarea::where('idDepartment', $department->idDepartment)->paginate(3);
+        }
+        else{
+            $subareas = Subarea::where('idDepartment', $department->idDepartment)->where('active',TRUE)->paginate(3);
+        }        
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
+        $departmentsSideBar = Department::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
         return view('management.subarea.index',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'subareas'=>$subareas,'department'=>$department]);
     }
@@ -28,7 +34,7 @@ class SubareaController extends Controller
     public function getSubareas(Request $request)
     {
         if($request->ajax()){
-            $subareas = Subarea::where('idDepartment',$request->idDepartment)->get(); 
+            $subareas = Subarea::where('idDepartment',$request->idDepartment)->where('active',TRUE)->get(); 
             foreach($subareas as $subarea) {
                 $subareasArray[$subarea->idSubarea]=$subarea->subareaName;
             }
@@ -50,8 +56,12 @@ class SubareaController extends Controller
         $subarea->subareaName = $request->subareaName;
         $subarea->idDepartment= $department->idDepartment;
         $subarea->save();
-        return redirect()->route('administrator.subarea.index',['department'=>$department]);
-
+        if(Auth()->user()->isAdministrator()){
+            return redirect()->route('administrator.subarea.index',['department'=>$department]);
+        }
+        else{
+            return redirect()->route('coordinator.subarea.index',['department'=>$department]);
+        }
     }
 
     /**
@@ -74,8 +84,8 @@ class SubareaController extends Controller
     public function show(Department $department,Subarea $subarea)
     {
         //
-        $subareasSideBar = Subarea::all();
-        $departmentsSideBar = Department::all();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
+        $departmentsSideBar = Department::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
         return view ('management.subarea.edit',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'subarea'=>$subarea,'department'=>$department]);
     }
@@ -102,8 +112,14 @@ class SubareaController extends Controller
     {
         //
         $subarea->subareaName = $request->subareaName;
+        $subarea->subareaDescription = $request->subareaDescription;
         $subarea->update();
-        return redirect()->route('administrator.subarea.index',['department'=>$department]); 
+        if(Auth()->user()->isAdministrator()){
+            return redirect()->route('administrator.subarea.index',['department'=>$department]);
+        }
+        else{
+            return redirect()->route('coordinator.subarea.index',['department'=>$department]);
+        }
         
     }
 
@@ -116,7 +132,22 @@ class SubareaController extends Controller
     public function destroy(Department $department,Subarea $subarea)
     {
         //
-        Subarea::destroy($subarea->idSubarea);
+        $subarea->active = FALSE;
+        $subarea->update();
+        if(Auth()->user()->isAdministrator()){
+            return redirect()->route('administrator.subarea.index',['department'=>$department]);
+        }
+        else{
+            return redirect()->route('coordinator.subarea.index',['department'=>$department]);
+        }
+    }
+
+    public function reactivate(Department $department, Subarea $subarea)
+    {
+        $subarea->active = True;
+        $subarea->update();
         return redirect()->route('administrator.subarea.index',['department'=>$department]);
+        
+      
     }
 }

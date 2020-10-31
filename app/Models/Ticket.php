@@ -20,8 +20,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $idActivity
  * @property Carbon $startDate
  * @property Carbon $limitDate
- * @property string $firstPhoto
- * @property string $secondPhoto
+ * @property Carbon|null $closeDate
+ * @property string|null $ticketDescription
  * @property bool|null $doubt
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Activity $activity
  * @property User $user
  * @property Status $status
+ * @property Collection|File[] $files
  * @property Collection|Message[] $messages
  * @property Collection|Poll[] $polls
  *
@@ -49,7 +50,8 @@ class Ticket extends Model
 
 	protected $dates = [
 		'startDate',
-		'limitDate'
+		'limitDate',
+		'closeDate'
 	];
 
 	protected $fillable = [
@@ -59,8 +61,8 @@ class Ticket extends Model
 		'idActivity',
 		'startDate',
 		'limitDate',
-		'firstPhoto',
-		'secondPhoto',
+		'closeDate',
+		'ticketDescription',
 		'doubt'
 	];
 
@@ -77,6 +79,11 @@ class Ticket extends Model
 	public function status()
 	{
 		return $this->belongsTo(Status::class, 'idStatus');
+	}
+
+	public function files()
+	{
+		return $this->hasMany(File::class, 'idTicket');
 	}
 
 	public function messages()

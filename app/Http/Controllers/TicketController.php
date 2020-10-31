@@ -8,6 +8,7 @@ use App\Models\Subarea;
 use App\Models\Department;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\File;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -144,27 +145,83 @@ class TicketController extends Controller
     public function store(Request $request)
     {
         //
-        $activity = Activity::where('idActivity', $request->idActivity);
+        $activity = Activity::where('idActivity', $request->idActivity)->first();
         $ticket = new Ticket();
         /*
         Los siguiente datos los obtenemos del formulario de registro ubicado en managment.user.index
         */
-        if($request->employeeNumber){
-            $ticket->idStaff = $request->employeeNumber;
-        }
-        else{
-            $ticket->idStaff = Auth::user()->idUser;
-        }
-        $ticket->status=1;
+        $ticket->idStatus=1;
         $ticket->idActivity = $request->idActivity;
         $ticket->startDate = Carbon::now();
         $ticket->limitDate = Carbon::now()->subDays($activity->days);
         $ticket->ticketDescription = $request->description;
-        $ticket->doubt = $request->doubt;
-        if($request->file)
-        {
-            
+        if($_POST['doubt']){    
+            $ticket->doubt= 1;
         }
+        else{
+            $ticket->doubt = 0;
+        }
+        $ticket->save();
+        if($request->file){
+            $dataFile = new File();
+            $fileName = "";//Nombre del archivo
+            $dataFile->idTicket=$ticket->idTicket;
+            $dataFile->save();
+            $file= $request->file('file');
+            /*$fileName = $file->getClientOriginalName();
+            $fileName = time().'.'.$fileName;
+            $path = $file->storeAs('public',$fileName);
+            $dataFile->directoryFile= $path;
+            $dataFile->update();*/
+            if($request->employeeNumber){
+                $userName = User::Where('username',$request->employeeNumber)->first();
+                $fileName =$userName.$dataFile->idFile.$request->file->getClientOriginalName();
+            }
+            else{
+                $fileName =auth()->user()->username.$dataFile->idFile.$request->file->getClientOriginalName();
+            }
+            $path = $file->storeAs('public',$fileName);
+            $dataFile->directoryFile = $path;
+            $dataFile->update();
+        }
+        
+        if($request->employeeNumber){
+            $ticket->idStaff = $request->employeeNumber;
+            $ticket->update();
+            if(auth()->user()->isAdministrator()){
+                return redirect()->route('administrator.ticket.create',['guest'=>True]);
+            }
+            else{
+                return redirect()->route('coordinator.ticket.create',['guest'=>True]);
+            }
+        }
+        else{
+            $ticket->idStaff = auth()->user()->idUser;
+            $ticket->update();
+            if(auth()->user()->isAdministrator()){
+                return redirect()->route('administrator.ticket.create');
+            }
+            elseif(auth()->user()->isCoordinator()){
+                return redirect()->route('coordinator.ticket.create');
+            }
+            elseif(auth()->user()->isAssistant()){
+                return redirect()->route('assistant.ticket.create');
+            }
+            elseif(auth()->user()->isAgent()){
+                return redirect()->route('agent.ticket.create');
+            }
+            elseif(auth()->user()->isUser()){
+                return redirect()->route('user.ticket.create');
+            }
+            //Cambiar la siguiente ruta por invitado
+            else{
+                return redirect()->route('user.ticket.create');
+            }
+        }
+       
+
+
+
        
     }
 

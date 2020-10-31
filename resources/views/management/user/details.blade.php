@@ -10,30 +10,36 @@
 @section('content')
         <div class="row">
             <div class="col-sm-8 offset-2">
-                <h4 class="text-center alert alert-info ">Editar empleado</h4>
-                @if(auth()->user()->isAdministrator())
-                    <form action="{{route('administrator.user.update', ['user'=>$user])}}" method="POST">
-                @elseif(auth()->user()->isAdministrator())
-                    <form action="{{route('coordinator.user.update', ['user'=>$user])}}" method="POST">
-                @else
-                    <form action="{{route('assistant.user.update',['user'=>$user])}}" method="POST">
-                @endif    
-                        {{ csrf_field() }}
-
+                <h4 class="text-center alert alert-info ">Detalles de empleado</h4>
+                <form>
+                    ID
+                        <input type="text" class="form-control" readonly name="username" value="{{$user->idUser}}">
+                    <br><br>
+                       
                         Número de empleado
-                        <input type="text" class="form-control" required name="username" value="{{$user->username}}">
+                        <input type="text" class="form-control" readonly name="username" value="{{$user->username}}">
                     <br><br>
                         
                         Nombre
-                        <input type="text" class="form-control" required name="name" value="{{$user->name}}">
+                        <input type="text" class="form-control" readonly name="name" value="{{$user->name}}">
 
                     <br><br>
 
 
                         Correo electronico
-                        <input type="email" class="form-control" required name="email" value="{{$user->email}}">
+                        <input type="email" class="form-control" readonly name="email" value="{{$user->email}}">
                     <br><br>
-                    <input type="submit" class="btn btn-success" value="Actualizar">
+                    Extensión
+                        <input type="text" class="form-control" readonly name="extension" value="{{$user->extension}}">
+
+                    <br><br>
+                    @if(!($user->idRole==5))
+
+                    Departamento
+                        <input type="text" class="form-control" readonly name="department" value="{{$user->department->departmentName}}">
+                       
+                    <br><br>
+                    @endif
                     @if(auth()->user()->isAdministrator())
                         <a href="{{route('administrator.user.index',[$user->idRole, $user->idDepartment])}}" class="btn btn-info">Regresar</a>
                     @elseif(auth()->user()->isCoordinator())

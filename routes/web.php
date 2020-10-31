@@ -80,14 +80,19 @@ Route::middleware('auth')->group(function(){
             /*La siguiente función sirve para crear un Usuario, gracias a la función anterior,
             Ya sabemos de qué tipo será y si es necesario asignarle un departamento
             */
-            Route::post('/Usuarios/Agregar','UserController@create')->name('user.create');
+            Route::post('/Usuarios/Agregar','UserController@store')->name('user.store');
 
             /*La siguiente ruta nos sirve para mostrar no usuario, pasando como parametro su id,
             cuando la plantilla cargue, tendrá en ella adjuntada el objeto que se está deseando editar
             */
             
-            Route::get('/Usuarios/Ver/{user}/Usuario', 'UserController@show')->name('user.show');
+            Route::get('/Usuarios/Ver/{user}/Usuario', 'UserController@edite')->name('user.edite');
 
+
+            /*
+                La siguiente ruta es para ver detalles de un usuario en especifico
+            */
+            Route::get('/Usuarios/Detalles/{user}/Usuario', 'UserController@show')->name('user.details');
 
             /*La siguiente ruta es la que realmente se va a encargar de editar, después de modificados los datos
             se encarga de recolectarlos del formulario para enviar una consulta
@@ -105,16 +110,16 @@ Route::middleware('auth')->group(function(){
             
             //La siguiente sección es para la gestión de departamentos
             Route::get('/Departamentos', 'DepartmentController@index')->name('department.index');
-            Route::post('/Departamentos/Agregar','DepartmentController@create')->name('department.create');
-            Route::get('/Departamentos/VerDepartamento/{department}', 'DepartmentController@show')->name('department.show');
+            Route::post('/Departamentos/Agregar','DepartmentController@store')->name('department.store');
+            Route::get('/Departamentos/VerDepartamento/{department}', 'DepartmentController@edite')->name('department.edite');
             Route::post('/Departamentos/EditarDepartamento/{department}','DepartmentController@update')->name('department.update');
             Route::post('/Departamentos/EliminarDepartamento/{department}','DepartmentController@destroy')->name('department.destroy');
 
 
             //La siguiente sección es para la gestión de subáreas 
             Route::get('/SubAreas/{department}', 'SubareaController@index')->name('subarea.index');
-            Route::post('/SubAreas/Agregar/{department}','SubareaController@create')->name('subarea.create');
-            Route::get('/SubAreas/VerSubArea/{department}/{subarea}', 'SubareaController@show')->name('subarea.show');
+            Route::post('/SubAreas/Agregar/{department}','SubareaController@store')->name('subarea.store');
+            Route::get('/SubAreas/VerSubArea/{department}/{subarea}', 'SubareaController@edite')->name('subarea.edite');
             Route::post('/SubAreas/EditarSubArea/{department}/{subarea}','SubareaController@update')->name('subarea.update');
             Route::post('/SubAreas/EliminarSubArea/{department}/{subarea}','SubareaController@destroy')->name('subarea.destroy');
 
@@ -122,8 +127,8 @@ Route::middleware('auth')->group(function(){
 
             //La siguiente sección es para la gestión de actividades
             Route::get('/Actividades/{subarea}', 'ActivityController@index')->name('activity.index');
-            Route::post('/Actividades/Agregar/{subarea}','ActivityController@create')->name('activity.create');
-            Route::get('/Actividades/VerActividad/{subarea}/{activity}', 'ActivityController@show')->name('activity.show');
+            Route::post('/Actividades/Agregar/{subarea}','ActivityController@store')->name('activity.store');
+            Route::get('/Actividades/VerActividad/{subarea}/{activity}', 'ActivityController@edite')->name('activity.edite');
             Route::post('/Actividades/EditarActividad/{subarea}/{activity}','ActivityController@update')->name('activity.update');
             Route::post('/Actividades/EliminarActividad/{subarea}/{activity}','ActivityController@destroy')->name('activity.destroy');
 
@@ -159,10 +164,10 @@ Route::middleware('auth')->group(function(){
 
 
             //Esta ruta es para agregar un ticket
-            Route::post('/Tickets/Agregar','TicketController@storage')->name('ticket.storage');
+            Route::post('/Tickets/Agregar','TicketController@store')->name('ticket.store');
             
             //Esta ruta es para agregar un ticket para alguien más
-            Route::post('/Tickets/Agregar','TicketController@storage')->name('ticket.storage');
+            Route::post('/Tickets/Agregar','TicketController@store')->name('ticket.store');
 
             //Esta ruta es para ver los detalles de un ticket en especifico
             Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@show')->name('ticket.show');
@@ -198,8 +203,16 @@ Route::middleware('auth')->group(function(){
         
         //En esta parte va la gestión de todo tipo de usuario, coordinador, técnico, usuario
         Route::get('/Usuarios/{idRole}/{idDepartment?}', 'UserController@index')->name('user.index');
-        Route::post('/Usuarios/Agregar','UserController@create')->name('user.create');
-        Route::get('/Usuarios/Ver/{user}/Usuario', 'UserController@show')->name('user.show');
+        Route::post('/Usuarios/Agregar','UserController@store')->name('user.store');
+        /*La siguiente ruta nos sirve para mostrar no usuario, pasando como parametro su id,
+            cuando la plantilla cargue, tendrá en ella adjuntada el objeto que se está deseando editar
+            */
+            
+        Route::get('/Usuarios/Ver/{user}/Usuario', 'UserController@edite')->name('user.edite');
+        /*
+            La siguiente ruta es para ver detalles de un usuario en especifico
+        */
+        Route::get('/Usuarios/Detalles/{user}/Usuario', 'UserController@show')->name('user.details');
         Route::post('/Usuarios/EditarUsuario/{user}','UserController@update')->name('user.update');
         Route::post('/Usuarios/EliminarUsuario/{user}','UserController@destroy')->name('user.destroy');
 
@@ -208,15 +221,15 @@ Route::middleware('auth')->group(function(){
         //La siguiente sección es para la gestión de subáreas 
 
         Route::get('/SubAreas/{department}', 'SubareaController@index')->name('subarea.index');
-        Route::post('/SubAreas/Agregar','SubAreaController@create')->name('subarea.create');
-        Route::get('/SubAreas/VerSubArea/{subarea?}', 'SubareaController@show')->name('subarea.show');
+        Route::post('/SubAreas/Agregar','SubAreaController@store')->name('subarea.store');
+        Route::get('/SubAreas/VerSubArea/{subarea?}', 'SubareaController@edite')->name('subarea.edite');
         Route::post('/SubAreas/EditarSubArea/{subarea}','SubareaController@update')->name('subarea.update');
         Route::post('/SubAreas/EliminarSubArea/{subarea}','SubareaController@destroy')->name('subarea.destroy');
 
         //La siguiente sección es para la gestión de actividades
         Route::get('/Actividades/{subarea}', 'ActivityController@index')->name('activity.index');
-        Route::post('/Actividades/Agregar','ActivityController@create')->name('activity.create');
-        Route::get('/Actividades/VerActividad/{subarea}/{activity}', 'ActivityController@show')->name('activity.show');
+        Route::post('/Actividades/Agregar','ActivityController@store')->name('activity.store');
+        Route::get('/Actividades/VerActividad/{subarea}/{activity}', 'ActivityController@edite')->name('activity.edite');
         Route::post('/Actividades/EditarActividad/{subarea}/{activity}','ActivityController@update')->name('activity.update');
         Route::post('/Actividades/EliminarActividad/{subarea}/{activity}','ActivityController@destroy')->name('activity.destroy');
 
@@ -227,7 +240,7 @@ Route::middleware('auth')->group(function(){
            Route::get('/Tickets/NoAsignados/{department}', 'TicketController@notAssigned')->name('ticket.notAssigned');
            Route::get('/Tickets/Histórico/{department}', 'TicketController@historical')->name('ticket.historical');
            Route::post('/Tickets/Crear','TicketController@create')->name('ticket.create');
-           Route::post('/Tickets/Agregar','TicketController@storage')->name('ticket.storage');
+           Route::post('/Tickets/Agregar','TicketController@store')->name('ticket.store');
            Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@show')->name('ticket.show');
            Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@edite')->name('ticket.edite');
            Route::post('/Tickets/EditarTicket/{ticket}','TicketController@update')->name('ticket.update');
@@ -242,8 +255,20 @@ Route::middleware('auth')->group(function(){
         
         //En esta parte va el CRUD de todo tipo de usuario, coordinador, técnico, usuario
         Route::get('/Usuarios/{role}', 'UserController@index')->name('user.index');
-        Route::post('/Usuarios/Agregar','UserController@create')->name('user.create');
-        Route::get('/Usuarios/VerUsuario/{user}', 'UserController@show')->name('uer.show');
+        Route::post('/Usuarios/Agregar','UserController@store')->name('user.store');
+          /*
+                La siguiente ruta es para ver detalles de un usuario en especifico
+            */
+        Route::get('/Usuarios/Ver/{user}', 'UserController@show')->name('user.details');
+       /*La siguiente ruta nos sirve para mostrar no usuario, pasando como parametro su id,
+            cuando la plantilla cargue, tendrá en ella adjuntada el objeto que se está deseando editar
+            */
+            
+        Route::get('/Usuarios/Ver/{user}/Usuario', 'UserController@edite')->name('user.edite');
+        /*
+            La siguiente ruta es para ver detalles de un usuario en especifico
+        */
+        Route::get('/Usuarios/Detalles/{user}/Usuario', 'UserController@show')->name('user.details');
         Route::post('/Usuarios/EditarUsuario/{user}','UserController@update')->name('user.update');
         Route::post('/Usuarios/EliminarUsuario/{user}','UserController@destroy')->name('user.destroy');
 
@@ -254,7 +279,7 @@ Route::middleware('auth')->group(function(){
         Route::get('/Tickets/{department}', 'TicketController@historical')->name('ticket.historical');
         Route::get('/Tickets/NoAsignados/{department}', 'TicketController@notAssigned')->name('ticket.notAssigned');
         Route::post('/Tickets/Crear','TicketController@create')->name('ticket.create');
-        Route::post('/Tickets/Agregar','TicketController@storage')->name('ticket.storage');
+        Route::post('/Tickets/Agregar','TicketController@store')->name('ticket.store');
         Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@show')->name('ticket.show');
         Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@edite')->name('ticket.edite');
         Route::post('/Tickets/EditarTicket/{ticket}','TicketController@update')->name('ticket.update');
@@ -274,7 +299,7 @@ Route::middleware('auth')->group(function(){
         Route::get('/Tickets/{department}/{subarea}', 'TicketController@inbox')->name('ticket.inbox');
         Route::get('/Tickets/NoAsignados/{department}', 'TicketController@notAssigned')->name('ticket.notAssigned');
         Route::post('/Tickets/Crear','TicketController@create')->name('ticket.create');
-        Route::post('/Tickets/Agregar','TicketController@storage')->name('ticket.storage');
+        Route::post('/Tickets/Agregar','TicketController@store')->name('ticket.store');
         Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@show')->name('ticket.show');
         Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@edite')->name('ticket.edite');
         Route::post('/Tickets/EditarTicket/{ticket}','TicketController@update')->name('ticket.update');

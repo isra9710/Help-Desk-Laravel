@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-sm-4">
         <h4 class="text-center alert alert-info ">Agregar nueva actividad para  {{$subarea->subareaName}}</h4>
-                <form action="{{route('administrator.activity.create',['subarea'=>$subarea])}}" method="POST">
+                <form action="{{route('administrator.activity.store',['subarea'=>$subarea])}}" method="POST">
                 {{ csrf_field() }}
                     Nombre de la actividad
                     <input type="text" class="form-control" required name="activityName">
@@ -60,10 +60,10 @@
                             <td>{{ $activity->activityDescription}}</td>
                             <td>
                                 @if(auth()->user()->isAdministrator())
-                                <a href="{{route('administrator.activity.show',['subarea'=>$subarea,'activity'=>$activity])}}" class="btn
+                                <a href="{{route('administrator.activity.edite',['subarea'=>$subarea,'activity'=>$activity])}}" class="btn
                                 btn-warning btn-sm">Editar</a>
                                 @else
-                                <a href="{{route('coordinator.activity.show',['subarea'=>$subarea,'activity'=>$activity])}}" class="btn
+                                <a href="{{route('coordinator.activity.edite',['subarea'=>$subarea,'activity'=>$activity])}}" class="btn
                                     btn-warning btn-sm">Editar</a>
                                 @endif
                             </td>

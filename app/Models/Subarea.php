@@ -16,8 +16,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $idSubarea
  * @property string $subareaName
  * @property int|null $idDepartment
+ * @property bool $active
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $subareaDescription
  * 
  * @property Department $department
  * @property Collection|Activity[] $activities
@@ -30,12 +32,15 @@ class Subarea extends Model
 	protected $primaryKey = 'idSubarea';
 
 	protected $casts = [
-		'idDepartment' => 'int'
+		'idDepartment' => 'int',
+		'active' => 'bool'
 	];
 
 	protected $fillable = [
 		'subareaName',
-		'idDepartment'
+		'idDepartment',
+		'active',
+		'subareaDescription'
 	];
 
 	public function department()

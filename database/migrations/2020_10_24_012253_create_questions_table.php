@@ -16,7 +16,7 @@ class CreateQuestionsTable extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->BigIncrements('idQuestion');
             $table->string('question');
-            $table->boolean('active')->default('1');
+            $table->boolean('active')->default(TRUE);
             $table->timestamps();
             $table->unsignedBigInteger('idPoll')->nullable();
             $table->foreign('idPoll')->references('idPoll')->on('polls')->onDelete('set null');

@@ -15,8 +15,10 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property int $idDepartment
  * @property string $departmentName
+ * @property string|null $departmentDescription
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property bool $active
  * 
  * @property Collection|Subarea[] $subareas
  * @property Collection|User[] $users
@@ -28,20 +30,16 @@ class Department extends Model
 	protected $table = 'departments';
 	protected $primaryKey = 'idDepartment';
 
-	protected $fillable = [
-		'departmentName'
+	protected $casts = [
+		'active' => 'bool'
 	];
 
+	protected $fillable = [
+		'departmentName',
+		'departmentDescription',
+		'active'
+	];
 
-	public function getDepartments()
-    {
-        $departments = Department::get();
-        $departmentsArray['']= 'Selecciona un departamento';
-        foreach($departments as $department){
-            $departmentsArray[$department->idDepartment] = $department->departmentName;
-        }
-        return $departmentsArray;
-    }
 	public function subareas()
 	{
 		return $this->hasMany(Subarea::class, 'idDepartment');

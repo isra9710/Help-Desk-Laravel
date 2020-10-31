@@ -35,11 +35,11 @@
                 <h4 class="text-center alert alert-info ">Agregar nuevo usuario</h4>
             @endif
             @if(auth()->user()->isAdministrator())
-                <form action="{{route('administrator.user.create')}}" method="POST">
+                <form action="{{route('administrator.user.store')}}" method="POST">
             @elseif(auth()->user()->isCoordinator())
-                <form action="{{route('coordinator.user.create')}}" method="POST">
+                <form action="{{route('coordinator.user.store')}}" method="POST">
             @else
-                <form action="{{route('assistant.user.create')}}" method="POST">
+                <form action="{{route('assistant.user.store')}}" method="POST">
             @endif
                 {{ csrf_field() }}
                 @if($idRole==2 || $idRole==3 || $idRole==4)
@@ -63,6 +63,10 @@
                     <br><br>
                     Contraseña
                     <input type="password" class="form-control" required name="password">
+
+                    @if($idRole==4)
+
+                    @endif
                 <br><br>
                 <input type="submit" class="btn btn-success" value="Agregar">
                 <br>
@@ -110,27 +114,76 @@
                             <td>{{$user->username}}</td>
                             <td>
                                 @if(auth()->user()->isAdministrator())
-                                <a href="{{route('administrator.user.show',['user'=>$user])}}" class="btn
-                                        btn-warning btn-sm">Editar</a>
-                                       <!-- <form action="{{--route('administrator.user.show',$user->idUser)--}}" method="POST">-->
+                                <a href="{{route('administrator.user.edite',['user'=>$user])}}" class="btn
+                                        btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                       
+                                @elseif(auth()->user()->isCoordinator())
+                                    <a href="{{route('coordinator.user.edite', ['user'=>$user])}}" class="btn
+                                        btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                                 @else
-                                    <a href="{{route('coordinator.user.show', ['user'=>$user])}}" class="btn
-                                        btn-warning btn-sm">Editar</a>
-                                       <!-- <form action="{{--route('coordinator.user.show', $user->idUser)--}}" method="POST">-->
+                                <a href="{{route('assistant.user.edite', ['user'=>$user])}}" class="btn
+                                        btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                                 @endif
-                                <!--<input type="submit"  class="btn btn-warning btn-sm" value="Editar">-->
-                           <!-- </form>-->
                             </td>
                             <td>
                                 @if(auth()->user()->isAdministrator())
-                                    <form action="{{route('administrator.user.destroy',['user'=>$user])}}" method="POST">
-                                @else
+                                <form action="{{route('administrator.user.destroy',['user'=>$user])}}" method="POST">
+                                    @if($user->active)
+                                    <input type="submit" onclick="return confirm('¿Seguro que desa desactivar usuario?');" class="btn btn-danger btn-sm" value="X">
+                                    @else
+                                     <input type="submit" onclick="return confirm('¿Seguro que desa reactivar usuario?');" class="btn btn-success"   value="✓">
+                                     @endif
+                                     </form>
+                                @elseif(auth()->user()->isCoordinator())
                                     <form action="{{route('coordinator.user.destroy', ['user'=>$user])}}" method="POST">
+                                    {{ csrf_field() }}
+                                    <input type="submit" onclick="return confirm('¿Seguro que desa desactivar usuario?');" class="btn btn-danger btn-sm" value="X">
+                                     </form>
+                                @else
+                                    <form action="{{route('assistant.user.destroy', ['user'=>$user])}}" method="POST">
+                                    {{ csrf_field() }}
+                                    <input type="submit" onclick="return confirm('¿Seguro que desa desactivar usuario?');" class="btn btn-danger btn-sm" value="X">
+                                     </form>
                                 @endif
-                                {{ csrf_field() }}
-                                    <input type="submit" onclick="return confirm('¿Seguro que desa desactivar usuario?');" class="btn btn-danger btn-sm" value="Desactivar">
-                                </form>
+                               
+                            </td>
                             <td>
+                            @if(auth()->user()->isAdministrator())
+                                <a href="{{route('administrator.user.details',['user'=>$user])}}" class="btn
+                                        btn-warning btn-sm"><i class="fas fa-eye"></i></a>
+                                       
+                                @elseif(auth()->user()->isCoordinator())
+                                    <a href="{{route('coordinator.user.details', ['user'=>$user])}}" class="btn
+                                        btn-warning btn-sm"><i class="fas fa-eye"></i></a>
+                                @else
+                                <a href="{{route('assistant.user.details', ['user'=>$user])}}" class="btn
+                                        btn-warning btn-sm"><i class="fas fa-eye"></i></a>
+                                @endif
+                            
+                            </td>
+                            <td>
+                            @if(auth()->user()->isAdministrator())
+                                <a href="{{route('administrator.user.activities',['user'=>$user])}}" class="btn
+                                        btn-warning btn-sm"><i class="fas fa-server"></i></a>
+                                       
+                                @elseif(auth()->user()->isCoordinator())
+                                    <a href="{{route('coordinator.user.activities', ['user'=>$user])}}" class="btn
+                                        btn-warning btn-sm"><i class="fas fa-server"></i></a>
+                                @else
+                                <a href="{{route('assistant.user.activities', ['user'=>$user])}}" class="btn
+                                        btn-warning btn-sm"><i class="fas fa-server"></i>></i></a>
+                                @endif
+                            
+                            </td>
+                            @if(auth()->user()->isAssistant())
+                            <td>
+                            @if($user->status)
+                                <a href="{{route('assistant.user.status', ['user'=>$user])}}" class="btn
+                                        btn-warning btn-sm"><i class="fas fa-history"></i></a>
+                            @else
+                            @endif
+                            </td>
+                            @endif
                         </tr>
                     @endforeach
                     </tbody>

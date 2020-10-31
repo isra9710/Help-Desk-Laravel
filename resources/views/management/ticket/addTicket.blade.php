@@ -11,15 +11,15 @@
 <div class="col-sm-12 offset-0" id="ticket">
   <h4 class="text-center alert alert-info ">Registra un ticket</h4>
   @if(Auth::user()->isAdministrator())
-      <form action="{{route('administrator.ticket.storage'}}" method="POST">
+      <form action="{{route('administrator.ticket.store')}}" method="POST" enctype="multipart/form-data">
   @elseif(Auth::user()->isCoordinator())
-      <form action="{{route('coordinator.ticket.storage'}}" method="POST">
+      <form action="{{route('coordinator.ticket.store')}}" method="POST" enctype="multipart/form-data">
   @elseif(Auth::user()->isAssistant())
-     <form action="{{route('assistant.ticket.storage'}}" method="POST">
+     <form action="{{route('assistant.ticket.store')}}" method="POST" enctype="multipart/form-data">
   @elseif(Auth::user()->isAgent())
-     <form action="{{route('agent.ticket.storage'}}" method="POST">
+     <form action="{{route('agent.ticket.store')}}" method="POST" enctype="multipart/form-data">
   @else
-      <form action="{{route('user.ticket.storage'}}" method="POST">
+      <form action="{{route('user.ticket.store')}}" method="POST" enctype="multipart/form-data">
   @endif
   {{ csrf_field() }}
 
@@ -84,8 +84,8 @@
   Asociar archivo al ticket
                     <div class="input-group">
                       <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="exampleInputFile">
-                        <label class="custom-file-label" for="exampleInputFile">Busca un archivo</label>
+                        <input type="file" class="custom-file-input" id="file" name="file">
+                        <label class="custom-file-label" for="file">Busca un archivo</label>
                       </div>
                       
                     </div>
@@ -97,8 +97,8 @@
       <textarea class="form-control" required name="description" rows="3"></textarea>
   <br><br>
   <div class="form-check">
-  <input class="form-check-input" type="checkbox" value="" id="doubt" name="doubt">
-  <label class="form-check-label" for="defaultCheck1">
+  <input class="form-check-input" type="checkbox"  id="doubt" name="doubt">
+  <label class="form-check-label" for="doubt">
     No estoy seguro de las subáreas
   </label>
 </div>
