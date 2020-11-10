@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class Ticket
  * 
  * @property int $idTicket
- * @property int|null $idStaff
+ * @property string|null $employeeNumber
  * @property int|null $idTechnician
  * @property int|null $idStatus
  * @property int|null $idActivity
@@ -27,8 +27,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $updated_at
  * 
  * @property Activity $activity
- * @property User $user
  * @property Status $status
+ * @property User $user
  * @property Collection|File[] $files
  * @property Collection|Message[] $messages
  * @property Collection|Poll[] $polls
@@ -41,7 +41,6 @@ class Ticket extends Model
 	protected $primaryKey = 'idTicket';
 
 	protected $casts = [
-		'idStaff' => 'int',
 		'idTechnician' => 'int',
 		'idStatus' => 'int',
 		'idActivity' => 'int',
@@ -55,7 +54,7 @@ class Ticket extends Model
 	];
 
 	protected $fillable = [
-		'idStaff',
+		'employeeNumber',
 		'idTechnician',
 		'idStatus',
 		'idActivity',
@@ -71,14 +70,14 @@ class Ticket extends Model
 		return $this->belongsTo(Activity::class, 'idActivity');
 	}
 
-	public function user()
-	{
-		return $this->belongsTo(User::class, 'idTechnician');
-	}
-
 	public function status()
 	{
 		return $this->belongsTo(Status::class, 'idStatus');
+	}
+
+	public function user()
+	{
+		return $this->belongsTo(User::class, 'idTechnician');
 	}
 
 	public function files()

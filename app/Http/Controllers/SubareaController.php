@@ -129,17 +129,26 @@ class SubareaController extends Controller
      * @param  \App\Subarea  $subarea
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Department $department,Subarea $subarea)
+    public function destroy(Department $department, Subarea $subarea)
     {
         //
-        $subarea->active = FALSE;
-        $subarea->update();
-        if(Auth()->user()->isAdministrator()){
-            return redirect()->route('administrator.subarea.index',['department'=>$department]);
+        if($subarea->active){
+            $subarea->active = FALSE;
+            $subarea->update();
+            if(Auth()->user()->isAdministrator()){
+                return redirect()->route('administrator.subarea.index',['department'=>$department]);
+             }
+            else{
+                return redirect()->route('coordinator.subarea.index',['department'=>$department]);
+             }
         }
         else{
-            return redirect()->route('coordinator.subarea.index',['department'=>$department]);
+            $subarea->active = TRUE;
+            $subarea->update();
+            return redirect()->route('administrator.subarea.index',['department'=>$department]);
+
         }
+        
     }
 
     public function reactivate(Department $department, Subarea $subarea)

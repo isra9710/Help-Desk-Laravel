@@ -23,7 +23,7 @@
 
                     <br><br>
                     Prioridad
-                    <select class="form-control">
+                    <select class="form-control" name="idPriority">
                     @foreach($priorities as $priority)
                     @if($priority->idPriority == $activity->idPriority)
                     <option selected value='{{ $priority->idPriority }}'>{{ $priority->priorityName }}</option>
@@ -34,7 +34,7 @@
                     </select>
                     <br><br>
                     Subarea
-                    <select class="form-control">
+                    <select class="form-control" name="idSubarea">
                         @foreach($subareas as $subarea)
                         @if($subarea->idSubarea == $activity->idSubarea)
                         <option selected value='{{ $subarea->idSubarea }}'>{{ $subarea->subareaName }}</option>
@@ -45,12 +45,12 @@
                         </select>
                         <br><br>
                     Descripción de la actividad
-                        <input type="text" class="form-control" required name="days" value="{{$activity->activityDescription}}">
+                        <input type="text" class="form-control" required name="activityDescription" value="{{$activity->activityDescription}}">
 
                     <br><br>
 
                     Días para resolverlo
-                        <input type="text" min="1" class="form-control" required name="days" value="{{$activity->days}}">
+                        <input type="number" min="1" class="form-control" required name="days" value="{{$activity->days}}">
 
                     <br><br>
 

@@ -23,10 +23,17 @@
 
                 <br><br>
                     Descripción
-                    <input type="text" class="form-control" required name="lastname">
+                    <input type="text" class="form-control" required name="activityDescription">
                     <br><br>
                     Días asignados para la actividad
-                    <input type="number" min="1" class="form-control" required name="lastname">
+                    <input type="number" min="1" class="form-control" required name="days">
+                    <br><br>
+                    <select name="idPriority" class="form-control">
+                    <option value="">Por favor dale una prioridad a la actividad</option>
+                    @foreach($priorities as $priority)
+                    <option value="{{$priority->idPriority}}">{{$priority->priorityName}}</option>
+                    @endforeach
+                    </select>
                     <br><br>
              
                 <input type="submit" class="btn btn-success" value="Agregar">
@@ -60,24 +67,41 @@
                             <td>{{ $activity->activityDescription}}</td>
                             <td>
                                 @if(auth()->user()->isAdministrator())
-                                <a href="{{route('administrator.activity.edite',['subarea'=>$subarea,'activity'=>$activity])}}" class="btn
-                                btn-warning btn-sm">Editar</a>
+                                <a href="{{route('administrator.activity.edit',['subarea'=>$subarea,'activity'=>$activity])}}" class="btn
+                                btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                                 @else
-                                <a href="{{route('coordinator.activity.edite',['subarea'=>$subarea,'activity'=>$activity])}}" class="btn
-                                    btn-warning btn-sm">Editar</a>
+                                <a href="{{route('coordinator.activity.edit',['subarea'=>$subarea,'activity'=>$activity])}}" class="btn
+                                    btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                                 @endif
                             </td>
                             <td>
                                 @if(auth()->user()->isAdministrator())
                                 <form action="{{route('administrator.activity.destroy',['subarea'=>$subarea,'activity'=>$activity])}}"
                                       method="POST" class="d-inline">
+                                      {{ csrf_field() }}
+                                      @if($activity->active)
+                                      <input type="submit" onclick="return confirm('¿Seguro que desea desactivar actividad?');" class="btn btn-danger btn-sm" value="X">
+                                      @else
+                                      <input type="submit" onclick="return confirm('¿Seguro que desea activar actividad?');" class="btn btn-success"   value="✓">
+                                      @endif
+                                      </form>
                                 @else
                                 <form action="{{route('coordinator.activity.destroy',['subarea'=>$subarea,'activity'=>$activity])}}"
                                     method="POST" class="d-inline">    
                                       {{ csrf_field() }}
-                                @endif
-                                    <input type="submit" onclick="return confirm('¿Seguro que desea desactivar actividad?');" class="btn btn-danger btn-sm" value="Desactivar">
+                                      <input type="submit" onclick="return confirm('¿Seguro que desea desactivar actividad?');" class="btn btn-danger btn-sm" value="X">
                                 </form>
+                                @endif        
+                            </td>
+                            <td>
+                            @if(auth()->user()->isAdministrator())
+                            <a href="{{route('administrator.assignment.activity',['activity'=>$activity])}}" class="btn
+                                btn-warning btn-sm"><i class="fas fa-users"></i></a>
+                            @else
+                            <a href="{{route('coordinator.assignment.activity',['activity'=>$activity])}}" class="btn
+                                btn-warning btn-sm"><i class="fas fa-users"></i></a>
+                            @endif
+                            
                             </td>
                         </tr>
                     @endforeach

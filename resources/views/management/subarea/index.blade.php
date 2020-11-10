@@ -17,7 +17,7 @@
     <div class="row">
         <div class="col-sm-4">
                 <h4 class="text-center alert alert-info ">Agregar nueva subárea para {{$department->departmentName}}</h4>
-                <form action="{{route('administrator.subarea.create',['department'=>$department])}}" method="POST">
+                <form action="{{route('administrator.subarea.store',['department'=>$department])}}" method="POST">
                 {{ csrf_field() }}
 
                     Nombre
@@ -53,15 +53,32 @@
                             <td>{{$subarea->idSubarea}}</td>
                             <td>{{ $subarea->subareaName}}</td>
                             <td>
-                                <a href="{{route('administrator.subarea.show', ['department'=>$department,'subarea'=>$subarea])}}" class="btn
-                                btn-warning btn-sm">Editar</a>
+                                @if(auth()->user()->isAdministrator())
+                                    <a href="{{route('administrator.subarea.edit', ['department'=>$department,'subarea'=>$subarea])}}" class="btn
+                                    btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                @else
+                                <a href="{{route('coordinator.subarea.edit', ['department'=>$department,'subarea'=>$subarea])}}" class="btn
+                                    btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                @endif
                             </td>
                             <td>
+                            @if(auth()->user()->isAdministrator())
                                 <form action="{{route('administrator.subarea.destroy', ['department'=>$department,'subarea'=>$subarea])}}"
                                       method="POST" class="d-inline">
                                     {{ csrf_field() }}
-                                    <input type="submit" onclick="return confirm('¿Seguro que desa desactivar?');" class="btn btn-danger btn-sm" value="Desactivar">
+                                    @if($subarea->active)
+                                    <input type="submit" onclick="return confirm('¿Seguro que desa desactivar?');" class="btn btn-danger btn-sm" value="X">
+                                    @else
+                                    <input type="submit" onclick="return confirm('¿Seguro que desea activar?');"  class="btn btn-success"   value="✓">
+                                    @endif
                                 </form>
+                            @else
+                            <form action="{{route('coordinator.subarea.destroy', ['department'=>$department,'subarea'=>$subarea])}}"
+                                      method="POST" class="d-inline">
+                                    <input type="submit" onclick="return confirm('¿Seguro que desea desactivar?');"  class="btn btn-danger btn-sm"   value="X">
+                                    
+                                </form>
+                            @endif
                             </td>
                         </tr>
                     @endforeach

@@ -103,17 +103,15 @@ class DepartmentController extends Controller
     public function destroy(Department $department)
     {
         //
-        
-        $department->active = FALSE;
+        if($department->active){
+            
+            $department->active = FALSE;
+        }
+        else{
+            $department->active = TRUE;
+        }
         $department->update();
         return redirect()->route('administrator.department.index');
     }
 
-    
-    public function reactivate(Department $department)
-    {
-        $department->active = True;
-        $department->update();
-        return redirect()->route('administrator.department.index');
-    }
 }

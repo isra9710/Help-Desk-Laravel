@@ -22,6 +22,7 @@ class ActivityController extends Controller
         $departmentsSideBar = Department::where('active',TRUE)->get();
         $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
+        $priorities = Priority::all();
         $activities = "";
         if(auth()->user()->isAdministrator()){
             $activities = Activity::where('idSubarea',$subarea->idSubarea)->paginate(3);
@@ -30,7 +31,7 @@ class ActivityController extends Controller
             $activities = Activity::where('idSubarea',$subarea->idSubarea)->where('active',TRUE)->paginate(3);
         }
         
-        return view('management.activity.index',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'activities'=>$activities,'subarea'=>$subarea]);
+        return view('management.activity.index',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'activities'=>$activities,'subarea'=>$subarea,'priorities'=>$priorities]);
     }
 
 
@@ -53,11 +54,7 @@ class ActivityController extends Controller
     public function create(Subarea $subarea, Request $request)
     {
         //
-        $activity = new Activity();
-        $activity->activityName = $request->activityName;
-        $activity->idSubarea =  $subarea->idSubarea;
-        $activity->save();
-        return redirect()->route('administrator.activity.index',['subarea'=>$subarea]);
+        
     }
 
     /**
@@ -66,9 +63,16 @@ class ActivityController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Subarea $subarea, Request $request)
     {
         //
+        $activity = new Activity();
+        $activity->activityName = $request->activityName;
+        $activity->idSubarea =  $subarea->idSubarea;
+        $activity->idPriority = $request->idPriority;
+        $activity->days = $request->activityDescription;
+        $activity->save();
+        return redirect()->route('administrator.activity.index',['subarea'=>$subarea]);
     }
 
     /**
@@ -79,13 +83,7 @@ class ActivityController extends Controller
      */
     public function show(Subarea $subarea, Activity $activity)
     {
-        //
-        $departmentsSideBar = Department::where('active',TRUE)->get();
-        $subareasSideBar = Subarea::where('active',TRUE)->get();
-        $rolesSideBar = Role::all();
-        $subareas = Subarea::where('idDepartment',$activity->subarea->department->idDepartment)->where('active',TRUE)->get();
-        $priorities = Priority::all();
-        return view('management.activity.edit',['departmentsSideBar'=>$departmentsSideBar,'subareasSideBar'=>$subareasSideBar,'rolesSideBar'=>$rolesSideBar,'subarea'=>$subarea,'activity'=>$activity,'subareas'=>$subareas,'priorities'=>$priorities]);
+       
     }
 
     /**
@@ -94,9 +92,16 @@ class ActivityController extends Controller
      * @param  \App\Activity  $activity
      * @return \Illuminate\Http\Response
      */
-    public function edit(Activity $activity)
+    public function edit(Subarea $subarea, Activity $activity)
     {
         //
+         //
+         $departmentsSideBar = Department::where('active',TRUE)->get();
+         $subareasSideBar = Subarea::where('active',TRUE)->get();
+         $rolesSideBar = Role::all();
+         $subareas = Subarea::where('idDepartment',$activity->subarea->department->idDepartment)->where('active',TRUE)->get();
+         $priorities = Priority::all();
+         return view('management.activity.edit',['departmentsSideBar'=>$departmentsSideBar,'subareasSideBar'=>$subareasSideBar,'rolesSideBar'=>$rolesSideBar,'subarea'=>$subarea,'activity'=>$activity,'subareas'=>$subareas,'priorities'=>$priorities]);
     }
 
     /**
@@ -110,7 +115,10 @@ class ActivityController extends Controller
     {
         //
         $activity->activityName = $request->activityName;
+        $activity->idPriority = (int)$request->idPriority;
+        $activity->idSubarea = (int)$request->idSubarea;
         $activity->activityDescription  = $request->activityDescription;
+        $activity->days = $request->days;
         $activity->update();
         if(auth()->user()->isAdministrator()){
             return redirect()->route('administrator.activity.index',['subarea'=>$subarea]);
@@ -130,23 +138,23 @@ class ActivityController extends Controller
     public function destroy(Subarea $subarea, Activity $activity)
     {
         //
-        $activity->active = FALSE;
-        $activity->update();
-        if(auth()->user()->isAdministrator()){
-            return redirect()->route('administrator.activity.index',['subarea'=>$subarea]);
+        if($activity->active){
+            $activity->active = FALSE;
+            $activity->update();
+            if(auth()->user()->isAdministrator()){
+                return redirect()->route('administrator.activity.index',['subarea'=>$subarea]);
+            }
+            else{
+                return redirect()->route('coordinator.activity.index',['subarea'=>$subarea]);
+            }
         }
         else{
-            return redirect()->route('coordinator.activity.index',['subarea'=>$subarea]);
+            $activity->active = TRUE;
+            $activity->update();
+            return redirect()->route('administrator.activity.index',['subarea'=>$subarea]);
         }
     }
 
-    public function reactivate(Subarea $subarea, Activity $activity)
-    {
-        $subarea->active = True;
-        $subarea->update();
-        return redirect()->route('administrator.activity.index',['subarea'=>$subarea]);
-      
-    }
-
+  
 
 }

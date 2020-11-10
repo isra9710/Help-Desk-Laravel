@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('extension');
             $table->unsignedTinyInteger('idRole')->nullable();
             $table->unsignedBigInteger('idDepartment')->nullable();
-            $table->boolean('status');
+            $table->boolean('status')->default(TRUE);
             $table->boolean('active')->default(TRUE);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken()->nullable();

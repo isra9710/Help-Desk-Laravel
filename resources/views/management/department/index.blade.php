@@ -11,7 +11,7 @@
         <div class="col-sm-4">
                 <h4 class="text-center alert alert-info ">Agregar nuevo departamento</h4>
 
-                <form action="{{route('administrator.department.create')}}" method="POST">
+                <form action="{{route('administrator.department.store')}}" method="POST">
                 {{ csrf_field() }}
 
                     Nombre
@@ -37,6 +37,7 @@
                         <th>ID</th>
                         <th scope="col">Nombre </th>
                         <th scope="col">Descripción</th>
+                        <th scope="col">Estado</th>
                         <th scope="col"></th>
                         <th scope="col"></th>
                     </tr>
@@ -47,15 +48,25 @@
                             <td>{{$department->idDepartment}}</td>
                             <td>{{ $department->departmentName}}</td>
                             <td>{{$department->description }}</td>
+                            @if($department->active)
+                            <td>Activo</td>
+                            @else
+                            <td>Desactivado</td>
+                            @endif
                             <td>
-                                <a href="{{route('administrator.department.show', $department)}}" class="btn
-                                btn-warning btn-sm">Editar</a>
+                                <a href="{{route('administrator.department.edit', $department)}}" class="btn
+                                btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                             </td>
                             <td>
+
                                 <form action="{{route('administrator.department.destroy', $department)}}"
                                       method="POST" class="d-inline">
-                                    {{ csrf_field() }}
-                                    <input type="submit" onclick="return confirm('¿Seguro que desa desactivar?');" class="btn btn-danger btn-sm" value="Desactivar">
+                                    {{ csrf_field() }} 
+                                    @if($department->active)
+                                        <input type="submit" onclick="return confirm('¿Seguro que desea desactivar departamento?');" class="btn btn-danger btn-sm" value="X">
+                                    @else
+                                    <input type="submit" onclick="return confirm('¿Seguro que desea reactivar departamento?');" class="btn btn-success"   value="✓">
+                                    @endif
                                 </form>
                             </td>
                         </tr>

@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Department;
 use App\Models\Role;
 use App\Models\Subarea;
+use App\Controllers\AssignmentController;
 
 class UserController extends Controller
 {
@@ -107,6 +108,7 @@ class UserController extends Controller
     {
         //
         $users = "";
+        $subareas = NULL;
         if(auth()->user()->isAdministrator()){
             $users = User::where('idRole', $idRole)->where('idDepartment', $idDepartment)->paginate(3);
         }
@@ -123,6 +125,10 @@ class UserController extends Controller
                 $users = User::where('idRole', $idRole)->where('active',TRUE)->paginate(3);
             }
         }
+        if($idRole==4){
+                $subareas = Subarea::where('idDepartment',$idDepartment)->where('active',TRUE)->get();
+            }
+        
         /*
         Hacemos estas consultas sólo para la parte estetica, si se trata de un administrador
         necesitaremos departamentos, si se trata de un coordinador o asistente, sólo necesitaremos roles
@@ -130,7 +136,7 @@ class UserController extends Controller
         $departmentsSideBar = Department::where('active',TRUE)->get();
         $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
-        return view('management.user.index',['departmentsSideBar'=>$departmentsSideBar, 'rolesSideBar'=>$rolesSideBar, 'subareasSideBar'=>$subareasSideBar,'users'=>$users,'idDepartment'=>$idDepartment,'idRole'=>$idRole,]);
+        return view('management.user.index',['departmentsSideBar'=>$departmentsSideBar, 'rolesSideBar'=>$rolesSideBar, 'subareasSideBar'=>$subareasSideBar,'users'=>$users,'idDepartment'=>$idDepartment,'idRole'=>$idRole,'subareas'=>$subareas]);
     }
 
 
@@ -169,6 +175,7 @@ class UserController extends Controller
         $user->password=bcrypt($request->password);
         $user->idRole=$request->idRole;
         $user->extension=$request->extension;
+        $user->status=TRUE;
         $idDepartment = $request->idDepartment;
         /*Si el departamento no es null, quiere decir que estamos queriendo registrar a un coordinador, agente o 
          asistente, por éso nos importa saber si es null o no, de otro modo, estamos hablando de un usuario normal
@@ -177,6 +184,11 @@ class UserController extends Controller
             $user->idDepartment = $idDepartment;
         }
         $user->save();
+        if($request->idRole==4)
+        {
+            
+            app()->call('App\Http\Controllers\AssignmentController@store', ['user'=>$user,'idSubarea'=>$request->idSubarea]);
+        }
         if(Auth()->user()->isAdministrator()){
             return redirect()->route('administrator.user.index',[$user->role,$user->idDepartment]);
         }
@@ -282,16 +294,24 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         
-        $user->activate= FALSE;
-        $user->update();
-        if(Auth()->user()->isAdministrator()){
-            return redirect()->route('administrator.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
-        }
-        elseif(Auth()->user()->isCoordinator()){
-            return redirect()->route('coordinator.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
+        if($user->active){
+            $user->active= FALSE;
+            $user->update();
+            if(Auth()->user()->isAdministrator()){
+                return redirect()->route('administrator.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
+            }
+            elseif(Auth()->user()->isCoordinator()){
+                return redirect()->route('coordinator.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
+            }
+            else{
+                return redirect()->route('assistant.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
+            }
         }
         else{
-            return redirect()->route('assistant.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
+            
+            $user->active= TRUE;
+            $user->update();
+            return redirect()->route('administrator.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
         }
     }
 

@@ -216,7 +216,7 @@
           </li>
 
 
-          <li class="nav-item">
+        
             
           <li class="nav-item">
           @if(auth()->user()->isAdministrator())
@@ -239,30 +239,44 @@
 
           @if(auth()->user()->isAgent())
           <li class="nav-item">
-            <a href="../gallery.html" class="nav-link">
+            <a href="{{route('agent.ticket.attend',['user'=>auth()->user()])}}" class="nav-link">
             <i class="fas fa-mail-bulk"></i>
               <p>
                 Tickets por atender
               </p>
             </a>
           </li>
-          @endif
-
-          @if(auth()->user()->isAgent())
           <li class="nav-item">
-            <a href="../gallery.html" class="nav-link">
+            <a href="{{route('agent.ticket.help',['user'=>auth()->user()])}}" class="nav-link">
             <i class="far fa-hospital"></i>
               <p>
                 Ayudar al departamento
               </p>
             </a>
           </li> 
+          <li class="nav-item">
+            <a href="{{route('agent.ticket.assignment',['user'=>auth()->user()])}}" class="nav-link">
+            <i class="fas fa-list-ul"></i>
+              <p>
+                Tickets asignados
+              </p>
+            </a>
+          </li> 
           @endif
 
 
-
           <li class="nav-item">
-            <a href="../gallery.html" class="nav-link">
+          @if(auth()->user()->isAdministrator())
+            <a href="{{route('administrator.ticket.mytickets',['employeeNumber'=>auth()->user()->username])}}" class="nav-link">
+            @elseif(auth()->user()->isCoordinator())
+            <a href="{{route('coordinator.ticket.mytickets',['employeeNumber'=>auth()->user()->username])}}" class="nav-link">
+          @elseif(auth()->user()->isAssistant())
+          <a href="{{route('assistant.ticket.mytickets',['employeeNumber'=>auth()->user()->username])}}" class="nav-link">
+          @elseif(auth()->user()->isAgent()))
+          <a href="{{route('agent.ticket.mytickets',['employeeNumber'=>auth()->user()->username])}}" class="nav-link">  
+          @else
+          <a href="{{route('user.ticket.mytickets',['employeeNumber'=>auth()->user()->username])}}" class="nav-link">
+          @endif 
               <i class="fas fa-ticket-alt"></i>
               <p>
                 Mis Tickets
@@ -541,7 +555,7 @@
                       @foreach ($rolesSideBar as $role)
                         @if($role->idRole!=1 && $role->idRole!=2 &&$role->idRole!=3 && $role->idRole!=5 && $role->idRole!=6 )
                           <li class="nav-item">
-                            <a href="{{route('administrator.user.index',['idRole'=>$role->idRole, 'idDepartment'=> Auth()->user()->idDepartment])}}" class="nav-link">
+                            <a href="{{route('assistant.user.index',['idRole'=>$role->idRole, 'idDepartment'=> Auth()->user()->idDepartment])}}" class="nav-link">
                               <i class="fas fa-user-cog"></i>
                             <p>{{$role->roleName}}</p>
                             </a>

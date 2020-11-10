@@ -21,8 +21,7 @@ class TicketController extends Controller
      *boolean $noAsignados
      * @return \Illuminate\Http\Response
      */
-    public function historical(Department $department)
-    {
+    public function historical(Department $department){
         //
         $subareasSideBar = Subarea::all();
         $departmentsSideBar = Department::all();
@@ -54,8 +53,7 @@ class TicketController extends Controller
      *boolean $noAsignados
      * @return \Illuminate\Http\Response
      */
-    public function inbox(Department $department=null)
-    {
+    public function inbox(Department $department=null){
         //
         $subareasSideBar = Subarea::all();
         $departmentsSideBar = Department::all();
@@ -93,11 +91,10 @@ class TicketController extends Controller
      *boolean $noAsignados
      * @return \Illuminate\Http\Response
      */
-    public function notAssigned(Department $department)
-    {
+    public function notAssigned(Department $department) {
         //
-        $subareasSideBar = Subarea::all();
-        $departmentsSideBar = Department::all();
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
         $tickets=Ticket::join('activities','tickets.idActivity', '=', 'activities.idActivity')
                 ->join('subareas','activities.idSubarea', '=', 'subareas.idSubarea')
@@ -110,6 +107,59 @@ class TicketController extends Controller
         return view ('management.ticket.notAssignedTickets',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'department'=>$department,'tickets'=>$tickets]);
     }
 
+    //Los tickets que el usuario ha levantado
+    public function myTickets($employeNumber){
+        $myTickets = Ticket::where('employeeNumber',$employeNumber)->paginate(3);
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
+        $rolesSideBar = Role::all();
+        return view ('management.ticket.myTickets',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'tickets'=>$myTickets]);
+    }
+
+    //Los tickets en los que un agente puede intervenir
+    public function ticketsForAttend(User $user) {
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
+        $rolesSideBar = Role::all();
+        $ticketsForAttend = Ticket::join('assignments','tickets.idActivity','=', 'assignments.idActivity')
+                                    ->join('users','assignments.idUser', '=','users.idUser')
+                                    ->select('tickets.*')
+                                    ->where('users.idUser',$user->idUser)->where('idTechnician',NULL)->distinct()->paginate(1);
+        return view('management.ticket.ticketsForAttend',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'tickets'=>$ticketsForAttend]);
+    }
+    /*Cuando un agente levanta la mano, se actualiza el campo "idTechinician" de
+        tickets por el agente que acaba de levantar la mano 
+    */
+    public function ticketsTechnician(User $user, Ticket $ticket){
+        $ticket->idTechnician=$user->idUser;
+        $ticket->idStatus = 2;
+        $ticket->update();
+        return redirect()->route('agent.ticket.attend',['user'=>$user]);
+    }
+
+
+    //Tikcets que ya está atendiendo un agente determinado
+    public function ticketsAgent(User $user){
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
+        $rolesSideBar = Role::all();
+        $ticketsAgent = Ticket::where('idTechnician',$user->idUser)->paginate(10);
+        return view('management.ticket.assignedTIckets',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'tickets'=>$ticketsAgent]);
+    }
+
+
+
+    //Tickets en los que un agente puede ayudar
+    public function help(User $user){
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
+        $rolesSideBar = Role::all();
+        $ticketsForAttend = Ticket::join('assignments','tickets.idActivity','=', 'assignments.idActivity')
+        ->join('users','assignments.idUser', '=','users.idUser')
+        ->select('tickets.*')
+        ->where('users.idUser',$user->idUser)->where('idTechnician',NULL)->where('assignments.temporary',TRUE)->distinct()->paginate(10);
+        return view ('management.ticket.ticketsForAttendHelp',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'tickets'=>$ticketsForAttend]);
+    }
 
 
 
@@ -122,10 +172,10 @@ class TicketController extends Controller
     public function create($guest=NULL)
     {
         //
-        $subareasSideBar = Subarea::all();
-        $subareas = Subarea::all();
-        $departmentsSideBar = Department::all();
-        $departments = Department::all();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
+        $subareas = Subarea::where('active',TRUE)->get();
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $departments = Department::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
         if($guest){
             return view('management.ticket.addTicketG',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar]);
@@ -153,9 +203,10 @@ class TicketController extends Controller
         $ticket->idStatus=1;
         $ticket->idActivity = $request->idActivity;
         $ticket->startDate = Carbon::now();
-        $ticket->limitDate = Carbon::now()->subDays($activity->days);
+        //dd(Carbon::now()->subDays($activity->days));
+        $ticket->limitDate = Carbon::now()->addDays($activity->days);
         $ticket->ticketDescription = $request->description;
-        if($_POST['doubt']){    
+        if(isset($request->doubt)){    
             $ticket->doubt= 1;
         }
         else{
@@ -184,9 +235,9 @@ class TicketController extends Controller
             $dataFile->directoryFile = $path;
             $dataFile->update();
         }
-        
+        //Esto quiere decir que se está registrando un ticket para alguien más
         if($request->employeeNumber){
-            $ticket->idStaff = $request->employeeNumber;
+            $ticket->employeeNumber = $request->employeeNumber;
             $ticket->update();
             if(auth()->user()->isAdministrator()){
                 return redirect()->route('administrator.ticket.create',['guest'=>True]);
@@ -195,8 +246,9 @@ class TicketController extends Controller
                 return redirect()->route('coordinator.ticket.create',['guest'=>True]);
             }
         }
+        //De otro modo el ticket es para quien está llamando la función
         else{
-            $ticket->idStaff = auth()->user()->idUser;
+            $ticket->employeeNumber = auth()->user()->username;
             $ticket->update();
             if(auth()->user()->isAdministrator()){
                 return redirect()->route('administrator.ticket.create');
@@ -245,6 +297,10 @@ class TicketController extends Controller
     public function edit(Ticket $ticket)
     {
         //
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
+        $rolesSideBar = Role::all();
+        return view('management.ticket.editTicket',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'ticket'=>$ticket]);
     }
 
     /**
@@ -257,6 +313,9 @@ class TicketController extends Controller
     public function update(Request $request, Ticket $ticket)
     {
         //
+        $ticket->description = $request->description;
+        $ticket->update();
+        return redirect()->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
     }
 
     /**
@@ -268,5 +327,7 @@ class TicketController extends Controller
     public function destroy(Ticket $Ticket)
     {
         //
+        $ticket->idStatus=3;
+        $ticket->update();
     }
 }
