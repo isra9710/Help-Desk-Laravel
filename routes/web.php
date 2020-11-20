@@ -175,20 +175,24 @@ Route::middleware('auth')->group(function(){
             Route::post('/Tickets/Agregar','TicketController@store')->name('ticket.store');
 
             //Esta ruta es para ver los detalles de un ticket en especifico
-            Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@show')->name('ticket.show');
+            Route::get('/Tickets/DetallesTicket/{ticket}/{option}', 'TicketController@show')->name('ticket.show');
             
             
             //Esta ruta es para redirigir a un formulario para editar un ticket en especifico
-            Route::get('/Tickets/MostrarTicket/{ticket}', 'TicketController@edit')->name('ticket.edit');
+            Route::get('/Tickets/MostrarTicket/{ticket}/{option}', 'TicketController@edit')->name('ticket.edit');
             
             //Esta ruta edita y actualiza el ticket
-            Route::post('/Tickets/EditarTicket/{ticket}','TicketController@update')->name('ticket.update');
+            Route::post('/Tickets/EditarTicket/{ticket}/{option}','TicketController@update')->name('ticket.update');
             
             //Esta ruta como tal elimina el ticket
-            Route::post('/Tickets/EliminarTicket/{ticket}','TicketController@destroy')->name('ticket.destroy');
+            Route::post('/Tickets/EliminarTicket/{ticket}/{ticketOption}/{option}','TicketController@destroy')->name('ticket.destroy');
 
             Route::get('/MisTickets/{employeeNumber}','TicketController@myTickets')->name('ticket.mytickets');
 
+            Route::get('/Transferir/{ticket}/{option}','TicketController@toTransfer')->name('ticket.transfer');
+            Route::post('/Reasignar/{ticket}/{option}','TicketController@reasign')->name('ticket.reasign');
+            
+            
             Route::get('Tickets/subareas','SubareaController@getSubareas');
             Route::get('Tickets/activities','ActivityController@getActivities');
 
@@ -277,10 +281,12 @@ Route::middleware('auth')->group(function(){
         Route::get('/Tickets/NoAsignados/{department}', 'TicketController@notAssigned')->name('ticket.notAssigned');
         Route::get('/Tickets/Crear','TicketController@create')->name('ticket.create');
         Route::post('/Tickets/Agregar','TicketController@store')->name('ticket.store');
-        Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@show')->name('ticket.show');
-        Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@edit')->name('ticket.edit');
-        Route::post('/Tickets/EditarTicket/{ticket}','TicketController@update')->name('ticket.update');
-        Route::post('/Tickets/EliminarTicket/{ticket}','TicketController@destroy')->name('ticket.destroy');
+        Route::get('/Tickets/DetallesTicket/{ticket}/{option}', 'TicketController@show')->name('ticket.show');
+        Route::get('/Tickets/DetallesTicket/{ticket}/{option}', 'TicketController@edit')->name('ticket.edit');
+        Route::post('/Tickets/EditarTicket/{ticket}/{option}','TicketController@update')->name('ticket.update');
+        Route::post('/Tickets/EliminarTicket/{ticket}/{ticketOption}/{option}','TicketController@destroy')->name('ticket.destroy');
+        Route::get('/Transferir/{ticket}/{option}','TicketController@toTransfer')->name('ticket.transfer');
+        Route::post('/Reasignar/{ticket}/{option}','TicketController@reasign')->name('ticket.reasign');
         Route::post('/MisTickets/{employeeNumber}','TicketController@myTickets')->name('ticket.mytickets');
         Route::get('Tickets/subareas','SubareaController@getSubareas');
         Route::get('Tickets/activities','ActivityController@getActivities');
@@ -345,10 +351,10 @@ Route::middleware('auth')->group(function(){
          Route::get('/Tickets/NoAsignados/{department}', 'TicketController@notAssigned')->name('ticket.notAssigned');
          Route::get('/Tickets/Crear','TicketController@create')->name('ticket.create');
          Route::post('/Tickets/Agregar','TicketController@store')->name('ticket.store');
-         Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@show')->name('ticket.show');
+         Route::get('/Tickets/DetallesTicket/{ticket}/{option}', 'TicketController@show')->name('ticket.show');
          Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@edit')->name('ticket.edit');
          Route::post('/Tickets/EditarTicket/{ticket}','TicketController@update')->name('ticket.update');
-         Route::post('/Tickets/EliminarTicket/{ticket}','TicketController@destroy')->name('ticket.destroy');
+         Route::post('/Tickets/EliminarTicket/{ticket}/{ticketOption}/{option}','TicketController@destroy')->name('ticket.destroy');
          Route::post('/MisTickets/{employeeNumber}','TicketController@myTickets')->name('ticket.mytickets');
          Route::get('Tickets/subareas','SubareaController@getSubareas');
          Route::get('Tickets/activities','ActivityController@getActivities');
@@ -368,11 +374,13 @@ Route::middleware('auth')->group(function(){
         Route::get('/Tickets/NoAsignados/{department}', 'TicketController@notAssigned')->name('ticket.notAssigned');
         Route::get('/Tickets/Crear','TicketController@create')->name('ticket.create');
         Route::post('/Tickets/Agregar','TicketController@store')->name('ticket.store');
-        Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@show')->name('ticket.show');
+        Route::get('/Tickets/DetallesTicket/{ticket}/{option}', 'TicketController@show')->name('ticket.show');
         Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@edit')->name('ticket.edit');
         Route::post('/Tickets/EditarTicket/{ticket}','TicketController@update')->name('ticket.update');
-        Route::post('/Tickets/EliminarTicket/{ticket}','TicketController@destroy')->name('ticket.destroy');
+        Route::post('/Tickets/EliminarTicket/{ticket}/{ticketOption}/{option}','TicketController@destroy')->name('ticket.destroy');
         Route::get('/TicketsPorAtender/{user}','TicketController@ticketsForAttend')->name('ticket.attend');
+        Route::get('/Transferir/{ticket}/{option}','TicketController@toTransfer')->name('ticket.transfer');
+        Route::post('/Reasignar/{ticket}/{option}','TicketController@reasign')->name('ticket.reasign');
         Route::get('/AtenderTicket/{user}/{ticket}','TicketController@ticketsTechnician')->name('ticket.technician');
         Route::get('/AyudaDepartamento/{user}','TicketController@help')->name('ticket.help');
         Route::get('/TicketsAsignados/{user}','TicketController@ticketsAgent')->name('ticket.assignment');

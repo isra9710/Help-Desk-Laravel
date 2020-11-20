@@ -65,10 +65,18 @@ Número de empleado
   Descripción
       <textarea class="form-control" readonly  rows="3" value="{{$ticket->description}}"></textarea>
   <br><br>
-  @if(Auth::user()->isAdministrator())
-      <a href="{{route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department])}}" class="btn btn-info">Regresar</a>
+  @if($option==1)
+    @if(Auth::user()->isAdministrator())
+        <a href="{{route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department])}}" class="btn btn-info">Regresar</a>
+    @else
+        <a href="{{route('coordinator.ticket.inbox',['department'=>$ticket->activity->subarea->department])}}" class="btn btn-info">Regresar</a>
+    @endif
   @else
-      <a href="{{route('coordinator.ticket.inbox',['department'=>$ticket->activity->subarea->department])}}" class="btn btn-info">Regresar</a>
+  @if(Auth::user()->isAdministrator())
+        <a href="{{route('administrator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department])}}" class="btn btn-info">Regresar</a>
+    @else
+        <a href="{{route('coordinator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department])}}" class="btn btn-info">Regresar</a>
+    @endif
   @endif
 </form>
 </div>

@@ -33,7 +33,8 @@ class TicketController extends Controller
             ->join('departments', 'subareas.idDepartment', '=', 'departments.idDepartment')
             ->select('tickets.*')->where('departments.idDepartment',$department->idDepartment)->where('tickets.startDate','<',Carbon::now()->subDays(30))
             ->where(function($query){
-                $query->where('idStatus', '=',3)->orWhere('idStatus', '=',4)->orWhere('idStatus', '=',6);})
+                $query->orWhere('idStatus', '=',4)->orWhere('idStatus', '=',6);})
+            ->orWhere('idStatus','=',3)
             ->paginate(15);
             
                
@@ -124,8 +125,8 @@ class TicketController extends Controller
         $ticketsForAttend = Ticket::join('assignments','tickets.idActivity','=', 'assignments.idActivity')
                                     ->join('users','assignments.idUser', '=','users.idUser')
                                     ->where(function($query){
-                                        $query->orWhere('idTechnician',NULL)->orWhere(function($query1){
-                                                $query1->where('idTechnician',auth()->user()->idUser)->where('idStatus',2)
+                                        $query->Where('tickets.idTechnician',NULL)->Where('tickets.idStatus','!=',3)->Where('tickets.idStatus','!=',4)->orWhere(function($query1){
+                                                $query1->where('tickets.idTechnician',auth()->user()->idUser)->orWhere('tickets.idStatus',2)->Where('tickets.idStatus',4)
                                                 ->orWhere(function($query2){
                                                     $query2->join('assignments','tickets.idActivity','=', 'assignments.idActivity')
                                                     ->join('users','assignments.idUser', '=','users.idUser')
@@ -176,12 +177,29 @@ class TicketController extends Controller
         return view ('management.ticket.ticketsForAttendHelp',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'tickets'=>$ticketsForAttend]);
     }
 
-    public function toTransfer(Ticket $ticket){
-        return view('management.ticket.Totransfer',['ticket'=>$ticket]);
+    public function toTransfer(Ticket $ticket, $option){
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
+        $rolesSideBar = Role::all();
+        $agents = User::where('idDepartment',$ticket->activity->subarea->department->idDepartment)->where('idRole',4)->get();
+        return view('management.ticket.Totransfer',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'ticket'=>$ticket,'agents'=>$agents,'option'=>$option]);
     }
     
-    public function reasign(Ticket $ticket){
-        
+    public function reasign(Request $request,Ticket $ticket, $option){
+        $ticket->doubt=FALSE;
+        $ticket->idTechnician=$request->idTechnician;
+        $ticket->update();
+        if($option==1){
+            if(auth()->user()->isAdministrator()){
+                return redirect()->route('administrator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department]);
+            }
+            else{
+                return redirect()->route('coordinator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department]);
+            }
+        }
+        else{
+            return redirect()->route('agent.ticket.attend',['user'=>auth()->user()]);
+        }
     }
     /**
      * Show the form for creating a new resource.
@@ -297,13 +315,13 @@ class TicketController extends Controller
      * @param  \App\Models\Ticket  $Ticket
      * @return \Illuminate\Http\Response
      */
-    public function show(Ticket $ticket)
+    public function show(Ticket $ticket, $option)
     {
         //
         $departmentsSideBar = Department::where('active',TRUE)->get();
         $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
-        return view('management.ticket.showTicket',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'ticket'=>$ticket]);
+        return view('management.ticket.showTicket',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'ticket'=>$ticket,'option'=>$option]);
 
     }
 
@@ -313,13 +331,13 @@ class TicketController extends Controller
      * @param  \App\Models\Ticket  $Ticket
      * @return \Illuminate\Http\Response
      */
-    public function edit(Ticket $ticket)
+    public function edit(Ticket $ticket,$option)
     {
         //
         $departmentsSideBar = Department::where('active',TRUE)->get();
         $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
-        return view('management.ticket.editTicket',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'ticket'=>$ticket]);
+        return view('management.ticket.editTicket',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'ticket'=>$ticket,'option'=>$option]);
     }
 
     /**
@@ -329,18 +347,26 @@ class TicketController extends Controller
      * @param  \App\Models\Ticket  $ticket
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Ticket $ticket)
+    public function update(Request $request, Ticket $ticket, $option=NULL)
     {
         //
         $ticket->ticketDescription = $request->description;
         $ticket->update();
-        if(auth()->user()->isAdministrator()){
-            return redirect()->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
-        }
+        if($option==1)
+            if(auth()->user()->isAdministrator()){
+                return redirect()->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
+            }
+            else{
+                return redirect()->route('coordinator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
+            }
         else{
-            return redirect()->route('coordinator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
+            if(auth()->user()->isAdministrator()){
+                return redirect()->route('administrator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department]);
+            }
+            else{
+                return redirect()->route('coordinator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department]);
+            }
         }
-
     }
     public function updateMyTicket(Request $request, Ticket $ticket)
     {
@@ -364,11 +390,39 @@ class TicketController extends Controller
      * @param  \App\Models\Ticket  $Ticket
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Ticket $Ticket)
+    public function destroy(Ticket $ticket, $ticketOption, $option)
     {
         //
-        $ticket->idStatus=3;
-        $ticket->update();
+        if($ticketOption==1){
+            if($ticket->idStatus==4){
+                $ticket->idStatus=5;
+                $ticket->update();
+            }
+            else{
+                $ticket->idStatus=7;
+                $ticket->update();
+            }
+        }
+        elseif($ticketOption==2){
+            $ticket->idStatus=3;
+            $ticket->update();
+        }
+        else{
+            $ticket->idStatus=4;
+            $ticket->closeDate=Carbon::now();
+            $ticket->update();
+        }
+        if($option==1){
+            if(auth()->user()->isAdministrator()){
+                return redirect()->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
+            }
+            else{
+                return redirect()->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
+            }
+        }
+        else{
+            return redirect()->route('agent.ticket.attend',['user'=>auth()->user()]);
+        }
     }
 
     public function destroyMyTicket(Ticket $Ticket)

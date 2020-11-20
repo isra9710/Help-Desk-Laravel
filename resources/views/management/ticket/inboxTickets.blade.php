@@ -39,16 +39,31 @@
                     <td>{{$ticket->limitDate}}</td>
                     <td>{{$ticket->status->statusName}}</td>
                     <td>
-                    <a href="{{route('administrator.ticket.edit', ['ticket'=>$ticket])}}" class="btn
+                    <a href="{{route('administrator.ticket.edit', ['ticket'=>$ticket,'option'=>1])}}" class="btn
                         btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                        <a href="{{route('administrator.ticket.show', ['ticket'=>$ticket])}}" class="btn
+                        <a href="{{route('administrator.ticket.show', ['ticket'=>$ticket,'option'=>1])}}" class="btn
                         btn-primary btn-sm"><i class="fas fa-eye"></i></a>
-                        @if(($ticket->idStatus==3 || $ticket->idStatus==4 || $ticket->idStatus==6)&& auth()->user()->isAdministrator())
-                        <form action="{{route('administrator.ticket.destroy', ['ticket'=>$ticket])}}"
+                        @if(($ticket->idStatus==4 || $ticket->idStatus==6)&& auth()->user()->isAdministrator())
+                        <form action="{{route('administrator.ticket.destroy', ['ticket'=>$ticket,'ticketOption'=>1,'option'=>1])}}"
                                 method="POST" class="d-inline">
                                 {{ csrf_field() }}
-                                <button type="submit" onclick="return confirm('¿Seguro que desea cancelar?');" class="btn btn-danger btn-sm"><i class="fas fa-undo-alt"></i></button>
+                                <button type="submit" onclick="return confirm('¿Seguro que desea reabrir?');" class="btn btn-danger btn-sm"><i class="fas fa-undo-alt"></i></button>
                             </form >
+                        @else
+                            @if(($ticket->idStatus==1 || $ticket->idStatus==2 || $ticket->idStatus==5 || $ticket->idStatus==7) && auth()->user()->isAdministrator())
+                                <form action="{{route('administrator.ticket.destroy', ['ticket'=>$ticket,'ticketOption'=>2,'option'=>1])}}"
+                                    method="POST" class="d-inline">
+                                    {{ csrf_field() }}
+                                    <button type="submit" onclick="return confirm('¿Seguro que desea cancelar?');" class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
+                                </form >
+                            @endif
+                            @if(($ticket->idStatus==1 || $ticket->idStatus==2 || $ticket->idStatus==5 || $ticket->idStatus==7) && auth()->user()->isAdministrator())
+                                <form action="{{route('administrator.ticket.destroy', ['ticket'=>$ticket,'ticketOption'=>3,'option'=>1])}}"
+                                    method="POST" class="d-inline">
+                                    {{ csrf_field() }}
+                                    <button type="submit" onclick="return confirm('¿Seguro que desea cerrar?');" class="btn btn-danger btn-sm"><i class="fas fa-check"></i></button>
+                                </form >
+                            @endif
                         @endif
                       
                             

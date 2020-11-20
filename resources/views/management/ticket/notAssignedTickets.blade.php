@@ -39,16 +39,16 @@
                     <td>{{$ticket->status->statusName}}</td>
                     <td>
                         
-                    <a href="{{--route('administrator.ticket.show', ['ticket'=>$ticket])--}}" class="btn
-                        btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                        <a href="{{--route('administrator.ticket.show', ['ticket'=>$ticket])--}}" class="btn
-                        btn-primary btn-sm"><i class="fas fa-eye"></i></a>
-                        <a href="" class="btn-outline-secondary btn-sm"><i class="fas fa-map-signs"></i></a>
-                        <form action="{{route('administrator.ticket.destroy', ['ticket'=>$ticket])}}"
+                    <a href="{{route('administrator.ticket.show', ['ticket'=>$ticket,'option'=>2])}}" class="btn
+                        btn-warning btn-sm"><i class="fas fa-eye"></i></a>
+                        <a href="{{route('administrator.ticket.edit', ['ticket'=>$ticket,'option'=>2])}}" class="btn
+                        btn-primary btn-sm"><i class="fas fa-edit"></i></a>
+                        <a href="{{route('administrator.ticket.transfer',['ticket'=>$ticket,'option'=>1])}}" class="btn-outline-secondary btn-sm"><i class="fas fa-map-signs"></i></a>
+                        <form action="{{route('administrator.ticket.destroy', ['ticket'=>$ticket,'ticketOption'=>2,'option'=>1])}}"
                             method="POST" class="d-inline">
                             {{ csrf_field() }}
                             
-                            <input type="submit" onclick="return confirm('¿Seguro que desa cancelar?');" class="btn btn-danger btn-sm" value="X">
+                            <button type="submit" onclick="return confirm('¿Seguro que desa cancelar?');" class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
                         </form>
                     </td>
                 </tr>

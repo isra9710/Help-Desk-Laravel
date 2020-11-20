@@ -21,9 +21,9 @@
                 <th scope="col">Días</th>
                 <th scope="col">Fecha Inicio</th>
                 <th scope="col">Fecha Fin</th>
+                <th scope="col">Fecha Cierre</th>
                 <th scope="col">Estado</th>
                 <th scope="col">Técnico</th>
-                <th scope="col">Temporal</th>
                 <th scope="col">Acciones</th>
                 <th scope="col"></th>
             </tr>
@@ -38,6 +38,7 @@
                     <td>{{$ticket->activity->days}}</td>
                     <td>{{$ticket->startDate}}</td>
                     <td>{{$ticket->limitDate}}</td>
+                    <td>{{$ticket->closeDate}}
                     <td>{{$ticket->status->statusName}}</td>
                     @if($ticket->user)
                     <td>{{$ticket->user->name}}</td>
@@ -51,12 +52,14 @@
                         <a href="{{route('agent.ticket.technician',['user'=>auth()->user(),'ticket'=>$ticket])}}" class="btn btn-success 
                         btn-sm"><i class="fas fa-sign-in-alt"></i></a>
                     @endif
-                        <form action=""
-                            method="POST" class="d-inline">
-                            {{ csrf_field() }}
-                           
-                            <input type="submit" onclick="return confirm('¿Seguro que desea borrar?');" class="btn btn-danger btn-sm"  value="X">
-                        </form>
+                    @if($ticket->idStatus==2 && $ticket->idTechnician==auth()->user()->idUser)
+                    <form action="{{route('agent.ticket.destroy', ['ticket'=>$ticket,'ticketOption'=>3,'option'=>2])}}"
+                                    method="POST" class="d-inline">
+                                    {{ csrf_field() }}
+                                    <button type="submit" onclick="return confirm('¿Seguro que desea cerrar?');" class="btn btn-danger btn-sm"><i class="fas fa-check"></i></button>
+                                </form >
+                                <a href="{{route('agent.ticket.transfer',['ticket'=>$ticket,'option'=>2])}}" class="btn-outline-secondary btn-sm"><i class="fas fa-map-signs"></i></a>
+                    @endif
                     </td>
                 </tr>
             @endforeach
