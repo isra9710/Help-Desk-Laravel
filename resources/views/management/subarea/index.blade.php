@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Subáreas')
+@section('title', 'Subáreas para '.$department->departmentName)
 
 @section('icon_title')
 <i class="fas fa-monument"></i>
@@ -11,13 +11,15 @@
 @section('content')
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-   <!-- <div class="container mt-5">
-        <h2 class="text-center alert alert-danger">Gestión Empleados</h2>
-    </div>-->
+   
     <div class="row">
         <div class="col-sm-4">
-                <h4 class="text-center alert alert-info ">Agregar nueva subárea para {{$department->departmentName}}</h4>
+                <h4 class="text-center alert alert-info ">Agregar nueva subárea</h4>
+                @if(auth()->user()->isAdministrator())
                 <form action="{{route('administrator.subarea.store',['department'=>$department])}}" method="POST">
+                @else
+                <form action="{{route('coordinator.subarea.store',['department'=>$department])}}" method="POST">
+                @endif 
                 {{ csrf_field() }}
 
                     Nombre

@@ -123,8 +123,23 @@ class TicketController extends Controller
         $rolesSideBar = Role::all();
         $ticketsForAttend = Ticket::join('assignments','tickets.idActivity','=', 'assignments.idActivity')
                                     ->join('users','assignments.idUser', '=','users.idUser')
+                                    ->where(function($query){
+                                        $query->orWhere('idTechnician',NULL)->orWhere(function($query1){
+                                                $query1->where('idTechnician',auth()->user()->idUser)->where('idStatus',2)
+                                                ->orWhere(function($query2){
+                                                    $query2->join('assignments','tickets.idActivity','=', 'assignments.idActivity')
+                                                    ->join('users','assignments.idUser', '=','users.idUser')
+                                                    ->select('tickets.*')
+                                                    ->where('users.idUser',auth()->user()->idUser)->where('tickets.idTechnician',NULL)->where('assignments.temporary',TRUE);
+                                        });
+                                    });
+                                  
+                                    })
                                     ->select('tickets.*')
-                                    ->where('users.idUser',$user->idUser)->where('idTechnician',NULL)->distinct()->paginate(1);
+                                    ->distinct()
+                                    ->where('users.idUser',$user->idUser)
+                                   
+                                    ->paginate(10);
         return view('management.ticket.ticketsForAttend',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'tickets'=>$ticketsForAttend]);
     }
     /*Cuando un agente levanta la mano, se actualiza el campo "idTechinician" de
@@ -161,9 +176,13 @@ class TicketController extends Controller
         return view ('management.ticket.ticketsForAttendHelp',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'tickets'=>$ticketsForAttend]);
     }
 
-
-
-
+    public function toTransfer(Ticket $ticket){
+        return view('management.ticket.Totransfer',['ticket'=>$ticket]);
+    }
+    
+    public function reasign(Ticket $ticket){
+        
+    }
     /**
      * Show the form for creating a new resource.
      *@param boolean $guest
@@ -219,11 +238,6 @@ class TicketController extends Controller
             $dataFile->idTicket=$ticket->idTicket;
             $dataFile->save();
             $file= $request->file('file');
-            /*$fileName = $file->getClientOriginalName();
-            $fileName = time().'.'.$fileName;
-            $path = $file->storeAs('public',$fileName);
-            $dataFile->directoryFile= $path;
-            $dataFile->update();*/
             if($request->employeeNumber){
                 $userName = User::Where('username',$request->employeeNumber)->first();
                 $fileName =$userName.$dataFile->idFile.$request->file->getClientOriginalName();
@@ -286,6 +300,11 @@ class TicketController extends Controller
     public function show(Ticket $ticket)
     {
         //
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
+        $rolesSideBar = Role::all();
+        return view('management.ticket.showTicket',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'ticket'=>$ticket]);
+
     }
 
     /**
@@ -313,9 +332,30 @@ class TicketController extends Controller
     public function update(Request $request, Ticket $ticket)
     {
         //
-        $ticket->description = $request->description;
+        $ticket->ticketDescription = $request->description;
+        $ticket->update();
+        if(auth()->user()->isAdministrator()){
+            return redirect()->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
+        }
+        else{
+            return redirect()->route('coordinator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
+        }
+
+    }
+    public function updateMyTicket(Request $request, Ticket $ticket)
+    {
+        //
+        $ticket->ticketDescription = $request->description;
         $ticket->update();
         return redirect()->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
+        //return back();
+    }
+
+    public function closeMyTicket(Ticket $ticket){
+        
+    }
+    public function close(Ticket $ticket){
+
     }
 
     /**
@@ -330,4 +370,12 @@ class TicketController extends Controller
         $ticket->idStatus=3;
         $ticket->update();
     }
+
+    public function destroyMyTicket(Ticket $Ticket)
+    {
+        //
+        $ticket->idStatus=3;
+        $ticket->update();
+    }
+
 }

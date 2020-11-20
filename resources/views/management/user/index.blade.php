@@ -133,20 +133,20 @@
                                 <form action="{{route('administrator.user.destroy',['user'=>$user])}}" method="POST">
                                     {{ csrf_field() }}
                                     @if($user->active)
-                                    <input type="submit" onclick="return confirm('¿Seguro que desea desactivar usuario?');" class="btn btn-danger btn-sm" value="X">
+                                    <button type="submit" onclick="return confirm('¿Seguro que desea desactivar usuario?');" class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
                                     @else
-                                     <input type="submit" onclick="return confirm('¿Seguro que desea reactivar usuario?');" class="btn btn-success"   btn-xs value="✓">
+                                     <button type="submit" onclick="return confirm('¿Seguro que desea reactivar usuario?');" class="btn btn-success btn-m"><i class="fas fa-check"></i></button>
                                      @endif
                                      </form>
                                 @elseif(auth()->user()->isCoordinator())
                                     <form action="{{route('coordinator.user.destroy', ['user'=>$user])}}" method="POST">
                                     {{ csrf_field() }}
-                                    <input type="submit" onclick="return confirm('¿Seguro que desa desactivar usuario?');" class="btn btn-danger btn-sm" value="X">
+                                    <button type="submit" onclick="return confirm('¿Seguro que desa desactivar usuario?');" class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
                                      </form>
                                 @else
                                     <form action="{{route('assistant.user.destroy', ['user'=>$user])}}" method="POST">
                                     {{ csrf_field() }}
-                                    <input type="submit" onclick="return confirm('¿Seguro que desa desactivar usuario?');" class="btn btn-danger btn-sm" value="X">
+                                    <button type="submit" onclick="return confirm('¿Seguro que desa desactivar usuario?');" class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
                                      </form>
                                 @endif
                                

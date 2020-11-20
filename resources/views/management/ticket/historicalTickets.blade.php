@@ -9,7 +9,7 @@
 @section('content')
           
 <div class="col-sm-12 offset-0">
-    <h4 class="text-center aler alert-info">Bandeja de histórico</h4>
+    <h4 class="text-center aler alert-info">Bandeja de histórico de {{$department->departmentName}}</h4>
     @if(count($tickets)>0)
         <table class="table table-hover">
             <thead>
@@ -21,15 +21,14 @@
                 <th scope="col">Días</th>
                 <th scope="col">Fecha Inicio</th>
                 <th scope="col">Fecha Fin</th>
+                <th scope="col">Fecha Cierre</th>
                 <th scope="col">Estado</th>
-                <th scope="col">Acciones</th>
-                <th scope="col"></th>
+               
             </tr>
             </thead>
             <tbody>
             @foreach ($tickets as $ticket)
                 <tr>
-                    {{--dd($ticket)--}}
                     <td>{{$ticket->idTicket}}</td>
                     <td>{{$ticket->activity->subarea->department->departmentName}}</td>
                      <td>{{$ticket->activity->subarea->subareaName}}</td>
@@ -37,6 +36,7 @@
                     <td>{{$ticket->activity->days}}</td>
                     <td>{{$ticket->startDate}}</td>
                     <td>{{$ticket->limitDate}}</td>
+                    <td>{{$ticket->closeDate}}
                     <td>{{$ticket->status->statusName}}</td>
                     <td></td>
                     <td></td>

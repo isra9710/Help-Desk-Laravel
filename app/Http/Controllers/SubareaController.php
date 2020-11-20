@@ -49,7 +49,19 @@ class SubareaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Department $department, Request $request)
+    public function create(Request $request)
+    {
+        //
+       
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Department $department,Request $request)
     {
         //
         $subarea = new Subarea();
@@ -62,17 +74,6 @@ class SubareaController extends Controller
         else{
             return redirect()->route('coordinator.subarea.index',['department'=>$department]);
         }
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**

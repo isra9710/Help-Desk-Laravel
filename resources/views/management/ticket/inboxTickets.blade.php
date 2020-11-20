@@ -43,22 +43,21 @@
                         btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                         <a href="{{route('administrator.ticket.show', ['ticket'=>$ticket])}}" class="btn
                         btn-primary btn-sm"><i class="fas fa-eye"></i></a>
+                        @if(($ticket->idStatus==3 || $ticket->idStatus==4 || $ticket->idStatus==6)&& auth()->user()->isAdministrator())
                         <form action="{{route('administrator.ticket.destroy', ['ticket'=>$ticket])}}"
-                            method="POST" class="d-inline">
-                            {{ csrf_field() }}
-                            <input type="submit" onclick="return confirm('¿Seguro que desea borrar?');" class="btn btn-danger btn-sm" value="X">
-                        </form>
-                    <a>
+                                method="POST" class="d-inline">
+                                {{ csrf_field() }}
+                                <button type="submit" onclick="return confirm('¿Seguro que desea cancelar?');" class="btn btn-danger btn-sm"><i class="fas fa-undo-alt"></i></button>
+                            </form >
+                        @endif
+                      
+                            
+                    <a href="{{route('administrator.message.create',['ticket'=>$ticket])}}"class="btn btn-info btn-sm">
                     <i class="far fa-comments"></i>
                     </a>
                     <a >
-                    <i class="fas fa-check"></i>
-                    </a>
-                    <a href="{{route('administrator.file.create')}}">
+                    <a class="btn btn-light btn-sm" href="{{route('administrator.file.create',['ticket'=>$ticket])}}">
                     <i class="fas fa-file-upload"></i>
-                    </a>
-                    <a>
-                    <i class="fas fa-undo-alt"></i>
                     </a>
                     </td>
                 </tr>

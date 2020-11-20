@@ -22,6 +22,8 @@
                 <th scope="col">Fecha Inicio</th>
                 <th scope="col">Fecha Fin</th>
                 <th scope="col">Estado</th>
+                <th scope="col">Técnico</th>
+                <th scope="col">Temporal</th>
                 <th scope="col">Acciones</th>
                 <th scope="col"></th>
             </tr>
@@ -37,12 +39,18 @@
                     <td>{{$ticket->startDate}}</td>
                     <td>{{$ticket->limitDate}}</td>
                     <td>{{$ticket->status->statusName}}</td>
+                    @if($ticket->user)
+                    <td>{{$ticket->user->name}}</td>
+                    @else
+                    <td>No asignado</td>
+                    @endif
                     <td>
                     <a href="" class="btn
                         btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                    @if($ticket->idStatus==1)
                         <a href="{{route('agent.ticket.technician',['user'=>auth()->user(),'ticket'=>$ticket])}}" class="btn btn-success 
                         btn-sm"><i class="fas fa-sign-in-alt"></i></a>
-
+                    @endif
                         <form action=""
                             method="POST" class="d-inline">
                             {{ csrf_field() }}

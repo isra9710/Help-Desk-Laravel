@@ -10,15 +10,15 @@
 <div class="col-sm-12 offset-0" id="ticket">
   <h4 class="text-center alert alert-info ">Actualiza la descripción del ticket</h4>
   @if(Auth::user()->isAdministrator())
-  <form action="{{route('administrator.ticket.update',['ticket'=>$ticket])}}" method="POST">
+  <form action="{{route('administrator.ticket.updateMyTicket',['ticket'=>$ticket])}}" method="POST">
   @elseif(Auth::user()->isCoordinator())
-  <form action="{{route('coordinator.ticket.update',['ticket'=>$ticket])}}" method="POST">
+  <form action="{{route('coordinator.ticket.updateMyTicket',['ticket'=>$ticket])}}" method="POST">
   @elseif(Auth::user()->isAssistant())
-  <form action="{{route('assistant.ticket.update',['ticket'=>$ticket])}}" method="POST">
+  <form action="{{route('assistant.ticket.updateMyTicket',['ticket'=>$ticket])}}" method="POST">
   @elseif(Auth::user()->isAgent())
-  <form action="{{route('agent.ticket.update',['ticket'=>$ticket])}}" method="POST">
+  <form action="{{route('agent.ticket.updateMyTicket',['ticket'=>$ticket])}}" method="POST">
   @else
-  <form action="{{route('user.ticket.update',['ticket'=>$ticket])}}" method="POST">
+  <form action="{{route('user.ticket.updateMyTicket',['ticket'=>$ticket])}}" method="POST">
   @endif
   {{ csrf_field() }}
   <br><br>

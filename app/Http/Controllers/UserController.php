@@ -225,7 +225,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edite(User $user)
+    public function edit(User $user)
     {
         //
           /*

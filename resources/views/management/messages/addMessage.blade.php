@@ -1,8 +1,8 @@
 @extends('layouts.main')
-@section('title', 'Añadir archivo')
+@section('title', 'Añadir comentario')
 
 @section('icon_title')
-<i class="far fa-file"></i>
+<i class="fas fa-comment-alt"></i>
 @endsection
 @section('content')
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -10,20 +10,14 @@
    
     <div class="row">
         <div class="col-sm-4">
-                <h4 class="text-center alert alert-info ">Añade un archivo</h4>
+                <h4 class="text-center alert alert-info ">Añade un comentario</h4>
                 @if(Auth::user()->isAdministrator())
-                <form action="{{route('administrator.file.store',['ticket'=>$ticket])}}" method="POST" enctype="multipart/form-data">
+                <form action="{{route('administrator.message.store',['ticket'=>$ticket])}}" method="POST" enctype="multipart/form-data">
                 @else
-                <form action="{{route('coordinator.file.store',['ticket'=>$ticket,'my'=>FALSE])}}" method="POST" enctype="multipart/form-data">
+                <form action="{{route('coordinator.message.store',['ticket'=>$ticket])}}" method="POST" enctype="multipart/form-data">
                 @endif
                 {{ csrf_field() }}
-                <div class="input-group">
-                      <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="file" name="file">
-                        <label class="custom-file-label" for="file">Busca un archivo</label>
-                      </div>
-                      
-                    </div>
+                <textarea class="form-control" required name="text" rows="3"></textarea>
                     <br><br>
                 <input type="submit" class="btn btn-success" value="Agregar">
                 @if(auth()->user()->isAdministrator())
@@ -37,32 +31,29 @@
         </div>
 
 <div class="col-sm-7 offset-1">
-                <h4 class="text-center aler alert-info">Archivos asociados</h4>
-                @if(count($files)>0)
+                <h4 class="text-center aler alert-info">Mensajes asociados</h4>
+                @if(count($messages)>0)
                 <table class="table table-hover">
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th scope="col">Nombre del archivo </th>
-                        <th scope="col">Descargar</th>
+                        <th scope="col">Mensaje </th>
                         <th scope="col"></th>
                         <th scope="col"></th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach ($files as $file)
+                    @foreach ($messages as $message)
                         <tr>
-                            <td>{{$file->idFile}}</td>
-                            <td>{{$file->directoryFile}}</td>
-                            <td> <a href="{{route('administrator.file.download',['file'=>$file])}}">Descargar</a></td>
-                             
+                            <td>{{$message->idMessage}}</td>
+                            <td>{{$message->text}}</td>                         
                         </tr>
                     @endforeach
                     </tbody>
                 </table>
-            {{$files->render()}}
+            {{$messages->render()}}
             @else
-            <h4 class="text-center aler alert-warning"> No hay archivos registrados </h4>
+            <h4 class="text-center aler alert-warning"> No hay mensajes de este ticket </h4>
             @endif
         </div>          
 @endsection

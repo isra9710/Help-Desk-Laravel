@@ -70,7 +70,8 @@ class ActivityController extends Controller
         $activity->activityName = $request->activityName;
         $activity->idSubarea =  $subarea->idSubarea;
         $activity->idPriority = $request->idPriority;
-        $activity->days = $request->activityDescription;
+        $activity->days = $request->days;
+        $activity->activityDescription = $request->activityDescription;
         $activity->save();
         return redirect()->route('administrator.activity.index',['subarea'=>$subarea]);
     }

@@ -60,7 +60,7 @@ class AssignmentController extends Controller
      */
     public function store(User $user=NULL,Subarea $subarea=NULL, $temporary=NULL,Request $request)  {
         //
-        $activities = Activity::where('idSubarea',$idSubarea)->get();
+        $activities = Activity::where('idSubarea',$subarea)->get();
         foreach($activities as $activity){
             $assignment = new Assignment();
             $assignment->idActivity=$activity->idActivity;
@@ -78,20 +78,20 @@ class AssignmentController extends Controller
 
 
 
-    public function storeAgent(Activity $activity,$temporary=NULL, Request $request)
+    public function storeAgent(Activity $activity=NULL, Request $request)
     {
         $assignment = new Assignment();
-        $assignment->idActivity = $activity->idActivity;
-        $assignment->idUser = $request->idAgent;
-        if($temporary){
-            $assignment->temporary=TRUE;
-        }
-        else{
-            $assignment->temporary=FALSE;
-        }
-        $assignment->save();
+        //dd($agent,$temporary,$all);
+       
+    
+            $assignment->idActivity = $activity->idActivity;
+            $assignment->idUser = $request->idAgent;
+            $assignment->save();
+            return redirect()->route('administrator.assignment.activity',['activity'=>$activity]);
         
-        return redirect()->route('administrator.assignment.activity',['activity'=>$activity]);
+        
+        
+        
     }
 
 
@@ -118,18 +118,46 @@ class AssignmentController extends Controller
         $rolesSideBar = Role::all();
         Assignment::where('temporary',TRUE)->where('idUser',$user->idUser)->delete();
         $subarea=Assignment::where('idUser',$user->idUser)->first();
-        $subarea = $subarea->activity->subarea;
-        $assignments = Assignment::where('idUser',$user->idUser)->paginate(3);
+        //$subarea = $subarea->activity->subarea;
+        $assignments = Assignment::where('idUser',$user->idUser)->get();
+        $assignments1 = Assignment::where('idUser','!=',$user->idUser)->Where(function($query){
+           $query->where('temporary',TRUE);
+        })->paginate(3);
         $temporaryAssignments = Assignment::join('activities', 'activities.idActivity', '=', '');
         $agents = User::where('idUser','!=',$user->idUser)->where('idDepartment',$user->idDepartment)->where('idRole',4)->get();
-        return view ('management.assignment.temporaryAssignment',['departmentsSideBar'=>$departmentsSideBar, 'rolesSideBar'=>$rolesSideBar, 'subareasSideBar'=>$subareasSideBar,'assignments'=>$assignments,'subarea'=>$subarea,'agents'=>$agents]);
+        return view ('management.assignment.temporaryAssignment',['departmentsSideBar'=>$departmentsSideBar, 'rolesSideBar'=>$rolesSideBar, 'subareasSideBar'=>$subareasSideBar,'assignments'=>$assignments,'agents'=>$agents,'user'=>$user,'assignments1'=>$assignments1]);
         
         //public function index($idRole=null, $idDepartment=null)
     }
 
 
-    public function temporaryAssignment(Subarea $subarea=null,Request $request){
-
+    public function temporaryAssignment(User $agent,$all=FALSE,Request $request){
+        
+            if($all){
+                $replaceAssignments = Assignment::where('idUser',$agent->idUser)->get();
+                foreach($replaceAssignments as $assignment){
+                    $newAssignment = new Assignment();
+                    $newAssignment->idActivity=$assignment->idActivity;
+                    $newAssignment->idUser=$request->idUser;
+                    $newAssignment->temporary=TRUE;
+                    $newAssignment->save();
+                }
+            }
+            else{
+                $assignment = new Assignment();
+                $assignment->idActivity = $request->idActivity;
+                $assignment->idUser = $request->idAgent;
+                $assignment->temporary=TRUE;
+                $assignment->save();
+            }
+            if(auth()->user()->isAdministrator()){
+                return redirect()->route('administrator.user.status',['user'=>$agent]);
+            }
+            else{
+                return redirect()->route('assistant.user.status',['user'=>$agent]);
+            }
+            
+        
     }
 
     /**

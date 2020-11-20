@@ -13,35 +13,44 @@
 
     <div class="row">
         <div class="col-sm-4">
-                <h4 class="text-center alert alert-info ">Agregar agente temporal para {{$subarea->subareaName}}</h4>
-                <form>
+                <h4 class="text-center alert alert-info ">Agregar agente temporal para cubrir a {{$user->name}}</h4>
+                @if(auth()->user()->isAdministrator())
+                <form action="{{route('administrator.assignment.temporary.activity',['agent'=>$user])}}" method="POST"> 
+                @else
+                <form action="{{route('assistant.assignment.temporary.activity',['agent'=>$user])}}" method="POST"> 
+                @endif
+                {{ csrf_field() }}
                    <select class="form-control" name="idAgent">
-                   <option value="">Escoge un agente para {{$subarea->subareaName}}</option>
+                   <option value="">Escoge un agente </option>
                    @foreach($agents as $agent)
                    <option value="{{$agent->idUser}}">{{$agent->name}}</option>
                    @endforeach
                     </select>
                     <br><br>
-                    <select class="form-control" name="idAgent">
+                    <select class="form-control" name="idActivity">
                    <option value="">Escoge una actividad </option>
                    @foreach($assignments as $assignment)
                    <option value="{{$assignment->activity->idActivity}}">{{$assignment->activity->activityName}}</option>
                    @endforeach
                     </select>
                 <br><br>
-                <a href=""  class="btn btn-success">Agregar actividad</a>
+                <input type="submit" class="btn btn-success" value="Agregar">
                 <br><br>
-                
-                <a href="{{route('administrator.assignment.temporary.activity')}}" class="btn btn-secondary">Agregar subárea de manera temporal</a>
-                <a href="{{route('administrator.assignment.temporary.subarea',['subarea'=>$subarea])}}" class="btn btn-info">Regresar</a>
+                @if(auth()->user()->isAdministrator())
+                <a href="{{route('administrator.assignment.temporary.all',['agent'=>$user,'all'=>TRUE])}}" class="btn btn-secondary">Agregar todas la actividades de manera temporal</a>
+                <a href="" class="btn btn-info">Regresar</a>
+                @else
+                <a href="{{route('assistant.assignment.temporary.all',['agent'=>$user,'all'=>TRUE])}}" class="btn btn-info">Agregar todas la actividades de manera temporal</a>
+                <a href="" class="btn btn-info">Regresar</a>
+                @endif
                 <br>
                 <br>
             </form>
         </div>
 
         <div class="col-sm-7 offset-1">
-                <h4 class="text-center aler alert-info">Agentes asignados para {{$subarea->subareaName}}</h4>
-                @if(count($assignments)>0)
+                <h4 class="text-center aler alert-info">Agentes asignados para cubrir a {{$user->name}}</h4>
+                @if(count($assignments1)>0)
                 <table class="table table-hover">
                     <thead>
                     <tr>
@@ -59,7 +68,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach ($assignments as $assignment)
+                    @foreach ($assignments1 as $assignment)
                         <tr>
                             <td>{{$assignment->idAssignment}}</td>
                             <td>{{ $assignment->idUser}}</td>
@@ -93,9 +102,9 @@
                     @endforeach
                     </tbody>
                 </table>
-            {{$assignments->render()}}
+            {{$assignments1->render()}}
             @else
-            <h4 class="text-center aler alert-warning"> No hay agentes temporales para {{$subarea->subareaName}}</h4>
+            <h4 class="text-center aler alert-warning"> No hay agentes temporales para cubrir a {{$user->name}}</h4>
             @endif
         </div>
 

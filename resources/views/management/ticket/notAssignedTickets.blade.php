@@ -29,7 +29,6 @@
             <tbody>
             @foreach ($tickets as $ticket)
                 <tr>
-                    {{--dd($ticket)--}}
                     <td>{{$ticket->idTicket}}</td>
                     <td>{{$ticket->activity->subarea->department->departmentName}}</td>
                      <td>{{$ticket->activity->subarea->subareaName}}</td>
@@ -38,17 +37,13 @@
                     <td>{{$ticket->startDate}}</td>
                     <td>{{$ticket->limitDate}}</td>
                     <td>{{$ticket->status->statusName}}</td>
-                    <td></td>
-                    <td></td>
                     <td>
                         
                     <a href="{{--route('administrator.ticket.show', ['ticket'=>$ticket])--}}" class="btn
-                        btn-warning btn-sm">Editar</a>
+                        btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                         <a href="{{--route('administrator.ticket.show', ['ticket'=>$ticket])--}}" class="btn
                         btn-primary btn-sm"><i class="fas fa-eye"></i></a>
-
-                    </td>
-                    <td>
+                        <a href="" class="btn-outline-secondary btn-sm"><i class="fas fa-map-signs"></i></a>
                         <form action="{{route('administrator.ticket.destroy', ['ticket'=>$ticket])}}"
                             method="POST" class="d-inline">
                             {{ csrf_field() }}

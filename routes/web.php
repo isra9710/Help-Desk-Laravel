@@ -135,8 +135,8 @@ Route::middleware('auth')->group(function(){
             //Asignación de un usuario a una actividad
             Route::post('/AsignaciónUsuario/{activity}','AssignmentController@storeAgent')->name('assignment.store.agent');
             Route::post('/Eliminación/{assignment}/{user?}/{activity?}','AssignmentController@destroy')->name('assignment.destroy');
-            Route::get('/AsignandoActividadTemporal','AssignmentController@temporaryAssignment')->name('assignment.temporary.activity');
-        Route::get('/AsignandoSubareaTemporal/{subarea}','AssignmentController@temporaryAssignment')->name('assignment.temporary.subarea');
+            Route::post('/AsignaciónTemporalActividad/{agent}','AssignmentController@temporaryAssignment')->name('assignment.temporary.activity');
+            Route::get('/AsignaciónTemporalActividades/{all}','AssignmentController@temporaryAssignment')->name('assignment.temporary.all');
 
 
             //La siguiente es para gestión de tickets
@@ -193,11 +193,20 @@ Route::middleware('auth')->group(function(){
             Route::get('Tickets/activities','ActivityController@getActivities');
 
 
+            //Muestra formulario para añadir un archivo
+            Route::get('/Archivo/Crear/{ticket}','FileController@create')->name('file.create');
+            //Muestra formulario para añadir archivo a tu ticket
+            Route::get('/Archivo/CrearMiArchivo/{ticket}','FileController@create')->name('myfile.create');
+            //Se crea la asignación del archivo al ticket
+            Route::post('/Archivo/{ticket}','FileController@store')->name('file.store');
 
-            Route::get('Archivo/Crear','FileController@create')->name('file.create');
-            Route::post('Archivo','FileController@store')->name('file.store');
+            Route::get('/DescargarArchivo/{file}','FileController@download')->name('file.download');
 
-            Route::get('Comentarios/Agregar','FileController@create')->name('comment.create');
+            Route::get('/Mensaje/Crear/{ticket}','MessageController@create')->name('message.create');
+            Route::post('/Mensajes/{ticket}','MessageController@store')->name('message.store');
+            //El propietario del ticket puede asociar un archivo
+            //Route::post('/MiArchivo/{ticket}/{my}','FileController@store')->name('myfile.store');
+            //Route::get('Comentarios/Agregar','FileController@create')->name('comment.create');
         //}
        // abort(401,'No tienes autorización para entrar a esta sección');
     });
@@ -234,7 +243,7 @@ Route::middleware('auth')->group(function(){
         //La siguiente sección es para la gestión de subáreas 
 
         Route::get('/SubAreas/{department}', 'SubareaController@index')->name('subarea.index');
-        Route::post('/SubAreas/Agregar','SubAreaController@store')->name('subarea.store');
+        Route::post('/SubAreas/Agregar/{department}','SubareaController@store')->name('subarea.store');
         Route::get('/SubAreas/VerSubArea/{subarea?}', 'SubareaController@edit')->name('subarea.edit');
         Route::post('/SubAreas/EditarSubArea/{subarea}','SubareaController@update')->name('subarea.update');
         Route::post('/SubAreas/EliminarSubArea/{subarea}','SubareaController@destroy')->name('subarea.destroy');
@@ -319,6 +328,8 @@ Route::middleware('auth')->group(function(){
         Route::post('/AsignaciónActividad/{user}','AssignmentController@storeActivity')->name('assignment.store.activity');
         //Asignación de un usuario a una actividad
         Route::post('/AsignaciónUsuario/{activity}','AssignmentController@storeAgent')->name('assignment.store.agent');
+        Route::post('AsignaciónTemporalActividad/{agent}','AssignmentController@temporaryAssignment')->name('assignment.temporary.activity');
+        Route::get('/AsignaciónTemporalActividades/{agent}/{all}','AssignmentController@temporaryAssignment')->name('assignment.temporary.all');
         Route::post('/Eliminación/{assignment}/{user?}/{activity?}','AssignmentController@destroy')->name('assignment.destroy');
 
 

@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
 use App\Models\Ticket;
 use App\Models\Activity;
 use App\Models\Subarea;
@@ -10,9 +8,10 @@ use App\Models\Department;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\File;
-use Carbon\Carbon;
+use App\Models\Message;
+use Illuminate\Http\Request;
 
-class FileController extends Controller
+class MessageController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,8 +34,8 @@ class FileController extends Controller
         $departmentsSideBar = Department::where('active',TRUE)->get();
         $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
-        $files=File::where('idTicket',$ticket->idTicket)->paginate(2);
-        return view('management.file.addFile',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'ticket'=>$ticket,'files'=>$files]);
+        $messages = Message::where('idTicket',$ticket->idTicket)->paginate(4);
+        return view('management.messages.addMessage',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'ticket'=>$ticket,'messages'=>$messages]);
     }
 
     /**
@@ -45,48 +44,19 @@ class FileController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Ticket $ticket,Request $request)
+    public function store(Request $request,Ticket $ticket)
     {
         //
-        $dataFile = new File();
-        $fileName = "";//Nombre del archivo
-        $dataFile->idTicket=$ticket->idTicket;
-        $dataFile->save();
-        $file= $request->file('file');
-        $fileName =auth()->user()->username.$dataFile->idFile.$request->file->getClientOriginalName();
-        $path = $file->storeAs('public',$fileName);
-        $dataFile->directoryFile = $path;
-        $dataFile->update();
+        $message = new Message();
+        $message->idTicket=$ticket->idTicket;
+        //$message->text=$request->text;
+        $message->save();
         if(auth()->user()->isAdministrator()){
             return redirect()->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
         }
         else{
             return redirect()->route('coordinator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
         }
-        
-       
-
-    }
-    public function myStore(Ticket $ticket){
-        if(auth()->user()->isAdministrator()){
-
-        }
-        elseif(auth()->user()->isCoordinator()){
-
-        }
-        elseif(auth()->user()->isAssistant()){
-
-        }
-        elseif(auth()->user()->isAgent()){
-
-        }
-        elseif(auth()->user()->isUser()){
-
-        }
-        else{
-
-        }
-
     }
 
     /**
@@ -132,9 +102,5 @@ class FileController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function download(File $file){
-        return response()->download('storage/'.$file->directoryFile);
     }
 }
