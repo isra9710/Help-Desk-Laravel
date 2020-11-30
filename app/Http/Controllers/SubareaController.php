@@ -6,6 +6,7 @@ use App\Models\Subarea;
 use App\Models\Department;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SubareaController extends Controller
 {

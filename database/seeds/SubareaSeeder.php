@@ -15,27 +15,33 @@ class SubareaSeeder extends Seeder
         //
         $subarea = new Subarea();
         $subarea->subareaName ="Sistemas";
+        $subarea->subareaDescription="X";
         $subarea->idDepartment=1;
         $subarea->save();
         $subarea = new Subarea();
         $subarea->subareaName ="Soporte técnico";
         $subarea->idDepartment=1;
+        $subarea->subareaDescription="X";
         $subarea->save();
         $subarea = new Subarea();
         $subarea->subareaName ="Administrativas";
         $subarea->idDepartment=1;
+        $subarea->subareaDescription="X";
         $subarea->save();
         $subarea = new Subarea();
         $subarea->subareaName ="Limpieza";
         $subarea->idDepartment=2;
+        $subarea->subareaDescription="X";
         $subarea->save();
         $subarea = new Subarea();
         $subarea->subareaName ="Transporte";
         $subarea->idDepartment=2;
+        $subarea->subareaDescription="X";
         $subarea->save();
         $subarea = new Subarea();
         $subarea->subareaName ="Centro de copiado";
         $subarea->idDepartment=2;
+        $subarea->subareaDescription="X";
         $subarea->save();
     }
 }

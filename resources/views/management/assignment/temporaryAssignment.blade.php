@@ -15,11 +15,13 @@
         <div class="col-sm-4">
                 <h4 class="text-center alert alert-info ">Agregar agente temporal para cubrir a {{$user->name}}</h4>
                 @if(auth()->user()->isAdministrator())
-                <form action="{{route('administrator.assignment.temporary.activity',['agent'=>$user])}}" method="POST"> 
-                @else
-                <form action="{{route('assistant.assignment.temporary.activity',['agent'=>$user])}}" method="POST"> 
-                @endif
+                <form action="{{route('administrator.assignment.temporary.activity',['all'=>FALSE,'agent'=>$user])}}" method="POST"> 
                 {{ csrf_field() }}
+                @else
+                <form action="{{route('assistant.assignment.temporary.activity',['all'=>FALSE,'agent'=>$user])}}" method="POST"> 
+                 
+                {{ csrf_field() }}
+                @endif
                    <select class="form-control" name="idAgent">
                    <option value="">Escoge un agente </option>
                    @foreach($agents as $agent)
@@ -34,18 +36,41 @@
                    @endforeach
                     </select>
                 <br><br>
-                <input type="submit" class="btn btn-success" value="Agregar">
+                <input type="submit" class="btn btn-success" value="Agregar actividad">
                 <br><br>
-                @if(auth()->user()->isAdministrator())
-                <a href="{{route('administrator.assignment.temporary.all',['agent'=>$user,'all'=>TRUE])}}" class="btn btn-secondary">Agregar todas la actividades de manera temporal</a>
-                <a href="" class="btn btn-info">Regresar</a>
-                @else
-                <a href="{{route('assistant.assignment.temporary.all',['agent'=>$user,'all'=>TRUE])}}" class="btn btn-info">Agregar todas la actividades de manera temporal</a>
-                <a href="" class="btn btn-info">Regresar</a>
-                @endif
-                <br>
-                <br>
             </form>
+            @if(auth()->user()->isAdministrator())
+                <form action="{{route('administrator.assignment.temporary.all',['all'=>TRUE,'agent'=>$user])}}" method="POST"> 
+                {{ csrf_field() }}
+                <select class="form-control" name="idAgent">
+                   <option value="">Escoge un agente </option>
+                   @foreach($agents as $agent)
+                   <option value="{{$agent->idUser}}">{{$agent->name}}</option>
+                   @endforeach
+                    </select>
+                    <br>
+                    <input type="submit" class="btn btn-success" value="Agregar todas la actividades de manera temporal">
+                </form>
+                <br>
+                @else
+                <form action="{{route('assistant.assignment.temporary.all',['agent'=>$user])}}" method="POST"> 
+                {{ csrf_field() }}
+                <select class="form-control" name="idAgent">
+                   <option value="">Escoge un agente </option>
+                   @foreach($agents as $agent)
+                   <option value="{{$agent->idUser}}">{{$agent->name}}</option>
+                   @endforeach
+                    </select>
+                    <br><br>
+                <input type="submit" class="btn btn-success" value="Agregar todas la actividades de manera temporal">
+                </form>
+                <br><br>
+                @endif
+                @if(auth()->user()->isAdministrator())
+                <a href="{{route('administrator.user.index',[$user->idRole,$user->idDepartment])}}" class="btn btn-info">Regresar</a>
+                @else
+                <a href="{{route('assistant.user.index',[$user->idRole,$user->idDepartment])}}" class="btn btn-info">Regresar</a>
+                @endif
         </div>
 
         <div class="col-sm-7 offset-1">

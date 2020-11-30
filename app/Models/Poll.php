@@ -14,13 +14,12 @@ use Illuminate\Database\Eloquent\Model;
  * Class Poll
  * 
  * @property int $idPoll
- * @property int|null $idTicket
- * @property int $score
+ * @property int $idTicket
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
  * @property Ticket $ticket
- * @property Collection|Question[] $questions
+ * @property Collection|Answer[] $answers
  *
  * @package App\Models
  */
@@ -30,13 +29,11 @@ class Poll extends Model
 	protected $primaryKey = 'idPoll';
 
 	protected $casts = [
-		'idTicket' => 'int',
-		'score' => 'int'
+		'idTicket' => 'int'
 	];
 
 	protected $fillable = [
-		'idTicket',
-		'score'
+		'idTicket'
 	];
 
 	public function ticket()
@@ -44,8 +41,8 @@ class Poll extends Model
 		return $this->belongsTo(Ticket::class, 'idTicket');
 	}
 
-	public function questions()
+	public function answers()
 	{
-		return $this->hasMany(Question::class, 'idPoll');
+		return $this->hasMany(Answer::class, 'idPoll');
 	}
 }

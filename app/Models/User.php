@@ -13,16 +13,19 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+
 /**
  * Class User
  * 
  * @property int $idUser
  * @property string $name
+ * @property string $fathersLastName
+ * @property string $mothersLastName
  * @property string $username
  * @property string $email
  * @property string $password
  * @property string $extension
- * @property int|null $idRole
+ * @property int $idRole
  * @property int|null $idDepartment
  * @property bool $status
  * @property bool $active
@@ -65,6 +68,8 @@ class User extends Authenticatable
 
 	protected $fillable = [
 		'name',
+		'fathersLastName',
+		'mothersLastName',
 		'username',
 		'email',
 		'password',
@@ -98,7 +103,6 @@ class User extends Authenticatable
 	{
 		return $this->hasMany(Ticket::class, 'idTechnician');
 	}
-
 
 	public function hasRole($role){
 		if($this->role()->where('roleName',$role)->first()){

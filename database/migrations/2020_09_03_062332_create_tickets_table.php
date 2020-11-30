@@ -19,14 +19,12 @@ class CreateTicketsTable extends Migration
             $table->unsignedBigInteger('idTechnician')->nullable();
             $table->unsignedSmallInteger('idStatus')->nullable();
             $table->unsignedBigInteger('idActivity')->nullable();
-            $table->date('startDate');
-            $table->date('limitDate');
-            $table->date('closeDate')->nullable();
+            $table->dateTime('limitDate');
+            $table->dateTime('closeDate')->nullable();
             $table->string('ticketDescription')->nullable();
             $table->boolean('doubt')->nullable();
             $table->timestamps();
             $table->foreign('idStatus')->references('idStatus')->on('status')->onDelete('set null');
-            //$table->foreign('employeeNumber')->references('username')->on('users')->onDelete('set null');
             $table->foreign('idTechnician')->references('idUser')->on('users')->onDelete('set null');
             $table->foreign('idActivity')->references('idActivity')->on('activities')->onDelete('set null');
         });

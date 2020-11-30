@@ -7,6 +7,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -17,9 +18,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $active
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property int|null $idPoll
  * 
- * @property Poll $poll
+ * @property Collection|Answer[] $answers
  *
  * @package App\Models
  */
@@ -29,18 +29,16 @@ class Question extends Model
 	protected $primaryKey = 'idQuestion';
 
 	protected $casts = [
-		'active' => 'bool',
-		'idPoll' => 'int'
+		'active' => 'bool'
 	];
 
 	protected $fillable = [
 		'question',
-		'active',
-		'idPoll'
+		'active'
 	];
 
-	public function poll()
+	public function answers()
 	{
-		return $this->belongsTo(Poll::class, 'idPoll');
+		return $this->hasMany(Answer::class, 'idQuestion');
 	}
 }

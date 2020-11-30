@@ -13,7 +13,8 @@ use Illuminate\Database\Eloquent\Model;
  * Class Message
  * 
  * @property int $idMessage
- * @property int|null $idTicket
+ * @property int $idTicket
+ * @property string $text
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
@@ -31,7 +32,8 @@ class Message extends Model
 	];
 
 	protected $fillable = [
-		'idTicket'
+		'idTicket',
+		'text'
 	];
 
 	public function ticket()

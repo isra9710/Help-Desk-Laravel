@@ -9,6 +9,7 @@ use App\Models\Subarea;
 use App\Models\Department;
 use App\Models\Assignment;
 use App\Models\Role;
+use Illuminate\Support\Facades\DB;
                
 class AssignmentController extends Controller
 {
@@ -81,17 +82,11 @@ class AssignmentController extends Controller
     public function storeAgent(Activity $activity=NULL, Request $request)
     {
         $assignment = new Assignment();
-        //dd($agent,$temporary,$all);
-       
-    
-            $assignment->idActivity = $activity->idActivity;
-            $assignment->idUser = $request->idAgent;
-            $assignment->save();
-            return redirect()->route('administrator.assignment.activity',['activity'=>$activity]);
-        
-        
-        
-        
+        $assignment->idActivity = $activity->idActivity;
+        $assignment->idUser = $request->idAgent;
+        $assignment->temporary=FALSE;
+        $assignment->save();
+        return redirect()->route('administrator.assignment.activity',['activity'=>$activity]);
     }
 
 
@@ -113,52 +108,171 @@ class AssignmentController extends Controller
 
 
     public function temporary(User $user){
-        $departmentsSideBar = Department::where('active',TRUE)->get();
-        $subareasSideBar = Subarea::where('active',TRUE)->get();
-        $rolesSideBar = Role::all();
-        Assignment::where('temporary',TRUE)->where('idUser',$user->idUser)->delete();
-        $subarea=Assignment::where('idUser',$user->idUser)->first();
-        //$subarea = $subarea->activity->subarea;
-        $assignments = Assignment::where('idUser',$user->idUser)->get();
-        $assignments1 = Assignment::where('idUser','!=',$user->idUser)->Where(function($query){
-           $query->where('temporary',TRUE);
-        })->paginate(3);
-        $temporaryAssignments = Assignment::join('activities', 'activities.idActivity', '=', '');
-        $agents = User::where('idUser','!=',$user->idUser)->where('idDepartment',$user->idDepartment)->where('idRole',4)->get();
-        return view ('management.assignment.temporaryAssignment',['departmentsSideBar'=>$departmentsSideBar, 'rolesSideBar'=>$rolesSideBar, 'subareasSideBar'=>$subareasSideBar,'assignments'=>$assignments,'agents'=>$agents,'user'=>$user,'assignments1'=>$assignments1]);
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = 'Escoge a uno o más agentes para cubrir a '.$user->name;//Contenido del mensaje por defecto
+        if($user->status){
+            try{
+                $user->status=FALSE;
+                $departmentsSideBar = Department::where('active',TRUE)->get();
+                $subareasSideBar = Subarea::where('active',TRUE)->get();
+                $rolesSideBar = Role::all();
+                Assignment::where('temporary',TRUE)->where('idUser',$user->idUser)->delete();
+                $subarea=Assignment::where('idUser',$user->idUser)->first();
+                $assignments = Assignment::where('idUser',$user->idUser)->get();
+                $assignments1=Assignment::where('idUser',$user->idUser)->paginate(3);
+                $temporaryAssignments = Assignment::join('activities', 'activities.idActivity', '=', '');
+                $agents = User::where('idUser','!=',$user->idUser)->where('idDepartment',$user->idDepartment)->where('idRole',4)->get();
+                $user->update();
+                return view ('management.assignment.temporaryAssignment',['departmentsSideBar'=>$departmentsSideBar, 'rolesSideBar'=>$rolesSideBar, 'subareasSideBar'=>$subareasSideBar,'assignments'=>$assignments,'agents'=>$agents,'user'=>$user,'assignments1'=>$assignments1])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+                
+            }
+            catch(\Throwable $th){
+                DB::rollBack();
+                $status = 'error';
+                $content= 'Error al intentar actualizar usuario';
+                return redirect()
+                ->back()
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+        }
+        else{
+            try{
+                $content= 'El usuario está de regreso';
+                $user->status=TRUE;
+                $user->update();
+            }
+            catch(\Throwable $th){
+                DB::rollBack();
+                $status = 'error';
+                $content= 'Error al intentar actualizar usuario';
+            }
+            return redirect()
+            ->back()
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
+        }
         
-        //public function index($idRole=null, $idDepartment=null)
     }
-
-
-    public function temporaryAssignment(User $agent,$all=FALSE,Request $request){
         
-            if($all){
-                $replaceAssignments = Assignment::where('idUser',$agent->idUser)->get();
-                foreach($replaceAssignments as $assignment){
-                    $newAssignment = new Assignment();
-                    $newAssignment->idActivity=$assignment->idActivity;
-                    $newAssignment->idUser=$request->idUser;
-                    $newAssignment->temporary=TRUE;
+        
+       
+    
+
+    public function temporaryAssignmentAll(User $agent, Request $request){
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = 'Se asignó subárea de manera temporal con éxito';//Contenido del mensaje por defecto
+        $error= 0;
+        $nameUser = User::where('idUser',$request->idAgent)->first();
+        $replaceAssignments = Assignment::where('idUser',$agent->idUser)->get();
+        foreach($replaceAssignments as $assignment){
+            try{    
+                $newAssignment = new Assignment();
+                $newAssignment->idActivity=$assignment->idActivity;
+                $newAssignment->idUser = $request->idAgent;
+                $newAssignment->temporary=TRUE;
+                $try = Assignment::where('idActivity',$assignment->idActivity)
+                ->where('idUser',$request->idAgent)->first();
+                if($try){
+                    $error=$error+1;
+                }
+                else{
                     $newAssignment->save();
                 }
             }
-            else{
+            catch(\Throwable $th){
+                DB::rollBack();
+                
+                $status = 'error';
+                $content= 'Error al asignar subarea ';
+            }
+        }
+        if($error==count($replaceAssignments)){
+            $status ='error';
+            $content ='La subárea ya se encontraba asignada a '.$nameUser->name;    
+        }
+        else{
+            if($error>=1){
+                $status ='warning';
+                $content ='Algunas actividades ya se encontraban asignadas a '.$nameUser->name;
+            }
+        }
+        
+        if(auth()->user()->isAdministrator()){
+            return redirect()
+            ->route('administrator.user.status',['user'=>$agent])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
+        }
+        else{
+            return redirect()
+            ->route('assistant.user.status',['user'=>$agent])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
+        }
+    
+    }
+
+    public function temporaryAssignment(User $agent, Request $request){
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = 'Se asignó subárea de manera temporal con éxito';//Contenido del mensaje por defecto
+        $nameUser = User::where('idUser',$request->idAgent)->first();
+        $try = Assignment::where('idUser',$request->idAgent)->where('idActivity',$request->idActivity)->first();
+        if($try){
+            $status = 'error';
+            $content='Esa actividad ya se encuentra asignada a '.$nameUser->name;
+        }
+        else{
+            try{    
                 $assignment = new Assignment();
                 $assignment->idActivity = $request->idActivity;
                 $assignment->idUser = $request->idAgent;
                 $assignment->temporary=TRUE;
                 $assignment->save();
             }
-            if(auth()->user()->isAdministrator()){
-                return redirect()->route('administrator.user.status',['user'=>$agent]);
+            catch(\Throwable $th){
+                DB::rollBack();
+                
+                $status = 'error';
+                $content= 'Error al asignar actividad';
             }
-            else{
-                return redirect()->route('assistant.user.status',['user'=>$agent]);
-            }
+        }        
+        
+    
+        if(auth()->user()->isAdministrator()){
+            return redirect()
+            ->route('administrator.user.status',['user'=>$agent])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
+        }
+        else{
+            return redirect()
+            ->route('assistant.user.status',['user'=>$agent])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
+        }
             
         
     }
+
+
+
 
     /**
      * Display the specified resource.

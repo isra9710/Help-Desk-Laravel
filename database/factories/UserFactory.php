@@ -22,7 +22,8 @@ $factory->define(User::class, function (Faker $faker) {
    $roles = App\Models\Role::pluck('idRole')->toArray();
     return [
         'name' => $faker->firstName,
-        //'lastname' => $faker->lastName,
+        'fathersLastName' => $faker->lastName,
+        'mothersLastName' => $faker->lastName,
         'username' => $faker->unique()->word,
         'email' => $faker->unique()->safeEmail,
         //'email_verified_at' => now(),

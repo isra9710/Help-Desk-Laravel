@@ -15,9 +15,9 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property int $idActivity
  * @property string $activityName
- * @property int|null $idSubarea
- * @property int|null $idPriority
- * @property string|null $activityDescription
+ * @property int $idSubarea
+ * @property int $idPriority
+ * @property string $activityDescription
  * @property int $days
  * @property bool $active
  * @property Carbon|null $created_at

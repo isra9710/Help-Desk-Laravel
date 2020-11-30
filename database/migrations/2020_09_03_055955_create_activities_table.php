@@ -17,14 +17,14 @@ class CreateActivitiesTable extends Migration
             $table->bigIncrements('idActivity');
 
             $table->string('activityName');
-            $table->unsignedBigInteger('idSubarea')->nullable();
-            $table->unsignedSmallInteger('idPriority')->nullable();
-            $table->string('activityDescription')->nullable();
-            $table->smallInteger('days')->nulllable();
+            $table->unsignedBigInteger('idSubarea');
+            $table->unsignedSmallInteger('idPriority');
+            $table->string('activityDescription');
+            $table->smallInteger('days');
             $table->boolean('active')->default(TRUE);
             $table->timestamps();
-            $table->foreign('idSubarea')->references('idSubarea')->on('subareas')->onDelete('set null');
-            $table->foreign('idPriority')->references('idPriority')->on('priorities')->onDelete('set null');
+            $table->foreign('idSubarea')->references('idSubarea')->on('subareas')->onDelete('cascade');
+            $table->foreign('idPriority')->references('idPriority')->on('priorities')->onDelete('cascade');
         });                                                              
     }
 

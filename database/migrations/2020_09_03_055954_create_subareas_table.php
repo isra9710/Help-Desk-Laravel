@@ -16,11 +16,11 @@ class CreateSubareasTable extends Migration
         Schema::create('subareas', function (Blueprint $table) {
             $table->bigIncrements('idSubarea');
             $table->string('subareaName');
-            $table->unsignedBigInteger('idDepartment')->nullable();
+            $table->unsignedBigInteger('idDepartment');
             $table->boolean('active')->default(TRUE);
             $table->timestamps();
-            $table->string('subareaDescription')->nullable();
-            $table->foreign('idDepartment')->references('idDepartment')->on('departments')->onDelete('set null');
+            $table->string('subareaDescription');
+            $table->foreign('idDepartment')->references('idDepartment')->on('departments')->onDelete('cascade');
         });
     }
 

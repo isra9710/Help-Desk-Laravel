@@ -18,6 +18,7 @@ mix
     .styles([
         'resources/vendor/fontawesome-free-5.14.0-web/css/all.min.css',
         'resources/vendor/icheck-bootstrap/icheck-bootstrap.min.css',
+        'resources/vendor/toastr/toastr.css',
         'resources/css/adminlte.min.css'
     ], 'public/css/app.css')
 
@@ -27,7 +28,8 @@ mix
 
     .scripts([
         'resources/vendor/jquery/jquery.min.js',
-        'resources/vendor/bootstrap/js/bootstrap.bundle.min.js'
+        'resources/vendor/bootstrap/js/bootstrap.bundle.min.js',
+        'resources/vendor/toastr/toastr.min.js',
      ],'public/js/vendor.js')
 
 

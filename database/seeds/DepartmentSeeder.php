@@ -14,9 +14,11 @@ class DepartmentSeeder extends Seeder
         //
         $department = new Department();
         $department->departmentName ="Planeación y desarrollo";
+        $department->departmentDescription="X";
         $department->save();
         $department = new Department();
         $department->departmentName ="Servicios generales";
+        $department->departmentDescription="X";
         $department->save();
     }
 }

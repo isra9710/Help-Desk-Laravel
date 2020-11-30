@@ -8,6 +8,7 @@ use App\Models\Subarea;
 use App\Models\Role;
 use App\Models\Priority;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ActivityController extends Controller
 {

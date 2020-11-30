@@ -18,9 +18,11 @@
                 <th scope="col">Departamento</th>
                 <th scope="col">Subárea</th>
                 <th scope="col">Servicio</th>
-                <th scope="col">Días</th>
+             
                 <th scope="col">Fecha Inicio</th>
-                <th scope="col">Fecha Fin</th>
+                <th scope="col">Fecha estimada fin</th>
+                <th scope="col">Tiempo abierto</th>
+                <th scope="col">Fecha de cierre</th>
                 <th scope="col">Estado</th>
                 <th scope="col">Acciones</th>
                 
@@ -34,16 +36,43 @@
                     <td>{{$ticket->activity->subarea->department->departmentName}}</td>
                      <td>{{$ticket->activity->subarea->subareaName}}</td>
                     <td>{{$ticket->activity->activityName}}</td>
-                    <td>{{$ticket->activity->days}}</td>
-                    <td>{{$ticket->startDate}}</td>
+                    <td>{{$ticket->created_at}}</td>
                     <td>{{$ticket->limitDate}}</td>
+                    @if($ticket->closeDate)
+                    <td>{{ date_diff(new \DateTime($ticket->startDate), new \DateTime($ticket->closeDate))->format("%m Meses, %d días %h horas") }}</td>
+                    @else
+                    <td>{{$ticket->created_at->diffForHumans()}}</td>
+                    @endif
+                    <td>{{$ticket->closeDate}}</td>
                     <td>{{$ticket->status->statusName}}</td>
                     <td>
+                    @if(auth()->user()->isAdministrator())
                     <a href="{{route('administrator.ticket.edit', ['ticket'=>$ticket,'option'=>1])}}" class="btn
                         btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                         <a href="{{route('administrator.ticket.show', ['ticket'=>$ticket,'option'=>1])}}" class="btn
                         btn-primary btn-sm"><i class="fas fa-eye"></i></a>
-                        @if(($ticket->idStatus==4 || $ticket->idStatus==6)&& auth()->user()->isAdministrator())
+                        <a href="{{route('administrator.message.create',['ticket'=>$ticket,'option'=>1])}}"class="btn btn-info btn-sm">
+                        <i class="far fa-comments"></i>
+                        </a>
+                        <br>
+                        <a class="btn btn-light btn-sm" href="{{route('administrator.file.create',['ticket'=>$ticket])}}">
+                        <i class="fas fa-file-upload"></i>
+                        </a>
+                        <br>
+                    @else
+                    <a href="{{route('coordinator.ticket.edit', ['ticket'=>$ticket,'option'=>1])}}" class="btn
+                        btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                        <a href="{{route('coordinator.ticket.show', ['ticket'=>$ticket,'option'=>1])}}" class="btn
+                        btn-primary btn-sm"><i class="fas fa-eye"></i></a>
+                        <a href="{{route('coordinator.message.create',['ticket'=>$ticket,'option'=>1])}}"class="btn btn-info btn-sm">
+                        <i class="far fa-comments"></i>
+                        </a>
+                        <a class="btn btn-light btn-sm" href="{{route('coordinator.file.create',['ticket'=>$ticket])}}">
+                        <i class="fas fa-file-upload"></i>
+                        </a>
+                    @endif
+                    
+                        @if(($ticket->idStatus==4 || $ticket->idStatus==6) && auth()->user()->isAdministrator())
                         <form action="{{route('administrator.ticket.destroy', ['ticket'=>$ticket,'ticketOption'=>1,'option'=>1])}}"
                                 method="POST" class="d-inline">
                                 {{ csrf_field() }}
@@ -67,14 +96,7 @@
                         @endif
                       
                             
-                    <a href="{{route('administrator.message.create',['ticket'=>$ticket])}}"class="btn btn-info btn-sm">
-                    <i class="far fa-comments"></i>
-                    </a>
-                    <a >
-                    <a class="btn btn-light btn-sm" href="{{route('administrator.file.create',['ticket'=>$ticket])}}">
-                    <i class="fas fa-file-upload"></i>
-                    </a>
-                    </td>
+                    
                 </tr>
             @endforeach
             </tbody>

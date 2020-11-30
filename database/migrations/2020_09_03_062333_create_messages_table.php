@@ -16,10 +16,10 @@ class CreateMessagesTable extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->bigIncrements('idMessage');
             
-            $table->unsignedBigInteger('idTicket')->nullable();
+            $table->unsignedBigInteger('idTicket');
             $table->string('text');
             $table->timestamps();
-            $table->foreign('idTicket')->references('idTicket')->on('tickets')->onDelete('set null'); 
+            $table->foreign('idTicket')->references('idTicket')->on('tickets')->onDelete('cascade'); 
         });
     }
 

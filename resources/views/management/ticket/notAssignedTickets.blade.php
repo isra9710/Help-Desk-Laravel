@@ -18,7 +18,7 @@
                 <th scope="col">Departamento</th>
                 <th scope="col">Subárea</th>
                 <th scope="col">Servicio</th>
-                <th scope="col">Días</th>
+                <th scope="col">Días estimados</th>
                 <th scope="col">Fecha Inicio</th>
                 <th scope="col">Fecha Fin</th>
                 <th scope="col">Estado</th>
@@ -38,11 +38,14 @@
                     <td>{{$ticket->limitDate}}</td>
                     <td>{{$ticket->status->statusName}}</td>
                     <td>
-                        
+                    @if(auth()->user()->isAdministrator())
                     <a href="{{route('administrator.ticket.show', ['ticket'=>$ticket,'option'=>2])}}" class="btn
                         btn-warning btn-sm"><i class="fas fa-eye"></i></a>
                         <a href="{{route('administrator.ticket.edit', ['ticket'=>$ticket,'option'=>2])}}" class="btn
                         btn-primary btn-sm"><i class="fas fa-edit"></i></a>
+                        <a href="{{route('administrator.message.create',['ticket'=>$ticket,'option'=>2])}}"class="btn btn-info btn-sm">
+                        <i class="far fa-comments"></i>
+                        </a>
                         <a href="{{route('administrator.ticket.transfer',['ticket'=>$ticket,'option'=>1])}}" class="btn-outline-secondary btn-sm"><i class="fas fa-map-signs"></i></a>
                         <form action="{{route('administrator.ticket.destroy', ['ticket'=>$ticket,'ticketOption'=>2,'option'=>1])}}"
                             method="POST" class="d-inline">
@@ -50,6 +53,27 @@
                             
                             <button type="submit" onclick="return confirm('¿Seguro que desa cancelar?');" class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
                         </form>
+                    @elseif(auth()->user()->isCoordinator())
+                    <a href="{{route('coordinator.ticket.show', ['ticket'=>$ticket,'option'=>2])}}" class="btn
+                        btn-warning btn-sm"><i class="fas fa-eye"></i></a>
+                        <a href="{{route('coordinator.ticket.edit', ['ticket'=>$ticket,'option'=>2])}}" class="btn
+                        btn-primary btn-sm"><i class="fas fa-edit"></i></a>
+                        <a href="{{route('coordinator.message.create',['ticket'=>$ticket,'option'=>2])}}"class="btn btn-info btn-sm">
+                        <i class="far fa-comments"></i>
+                        </a>
+                        <a href="{{route('coordinator.ticket.transfer',['ticket'=>$ticket,'option'=>1])}}" class="btn-outline-secondary btn-sm"><i class="fas fa-map-signs"></i></a>
+                        <form action="{{route('administrator.ticket.destroy', ['ticket'=>$ticket,'ticketOption'=>2,'option'=>1])}}"
+                            method="POST" class="d-inline">
+                            {{ csrf_field() }}
+                            
+                            <button type="submit" onclick="return confirm('¿Seguro que desa cancelar?');" class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
+                        </form>
+                    @else
+                    <a href="{{route('assistant.ticket.show', ['ticket'=>$ticket,'option'=>2])}}" class="btn
+                        btn-warning btn-sm"><i class="fas fa-eye"></i></a>
+                        
+                        
+                    @endif
                     </td>
                 </tr>
             @endforeach

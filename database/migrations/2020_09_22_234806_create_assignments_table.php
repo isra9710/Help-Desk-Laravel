@@ -15,12 +15,12 @@ class CreateAssignmentsTable extends Migration
     {
         Schema::create('assignments', function (Blueprint $table) {
             $table->bigIncrements('idAssignment');
-            $table->unsignedBigInteger('idActivity')->nullable();
-            $table->unsignedBigInteger('idUser')->nullable();
+            $table->unsignedBigInteger('idActivity');
+            $table->unsignedBigInteger('idUser');
             $table->boolean('temporary');
             $table->timestamps();
-            $table->foreign('idActivity')->references('idActivity')->on('activities')->onDelete('set null');
-            $table->foreign('idUser')->references('idUser')->on('users')->onDelete('set null');
+            $table->foreign('idActivity')->references('idActivity')->on('activities')->onDelete('cascade');
+            $table->foreign('idUser')->references('idUser')->on('users')->onDelete('cascade');
         });
     }
 

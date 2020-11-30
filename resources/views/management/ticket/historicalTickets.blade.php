@@ -18,11 +18,12 @@
                 <th scope="col">Departamento</th>
                 <th scope="col">Subárea</th>
                 <th scope="col">Servicio</th>
-                <th scope="col">Días</th>
+                <th scope="col">Días estimados</th>
                 <th scope="col">Fecha Inicio</th>
                 <th scope="col">Fecha Fin</th>
                 <th scope="col">Fecha Cierre</th>
                 <th scope="col">Estado</th>
+                <th scope="col">Ver detalles</th>
                
             </tr>
             </thead>
@@ -34,12 +35,19 @@
                      <td>{{$ticket->activity->subarea->subareaName}}</td>
                     <td>{{$ticket->activity->activityName}}</td>
                     <td>{{$ticket->activity->days}}</td>
-                    <td>{{$ticket->startDate}}</td>
+                    <td>{{$ticket->created_at}}</td>
                     <td>{{$ticket->limitDate}}</td>
                     <td>{{$ticket->closeDate}}
                     <td>{{$ticket->status->statusName}}</td>
-                    <td></td>
-                    <td></td>
+                    <td>
+                    @if(auth()->user()->isAdministrator())
+                    <a href="{{route('administrator.ticket.show', ['ticket'=>$ticket,'option'=>3])}}" class="btn
+                        btn-primary btn-sm"><i class="fas fa-eye"></i></a>
+                    @else
+                    <a href="{{route('coordinator.ticket.show', ['ticket'=>$ticket,'option'=>3])}}" class="btn
+                        btn-primary btn-sm"><i class="fas fa-eye"></i></a>
+                    @endif
+                    </td>
                 </tr>
             @endforeach
             </tbody>

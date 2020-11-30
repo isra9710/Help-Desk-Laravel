@@ -15,11 +15,11 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property int $idSubarea
  * @property string $subareaName
- * @property int|null $idDepartment
+ * @property int $idDepartment
  * @property bool $active
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property string|null $subareaDescription
+ * @property string $subareaDescription
  * 
  * @property Department $department
  * @property Collection|Activity[] $activities

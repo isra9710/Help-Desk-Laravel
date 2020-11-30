@@ -89,12 +89,8 @@
           cerrados(con menos de 1 mes de antigüedad),
           vencidos(con menos de 1 mes de antigüedad), cancelados.
           -->
-
-
-          @if(auth()->user()->isAdministrator() || auth()->user()->isCoordinator() || auth()->user()->isAgent())
-          @if(!empty($departmentsSideBar))
             @if(auth()->user()->isAdministrator())
-
+              @if(!empty($departmentsSideBar))
                 <li class="nav-item has-treeview">
                     <a href="{{route('administrator.ticket.inbox')}}" class="nav-link">
                     <i  class="fas fa-inbox"></i>
@@ -114,6 +110,7 @@
                           </ul>
                          @endforeach
                  </li>
+               @endif
              @elseif(auth()->user()->isCoordinator())
                 <li class="nav-item">
                     <a href="{{route('coordinator.ticket.inbox',['department'=>auth()->user()->department])}}" class="nav-link">
@@ -124,6 +121,7 @@
                     </a>
                 </li>  
              @else
+              @if(auth()->user()->isAssistant())
                     <li class="nav-item">
                     <a href="{{route('assistant.ticket.inbox',['department'=>auth()->user()->department])}}" class="nav-link">
                           <i class="fas fa-inbox"></i>
@@ -132,9 +130,9 @@
                           </p>
                           </a>
                       </li>  
-                @endif
               @endif
-          @endif
+            @endif
+            
 
 
 
@@ -147,9 +145,10 @@
           Vencidos(con más de 1 mes de antigüedad), cancelados.
           -->
 
-          @if(auth()->user()->isAdministrator() || auth()->user()->isCoordinator() || auth()->user()->isAgent())
-          @if(!empty($departmentsSideBar))
+          
+          
             @if(auth()->user()->isAdministrator())
+              @if(!empty($departmentsSideBar))
                 <li class="nav-item has-treeview">
                     <a href="{{route('administrator.ticket.historical')}}" class="nav-link">
                     <i class="fas fa-history"></i>
@@ -169,6 +168,7 @@
                           </ul>
                          @endforeach
                  </li>
+                 @endif
              @elseif(auth()->user()->isCoordinator())
                 <li class="nav-item">
                     <a href="{{route('coordinator.ticket.historical',['department'=>auth()->user()->department])}}" class="nav-link">
@@ -179,6 +179,7 @@
                     </a>
                 </li>  
              @else
+             @if(auth()->user()->isAssistant())
                     <li class="nav-item">
                     <a href="{{route('assistant.ticket.historical',['department'=>auth()->user()->department])}}" class="nav-link">
                        <i class="fas fa-history"></i>
@@ -189,7 +190,7 @@
                       </li>  
                 @endif
               @endif
-          @endif
+          
 
 
           
@@ -246,22 +247,7 @@
               </p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="{{route('agent.ticket.help',['user'=>auth()->user()])}}" class="nav-link">
-            <i class="far fa-hospital"></i>
-              <p>
-                Ayudar al departamento
-              </p>
-            </a>
-          </li> 
-          <li class="nav-item">
-            <a href="{{route('agent.ticket.assignment',['user'=>auth()->user()])}}" class="nav-link">
-            <i class="fas fa-list-ul"></i>
-              <p>
-                Tickets asignados
-              </p>
-            </a>
-          </li> 
+        
           @endif
 
 
@@ -286,25 +272,22 @@
 
 
 
-
+          <!--El siguiente código muestra a los asistentes o coordinadores
+              la posibilidad de ver los tickets no asignados
+          -->
           @if(auth()->user()->isCoordinator() || auth()->user()->isAssistant())
-          <li class="nav-item">
+            <li class="nav-item">
             @if(auth()->user()->isCoordinator())
-            <a href="{{route('coordinator.ticket.notAssigned',['department'=>auth()->user()->department])}}" class="nav-link">
-              <i class="far fa-bell"></i>
-              <p>
-                Tickets no asignados
-              </p>
-            </a>
-            @else
-            <a href="{{route('assistant.ticket.notAssigned',['department'=>auth()->user()->department])}}" class="nav-link">
-              <i class="far fa-bell"></i>
-              <p>
-                Tickets no asignados
-              </p>
-            </a>
+              <a href="{{route('coordinator.ticket.notAssigned',['department'=>auth()->user()->department])}}" class="nav-link">
+            @else    
+              <a href="{{route('assistant.ticket.notAssigned',['department'=>auth()->user()->department])}}" class="nav-link">
             @endif
-          </li>
+            <i class="fas fa-bell"></i>
+              <p>
+                Tickets no asignados
+              </p>
+              </a>
+              </li>
           @endif
 
 
@@ -553,7 +536,7 @@
                     -->
                     @if(auth()->user()->isAssistant())
                       @foreach ($rolesSideBar as $role)
-                        @if($role->idRole!=1 && $role->idRole!=2 &&$role->idRole!=3 && $role->idRole!=5 && $role->idRole!=6 )
+                        @if($role->idRole==4)
                           <li class="nav-item">
                             <a href="{{route('assistant.user.index',['idRole'=>$role->idRole, 'idDepartment'=> Auth()->user()->idDepartment])}}" class="nav-link">
                               <i class="fas fa-user-cog"></i>
@@ -573,7 +556,7 @@
                   @if(auth()->user()->isAdministrator() || auth()->user()->isCoordinator())
                     @if(!empty($rolesSideBar))
                         @foreach ($rolesSideBar as $role)
-                          @if($role->idRole==5 ||$role->idRole==6 )
+                          @if($role->idRole==5)
 
                             <li class="nav-item">
                               @if(auth()->user()->isAdministrator())

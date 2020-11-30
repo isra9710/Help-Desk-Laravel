@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $idTechnician
  * @property int|null $idStatus
  * @property int|null $idActivity
- * @property Carbon $startDate
  * @property Carbon $limitDate
  * @property Carbon|null $closeDate
  * @property string|null $ticketDescription
@@ -48,7 +47,6 @@ class Ticket extends Model
 	];
 
 	protected $dates = [
-		'startDate',
 		'limitDate',
 		'closeDate'
 	];
@@ -58,7 +56,6 @@ class Ticket extends Model
 		'idTechnician',
 		'idStatus',
 		'idActivity',
-		'startDate',
 		'limitDate',
 		'closeDate',
 		'ticketDescription',

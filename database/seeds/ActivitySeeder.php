@@ -17,6 +17,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=1;
         $activity->idSubarea =1;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
         $activity = new Activity();
@@ -24,6 +25,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=2;
         $activity->idSubarea =1;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
         $activity = new Activity();
@@ -31,6 +33,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=3;
         $activity->idSubarea =1;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
         $activity = new Activity();
@@ -38,6 +41,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=2;
         $activity->idSubarea =1;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
         $activity = new Activity();
@@ -45,6 +49,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=3;
         $activity->idSubarea =1;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
         $activity = new Activity();
@@ -52,6 +57,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=3;
         $activity->idSubarea =1;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
         $activity = new Activity();
@@ -59,6 +65,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=1;
         $activity->idSubarea =2;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
         $activity = new Activity();
@@ -66,6 +73,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=1;
         $activity->idSubarea =2;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
         $activity = new Activity();
@@ -73,6 +81,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=3;
         $activity->idSubarea =2;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
         $activity = new Activity();
@@ -80,6 +89,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=1;
         $activity->idSubarea =3;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
 
@@ -88,6 +98,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=1;
         $activity->idSubarea =3;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
 
@@ -96,6 +107,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=3;
         $activity->idSubarea =3;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
 
@@ -104,6 +116,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=2;
         $activity->idSubarea =3;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
 
@@ -112,6 +125,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=1;
         $activity->idSubarea =3;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
 
@@ -120,6 +134,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=2;
         $activity->idSubarea =3;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
 
@@ -128,6 +143,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=2;
         $activity->idSubarea =4;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
 
@@ -136,6 +152,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=2;
         $activity->idSubarea =4;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
 
@@ -144,6 +161,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=1;
         $activity->idSubarea =4;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
 
@@ -152,6 +170,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=2;
         $activity->idSubarea =4;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
 
@@ -160,6 +179,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=2;
         $activity->idSubarea =4;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
 
@@ -168,6 +188,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=1;
         $activity->idSubarea =4;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
 
@@ -176,6 +197,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=2;
         $activity->idSubarea =5;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
 
@@ -184,6 +206,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=1;
         $activity->idSubarea =5;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
 
@@ -192,6 +215,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=1;
         $activity->idSubarea =5;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
 
@@ -200,6 +224,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=3;
         $activity->idSubarea =6;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
 
 
@@ -209,6 +234,7 @@ class ActivitySeeder extends Seeder
         $activity->idPriority=3;
         $activity->idSubarea =6;
         $activity->days= 1;
+        $activity->activityDescription="X";
         $activity->save();
     }
 }

@@ -15,10 +15,11 @@ class CreateFilesTable extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->bigIncrements('idFile');
-            $table->unsignedBigInteger('idTicket')->nullable();
+            $table->unsignedBigInteger('idTicket');
             $table->string('directoryFile')->nullable();
+            $table->string('fileDescription');
             $table->timestamps();
-            $table->foreign('idTicket')->references('idTicket')->on('tickets')->onDelete('set null');
+            $table->foreign('idTicket')->references('idTicket')->on('tickets')->onDelete('cascade');
         });
     }
 

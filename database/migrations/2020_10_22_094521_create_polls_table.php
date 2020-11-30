@@ -15,11 +15,9 @@ class CreatePollsTable extends Migration
     {
         Schema::create('polls', function (Blueprint $table) {
             $table->bigIncrements('idPoll');
-
-            $table->unsignedBigInteger('idTicket')->nullable();
-            $table->Smallinteger('score');
+            $table->unsignedBigInteger('idTicket')->index();
             $table->timestamps();
-            $table->foreign('idTicket')->references('idTicket')->on('tickets')->onDelete('set null');
+            $table->foreign('idTicket')->references('idTicket')->on('tickets')->onDelete('cascade');
         });
     }
 

@@ -13,8 +13,9 @@ use Illuminate\Database\Eloquent\Model;
  * Class File
  * 
  * @property int $idFile
- * @property int|null $idTicket
+ * @property int $idTicket
  * @property string|null $directoryFile
+ * @property string $fileDescription
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
@@ -33,7 +34,8 @@ class File extends Model
 
 	protected $fillable = [
 		'idTicket',
-		'directoryFile'
+		'directoryFile',
+		'fileDescription'
 	];
 
 	public function ticket()

@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property int $idDepartment
  * @property string $departmentName
- * @property string|null $departmentDescription
+ * @property string $departmentDescription
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property bool $active

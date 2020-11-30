@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\File;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class FileController extends Controller
 {
@@ -29,14 +30,14 @@ class FileController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Ticket $ticket)
+    public function create(Ticket $ticket,$option)
     {
         //
         $departmentsSideBar = Department::where('active',TRUE)->get();
         $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
         $files=File::where('idTicket',$ticket->idTicket)->paginate(2);
-        return view('management.file.addFile',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'ticket'=>$ticket,'files'=>$files]);
+        return view('management.file.addFile',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'ticket'=>$ticket,'files'=>$files,'option'=>$option]);
     }
 
     /**
@@ -45,23 +46,101 @@ class FileController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Ticket $ticket,Request $request)
+    public function store(Ticket $ticket,$option,Request $request)
     {
         //
-        $dataFile = new File();
-        $fileName = "";//Nombre del archivo
-        $dataFile->idTicket=$ticket->idTicket;
-        $dataFile->save();
-        $file= $request->file('file');
-        $fileName =auth()->user()->username.$dataFile->idFile.$request->file->getClientOriginalName();
-        $path = $file->storeAs('public',$fileName);
-        $dataFile->directoryFile = $path;
-        $dataFile->update();
-        if(auth()->user()->isAdministrator()){
-            return redirect()->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = 'Se anexó con éxito tu archivo al ticket '.$ticket->idTicket.' con éxito';//Contenido del mensaje por defecto
+        try{
+            $dataFile = new File();
+            $fileName = "";//Nombre del archivo
+            $dataFile->idTicket=$ticket->idTicket;
+            $dataFile->fileDescription=$request->fileDescription;
+            $dataFile->save();
+            $file= $request->file('file');
+            $fileName =auth()->user()->username.$dataFile->idFile.$request->file->getClientOriginalName();
+            $path = $file->storeAs('public',$fileName);
+            $dataFile->directoryFile = $path;
+            $dataFile->update();
+        }catch(\Throwable $th){
+        DB::rollBack();
+        $status = 'error';
+        $content= 'Error al intentar asociar el archivo al ticket número'.$ticket->idTicket;
+    }
+        if($option==1)
+            if(auth()->user()->isAdministrator()){
+                return redirect()
+                ->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+            else{
+                return redirect()
+                ->route('coordinator.ticket.inbox',['department'=>$ticket->activity->subarea->department])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+        elseif($option==2){
+            if(auth()->user()->isAdministrator()){
+                return redirect()->route('administrator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+            else{
+                return redirect()->route('coordinator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
         }
         else{
-            return redirect()->route('coordinator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
+            if(auth()->user()->isAdministrator()){
+                return redirect()
+                ->route('administrator.ticket.mytickets',$ticket->employeeNumber)
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+            elseif(auth()->user()->isCoordinator()){
+                return redirect()
+                ->route('coordinator.ticket.mytickets',$ticket->employeeNumber)
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+            elseif(auth()->user()->isAssistant()){
+                return redirect()
+                ->route('assistant.ticket.mytickets',$ticket->employeeNumber)
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+            elseif(auth()->user()->isAgent()){
+                return redirect()
+                ->route('agent.ticket.mytickets',$ticket->employeeNumber)
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+            else{
+                return redirect()
+                ->route('user.ticket.mytickets',$ticket->employeeNumber)
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }         
         }
         
        

@@ -11,11 +11,31 @@ use App\Models\Role;
 use App\Models\File;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
+    
+    
+    
+    public function updateTickets(){
+        $tickets=Ticket::where('idStatus','!=',3)
+        ->where('idStatus','!=',4)
+        ->Where('idStatus','!=',6)
+        ->where('idStatus','!=',7)
+        ->orderBy('idTicket','DESC')
+        ->get();
+        foreach($tickets as $ticket){
+            $closeDate=Carbon::parse($ticket->limitDate);
+            if($closeDate->diffInDays(Carbon::now())>$ticket->activity->days){
+                $ticket->idStatus=6;
+                $ticket->update();
+            }
+        }
+        
+    }
     /**
      * Display a listing of the resource.
      *boolean $noAsignados
@@ -23,6 +43,7 @@ class TicketController extends Controller
      */
     public function historical(Department $department){
         //
+        $this->updateTickets();
         $subareasSideBar = Subarea::all();
         $departmentsSideBar = Department::all();
         $rolesSideBar = Role::all();
@@ -31,7 +52,7 @@ class TicketController extends Controller
         $tickets=Ticket::join('activities','tickets.idActivity', '=', 'activities.idActivity')
             ->join('subareas','activities.idSubarea', '=', 'subareas.idSubarea')
             ->join('departments', 'subareas.idDepartment', '=', 'departments.idDepartment')
-            ->select('tickets.*')->where('departments.idDepartment',$department->idDepartment)->where('tickets.startDate','<',Carbon::now()->subDays(30))
+            ->select('tickets.*')->where('departments.idDepartment',$department->idDepartment)->where('tickets.created_at','<',Carbon::now()->subDays(30))
             ->where(function($query){
                 $query->orWhere('idStatus', '=',4)->orWhere('idStatus', '=',6);})
             ->orWhere('idStatus','=',3)
@@ -56,6 +77,7 @@ class TicketController extends Controller
      */
     public function inbox(Department $department=null){
         //
+        $this->updateTickets();
         $subareasSideBar = Subarea::all();
         $departmentsSideBar = Department::all();
         $rolesSideBar = Role::all();
@@ -69,11 +91,13 @@ class TicketController extends Controller
         $tickets=Ticket::join('activities','tickets.idActivity', '=', 'activities.idActivity')
         ->join('subareas','activities.idSubarea', '=', 'subareas.idSubarea')
         ->join('departments', 'subareas.idDepartment', '=', 'departments.idDepartment')
-        ->select('tickets.*')->where('departments.idDepartment',$department->idDepartment)->where('tickets.startDate','>',Carbon::now()->subDays(30))
+        ->select('tickets.*')->where('departments.idDepartment',$department->idDepartment)->where('tickets.created_at','>',Carbon::now()->subDays(30))
         ->where(function($query){
             $query->orWhere('idStatus', '=',1)->orWhere('idStatus', '=',2)->orWhere('idStatus', '=',4)->orWhere('idStatus', '=',5)->orWhere('idStatus', '=',6)->orWhere('idStatus', '=',7);;
 
-        })->paginate(15);
+        })
+        ->orderBy('idStatus','ASC')
+        ->paginate(10);
         return view ('management.ticket.inboxTickets',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'department'=>$department,'tickets'=>$tickets]);
     }
 
@@ -85,7 +109,7 @@ class TicketController extends Controller
 
 
 
-
+    //Esta función nos retornará todos los tickets de los que se tenga duda
 
     /**
      * Display a listing of the resource.
@@ -94,6 +118,7 @@ class TicketController extends Controller
      */
     public function notAssigned(Department $department) {
         //
+        $this->updateTickets();
         $departmentsSideBar = Department::where('active',TRUE)->get();
         $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
@@ -110,7 +135,10 @@ class TicketController extends Controller
 
     //Los tickets que el usuario ha levantado
     public function myTickets($employeNumber){
-        $myTickets = Ticket::where('employeeNumber',$employeNumber)->paginate(3);
+        $this->updateTickets();
+        $myTickets = Ticket::where('employeeNumber',$employeNumber)
+        ->orderBy('idStatus','ASC')
+        ->paginate(3);
         $departmentsSideBar = Department::where('active',TRUE)->get();
         $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
@@ -119,6 +147,7 @@ class TicketController extends Controller
 
     //Los tickets en los que un agente puede intervenir
     public function ticketsForAttend(User $user) {
+        $this->updateTickets();
         $departmentsSideBar = Department::where('active',TRUE)->get();
         $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
@@ -139,66 +168,50 @@ class TicketController extends Controller
                                     ->select('tickets.*')
                                     ->distinct()
                                     ->where('users.idUser',$user->idUser)
-                                   
+                                    ->orderBy('idStatus','ASC')
                                     ->paginate(10);
         return view('management.ticket.ticketsForAttend',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'tickets'=>$ticketsForAttend]);
     }
-    /*Cuando un agente levanta la mano, se actualiza el campo "idTechinician" de
-        tickets por el agente que acaba de levantar la mano 
-    */
-    public function ticketsTechnician(User $user, Ticket $ticket){
-        $ticket->idTechnician=$user->idUser;
-        $ticket->idStatus = 2;
-        $ticket->update();
-        return redirect()->route('agent.ticket.attend',['user'=>$user]);
-    }
-
-
-    //Tikcets que ya está atendiendo un agente determinado
-    public function ticketsAgent(User $user){
-        $departmentsSideBar = Department::where('active',TRUE)->get();
-        $subareasSideBar = Subarea::where('active',TRUE)->get();
-        $rolesSideBar = Role::all();
-        $ticketsAgent = Ticket::where('idTechnician',$user->idUser)->paginate(10);
-        return view('management.ticket.assignedTIckets',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'tickets'=>$ticketsAgent]);
-    }
-
-
-
-    //Tickets en los que un agente puede ayudar
-    public function help(User $user){
-        $departmentsSideBar = Department::where('active',TRUE)->get();
-        $subareasSideBar = Subarea::where('active',TRUE)->get();
-        $rolesSideBar = Role::all();
-        $ticketsForAttend = Ticket::join('assignments','tickets.idActivity','=', 'assignments.idActivity')
-        ->join('users','assignments.idUser', '=','users.idUser')
-        ->select('tickets.*')
-        ->where('users.idUser',$user->idUser)->where('idTechnician',NULL)->where('assignments.temporary',TRUE)->distinct()->paginate(10);
-        return view ('management.ticket.ticketsForAttendHelp',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'tickets'=>$ticketsForAttend]);
-    }
-
+    //Rotorna la vista con los agentes del departamentos para transferir
     public function toTransfer(Ticket $ticket, $option){
+        $this->updateTickets();
         $departmentsSideBar = Department::where('active',TRUE)->get();
         $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
-        $agents = User::where('idDepartment',$ticket->activity->subarea->department->idDepartment)->where('idRole',4)->get();
+        $agents = User::where('idDepartment',$ticket->activity->subarea->department->idDepartment)->where('idRole',4)->where('status',1)->get();
         return view('management.ticket.Totransfer',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'ticket'=>$ticket,'agents'=>$agents,'option'=>$option]);
     }
-    
+    //Muestra los agentes y se elige al nuevo
     public function reasign(Request $request,Ticket $ticket, $option){
+        $this->updateTickets();
         $ticket->doubt=FALSE;
         $ticket->idTechnician=$request->idTechnician;
         $ticket->update();
         if($option==1){
             if(auth()->user()->isAdministrator()){
-                return redirect()->route('administrator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department]);
+                return redirect()
+                ->route('administrator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
             else{
-                return redirect()->route('coordinator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department]);
+                return redirect()
+                ->route('coordinator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
         }
         else{
-            return redirect()->route('agent.ticket.attend',['user'=>auth()->user()]);
+            return redirect()
+            ->route('agent.ticket.attend',['user'=>auth()->user()])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
         }
     }
     /**
@@ -209,6 +222,7 @@ class TicketController extends Controller
     public function create($guest=NULL)
     {
         //
+        $this->updateTickets();
         $subareasSideBar = Subarea::where('active',TRUE)->get();
         $subareas = Subarea::where('active',TRUE)->get();
         $departmentsSideBar = Department::where('active',TRUE)->get();
@@ -232,74 +246,125 @@ class TicketController extends Controller
     public function store(Request $request)
     {
         //
-        $activity = Activity::where('idActivity', $request->idActivity)->first();
-        $ticket = new Ticket();
-        /*
-        Los siguiente datos los obtenemos del formulario de registro ubicado en managment.user.index
-        */
-        $ticket->idStatus=1;
-        $ticket->idActivity = $request->idActivity;
-        $ticket->startDate = Carbon::now();
-        //dd(Carbon::now()->subDays($activity->days));
-        $ticket->limitDate = Carbon::now()->addDays($activity->days);
-        $ticket->ticketDescription = $request->description;
-        if(isset($request->doubt)){    
-            $ticket->doubt= 1;
-        }
-        else{
-            $ticket->doubt = 0;
-        }
-        $ticket->save();
-        if($request->file){
-            $dataFile = new File();
-            $fileName = "";//Nombre del archivo
-            $dataFile->idTicket=$ticket->idTicket;
-            $dataFile->save();
-            $file= $request->file('file');
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = '';//Contenido del mensaje por defecto
+        $this->updateTickets();
+        try{
+            $activity = Activity::where('idActivity', $request->idActivity)->first();
+            $ticket = new Ticket();
+            /*
+            Los siguiente datos los obtenemos del formulario de registro ubicado en managment.user.index
+            */
+            $ticket->idStatus=1;
+            $ticket->idActivity = $request->idActivity;
+            $ticket->limitDate = Carbon::now()->addDays($activity->days);
+            $ticket->ticketDescription = $request->ticketDescription;
+            if(isset($request->doubt)){    
+                $ticket->doubt= 1;
+            }
+            else{
+                $ticket->doubt = 0;
+            }
+            //Esto quiere decir que se está registrando un ticket para alguien más
             if($request->employeeNumber){
-                $userName = User::Where('username',$request->employeeNumber)->first();
-                $fileName =$userName.$dataFile->idFile.$request->file->getClientOriginalName();
+                $ticket->employeeNumber = $request->employeeNumber;
+                
+            }else{
+                $ticket->employeeNumber = auth()->user()->username;
             }
-            else{
-                $fileName =auth()->user()->username.$dataFile->idFile.$request->file->getClientOriginalName();
+            $ticket->save();
+            $content = 'Se registró con éxito el ticket cuyo número de folio es '.$ticket->idTicket;
+            if($request->file){
+                $dataFile = new File();
+                $fileName = "";//Nombre del archivo
+                $dataFile->idTicket=$ticket->idTicket;
+                $dataFile->fileDescription=$request->fileDescription;
+                $dataFile->save();
+                $file= $request->file('file');
+                if($request->employeeNumber){
+                    $userName = User::Where('username',$request->employeeNumber)->first();
+                    $fileName =$userName.$dataFile->idFile.$request->file->getClientOriginalName();
+                }
+                else{
+                    $fileName =auth()->user()->username.$dataFile->idFile.$request->file->getClientOriginalName();
+                }
+                $path = $file->storeAs('public',$fileName);
+                $dataFile->directoryFile = $path;
+                $dataFile->update();
             }
-            $path = $file->storeAs('public',$fileName);
-            $dataFile->directoryFile = $path;
-            $dataFile->update();
-        }
-        //Esto quiere decir que se está registrando un ticket para alguien más
+            
+    }catch(\Throwable $th){
+        DB::rollBack();
+        $status = 'error';
+        $content= 'Error al intentar registrar el ticket';
+    }
         if($request->employeeNumber){
-            $ticket->employeeNumber = $request->employeeNumber;
-            $ticket->update();
             if(auth()->user()->isAdministrator()){
-                return redirect()->route('administrator.ticket.create',['guest'=>True]);
+                return redirect()
+                ->route('administrator.ticket.create',['guest'=>True])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
             else{
-                return redirect()->route('coordinator.ticket.create',['guest'=>True]);
+                return redirect()
+                ->route('coordinator.ticket.create',['guest'=>True])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
         }
         //De otro modo el ticket es para quien está llamando la función
         else{
-            $ticket->employeeNumber = auth()->user()->username;
-            $ticket->update();
             if(auth()->user()->isAdministrator()){
-                return redirect()->route('administrator.ticket.create');
+                return redirect()
+                ->route('administrator.ticket.create')
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
             elseif(auth()->user()->isCoordinator()){
-                return redirect()->route('coordinator.ticket.create');
+                return redirect()
+                ->route('coordinator.ticket.create')
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
             elseif(auth()->user()->isAssistant()){
-                return redirect()->route('assistant.ticket.create');
+                return redirect()
+                ->route('assistant.ticket.create')
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
             elseif(auth()->user()->isAgent()){
-                return redirect()->route('agent.ticket.create');
+                return redirect()
+                ->route('agent.ticket.create')
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
             elseif(auth()->user()->isUser()){
-                return redirect()->route('user.ticket.create');
+                return redirect()
+                ->route('user.ticket.create')
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
             //Cambiar la siguiente ruta por invitado
             else{
-                return redirect()->route('user.ticket.create');
+                return redirect()->route('user.ticket.create')
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
         }
        
@@ -318,6 +383,7 @@ class TicketController extends Controller
     public function show(Ticket $ticket, $option)
     {
         //
+        $this->updateTickets();
         $departmentsSideBar = Department::where('active',TRUE)->get();
         $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
@@ -334,6 +400,7 @@ class TicketController extends Controller
     public function edit(Ticket $ticket,$option)
     {
         //
+        $this->updateTickets();
         $departmentsSideBar = Department::where('active',TRUE)->get();
         $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
@@ -350,39 +417,95 @@ class TicketController extends Controller
     public function update(Request $request, Ticket $ticket, $option=NULL)
     {
         //
-        $ticket->ticketDescription = $request->description;
-        $ticket->update();
+        $status='success';
+        $content='Se editó con éxito la descripción del ticket';
+        $this->updateTickets();
+        try{
+            $ticket->ticketDescription = $request->description;
+            $content='Se editó con éxito la descripción del ticket '.$ticket->idTicket;
+            $ticket->update();
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar editar la descripción del ticket '.$ticket->idTicket;
+        }
         if($option==1)
             if(auth()->user()->isAdministrator()){
-                return redirect()->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
+                return redirect()
+                ->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
             else{
-                return redirect()->route('coordinator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
+                return redirect()
+                ->route('coordinator.ticket.inbox',['department'=>$ticket->activity->subarea->department])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
-        else{
+        elseif($option==2){
             if(auth()->user()->isAdministrator()){
-                return redirect()->route('administrator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department]);
+                return redirect()->route('administrator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
             else{
-                return redirect()->route('coordinator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department]);
+                return redirect()->route('coordinator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
         }
+        else{
+            if(auth()->user()->isAdministrator()){
+                return redirect()
+                ->route('administrator.ticket.mytickets',$ticket->employeeNumber)
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+            elseif(auth()->user()->isCoordinator()){
+                return redirect()
+                ->route('coordinator.ticket.mytickets',$ticket->employeeNumber)
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+            elseif(auth()->user()->isAssistant()){
+                return redirect()
+                ->route('assistant.ticket.mytickets',$ticket->employeeNumber)
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+            elseif(auth()->user()->isAgent()){
+                return redirect()
+                ->route('agent.ticket.mytickets',$ticket->employeeNumber)
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+            else{
+                return redirect()
+                ->route('user.ticket.mytickets',$ticket->employeeNumber)
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }         
+        }
     }
-    public function updateMyTicket(Request $request, Ticket $ticket)
-    {
-        //
-        $ticket->ticketDescription = $request->description;
-        $ticket->update();
-        return redirect()->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
-        //return back();
-    }
-
-    public function closeMyTicket(Ticket $ticket){
-        
-    }
-    public function close(Ticket $ticket){
-
-    }
+  
 
     /**
      * Remove the specified resource from storage.
@@ -393,43 +516,115 @@ class TicketController extends Controller
     public function destroy(Ticket $ticket, $ticketOption, $option)
     {
         //
-        if($ticketOption==1){
-            if($ticket->idStatus==4){
-                $ticket->idStatus=5;
-                $ticket->update();
+        $status='success';
+        $content='';
+        $this->updateTickets();
+        try{
+            if($ticketOption==1){
+                if($ticket->idStatus==4){
+                    $ticket->idStatus=5;
+                    $content='Se reabrió el ticket '.$ticket->idTicket.' con éxito';
+                }
+                else{
+                    
+                    $ticket->idStatus=7;
+                    $content='Se reabrió el ticket '.$ticket->idTicket.' con éxito';
+                }
+            }
+            elseif($ticketOption==2){
+                $ticket->idStatus=3;
+                $status='warning';
+                $content='Se canceló el ticket '.$ticket->idTicket;
             }
             else{
-                $ticket->idStatus=7;
-                $ticket->update();
+                $ticket->idStatus=4;
+                $content='Se cerró el ticket '.$ticket->idTicket;
+                $ticket->closeDate=Carbon::now();
             }
-        }
-        elseif($ticketOption==2){
-            $ticket->idStatus=3;
             $ticket->update();
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar modificar el estado del ticket '.$ticket->idTicket;
         }
-        else{
-            $ticket->idStatus=4;
-            $ticket->closeDate=Carbon::now();
-            $ticket->update();
-        }
-        if($option==1){
+        if($option==1)
             if(auth()->user()->isAdministrator()){
-                return redirect()->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
+                return redirect()
+                ->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
             else{
-                return redirect()->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department]);
+                return redirect()
+                ->route('coordinator.ticket.inbox',['department'=>$ticket->activity->subarea->department])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+        elseif($option==2){
+            if(auth()->user()->isAdministrator()){
+                return redirect()->route('administrator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+            else{
+                return redirect()->route('coordinator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
         }
         else{
-            return redirect()->route('agent.ticket.attend',['user'=>auth()->user()]);
+            if(auth()->user()->isAdministrator()){
+                return redirect()
+                ->route('administrator.ticket.mytickets',$ticket->employeeNumber)
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+            elseif(auth()->user()->isCoordinator()){
+                return redirect()
+                ->route('coordinator.ticket.mytickets',$ticket->employeeNumber)
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+            elseif(auth()->user()->isAssistant()){
+                return redirect()
+                ->route('assistant.ticket.mytickets',$ticket->employeeNumber)
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+            elseif(auth()->user()->isAgent()){
+                return redirect()
+                ->route('agent.ticket.mytickets',$ticket->employeeNumber)
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }
+            else{
+                return redirect()
+                ->route('user.ticket.mytickets',$ticket->employeeNumber)
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+            }         
         }
     }
 
-    public function destroyMyTicket(Ticket $Ticket)
-    {
-        //
-        $ticket->idStatus=3;
-        $ticket->update();
-    }
+   
+
 
 }

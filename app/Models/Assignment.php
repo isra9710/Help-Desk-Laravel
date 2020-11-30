@@ -13,8 +13,8 @@ use Illuminate\Database\Eloquent\Model;
  * Class Assignment
  * 
  * @property int $idAssignment
- * @property int|null $idActivity
- * @property int|null $idUser
+ * @property int $idActivity
+ * @property int $idUser
  * @property bool $temporary
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at

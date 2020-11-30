@@ -46,7 +46,7 @@ Número de empleado
 
       <br><br>
       Fecha de apertura
-      <input type="text" class="form-control" readonly value="{{$ticket->startDate}}">
+      <input type="text" class="form-control" readonly value="{{$ticket->created_at}}">
 
       <br><br>
       Fecha de cierre deseada
@@ -63,21 +63,11 @@ Número de empleado
       <br><br>
       @endif
   Descripción
-      <textarea class="form-control" readonly  rows="3" value="{{$ticket->description}}"></textarea>
+      <textarea class="form-control" readonly  rows="3" value="{{$ticket->ticketDescription }}"></textarea>
   <br><br>
-  @if($option==1)
-    @if(Auth::user()->isAdministrator())
-        <a href="{{route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department])}}" class="btn btn-info">Regresar</a>
-    @else
-        <a href="{{route('coordinator.ticket.inbox',['department'=>$ticket->activity->subarea->department])}}" class="btn btn-info">Regresar</a>
-    @endif
-  @else
-  @if(Auth::user()->isAdministrator())
-        <a href="{{route('administrator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department])}}" class="btn btn-info">Regresar</a>
-    @else
-        <a href="{{route('coordinator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department])}}" class="btn btn-info">Regresar</a>
-    @endif
-  @endif
+
+        <a href="{{ URL::previous() }}" class="btn btn-info">Regresar</a>
+  
 </form>
 </div>
                

@@ -10,6 +10,7 @@ use App\Models\Department;
 use App\Models\Role;
 use App\Models\Subarea;
 use App\Controllers\AssignmentController;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -166,37 +167,74 @@ class UserController extends Controller
     {
         //
         $user = new User();
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = 'Se registró usuario con éxito';//Contenido del mensaje por defecto
         /*
         Los siguiente datos los obtenemos del formulario de registro ubicado en managment.user.index
         */
-        $user->name=$request->name;
-        $user->email=$request->email;
-        $user->username=$request->username;
-        $user->password=bcrypt($request->password);
-        $user->idRole=$request->idRole;
-        $user->extension=$request->extension;
-        $user->status=TRUE;
-        $idDepartment = $request->idDepartment;
-        /*Si el departamento no es null, quiere decir que estamos queriendo registrar a un coordinador, agente o 
-         asistente, por éso nos importa saber si es null o no, de otro modo, estamos hablando de un usuario normal
-        */
-        if(!($idDepartment == null)){  
-            $user->idDepartment = $idDepartment;
-        }
-        $user->save();
-        if($request->idRole==4)
-        {
-            
-            app()->call('App\Http\Controllers\AssignmentController@store', ['user'=>$user,'idSubarea'=>$request->idSubarea]);
+        try{
+            $user->name=$request->name;
+            $user->fathersLastName = "X";
+            $user->mothersLastName ="X";
+            $user->email=$request->email;
+            $user->username=$request->username;
+            $user->password=bcrypt($request->password);
+            $user->idRole=$request->idRole;
+            $user->extension=$request->extension;
+            $user->status=TRUE;
+            $idDepartment = $request->idDepartment;
+            /*Si el departamento no es null, quiere decir que estamos queriendo registrar a un coordinador, agente o 
+            asistente, por éso nos importa saber si es null o no, de otro modo, estamos hablando de un usuario normal
+            */
+            if(!($idDepartment == null)){  
+                $user->idDepartment = $idDepartment;
+                $dep = Department::where('idDepartment',$idDepartment)->first();
+             
+                if($request->idRole==2){
+                    $content='Coordinador para '.$dep->departmentName.' se registró con éxito';
+                }
+                elseif($request->idRole==3){
+                    $content='Asistente para '.$dep->departmentName.' se registró con éxito';
+                }
+                else{ 
+                    $content='Agente para '.$dep->departmentName.' se registró con éxito';
+                }
+            }
+            $user->save();
+ 
+            if($request->idRole==4)
+            {
+                
+                app()->call('App\Http\Controllers\AssignmentController@store', ['user'=>$user,'idSubarea'=>$request->idSubarea]);
+            }
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar registrar usuario';
         }
         if(Auth()->user()->isAdministrator()){
-            return redirect()->route('administrator.user.index',[$user->role,$user->idDepartment]);
+            return redirect()
+            ->route('administrator.user.index',[$user->role,$user->idDepartment])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
         }
         elseif(Auth()->user()->isCoordinator()){
-            return redirect()->route('coordinator.user.index',[$user->role,$user->idDepartment]);
+            return redirect()
+            ->route('coordinator.user.index',[$user->role,$user->idDepartment])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
         }
         else{
-            return redirect()->route('assistant.user.index',[$user->role,$user->idDepartment]);
+            return redirect()
+            ->route('assistant.user.index',[$user->role,$user->idDepartment])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
         }
     }
 
@@ -255,28 +293,62 @@ class UserController extends Controller
     public function update(User $user,Request $request)
     {
         //
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = 'Se editó usuario con éxito';//Contenido del mensaje por defecto
         /*
             Se hace la consulta del usuario que queremos editar, la función first nos permite obtener un solo
             objeto para no obtener una colección de la consulta
         */
-        $idRole = $user->idRole;
-        $idDepartment = $user->idDepartment;
-        $user->username=$request->username;
-        $user->name=$request->name;
-        $user->email=$request->email;
-        $user->update();
-       
+        try{
+            $idRole = $user->idRole;
+            $idDepartment = $user->idDepartment;
+            $user->username=$request->username;
+            $user->name=$request->name;
+            $user->email=$request->email;
+            if($user->idDepartment){
+                $dep = Department::where('idDepartment',$user->idDepartment)->first();
+                if($user->idRole==2){
+                    $content='Se editó correctamento coordinador de '.$dep->departmentName;
+                }
+                elseif($user->idRole==3){
+                    $content='Se editó correctamento asistente de '.$dep->departmentName;
+                }
+                else{
+                    $content='Se editó correctamento agente de '.$dep->departmentName;
+                }
+            }
+            $user->update();
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar editar usuario';
+        }
         /*En las siguientes líneas se redirige al usuario a su dirección correspondiente 
           dependiendo del rol que éste tenga
         */
         if(Auth()->user()->isAdministrator()){
-            return redirect()->route('administrator.user.index',['idRole'=>$idRole, 'idDepartment'=>$idDepartment]);
+            return redirect()
+            ->route('administrator.user.index',['idRole'=>$idRole, 'idDepartment'=>$idDepartment])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
         }
         elseif(Auth()->user()->isCoordinator()){
-            return redirect()->route('coordinator.user.index',['idRole'=>$idRole, 'idDepartment'=>$idDepartment]);
+            return redirect()
+            ->route('coordinator.user.index',['idRole'=>$idRole, 'idDepartment'=>$idDepartment])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
         }
         else{
-            return redirect()->route('assistant.user.index',['idRole'=>$idRole, 'idDepartment'=>$idDepartment]);
+            return redirect()
+            ->route('assistant.user.index',['idRole'=>$idRole, 'idDepartment'=>$idDepartment])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
         }
     }
 
@@ -293,47 +365,93 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        
+        $status = 'warning';//Estado por defecto de mensajes 
+        $content = '';//Contenido del mensaje por defecto
         if($user->active){
-            $user->active= FALSE;
-            $user->update();
+            
+            try{
+                $user->active= FALSE;
+                $content='Se desactivó usuario con éxito';
+                if($user->idDepartment){
+                    $dep = Department::where('idDepartment',$user->idDepartment)->first();
+                    if($user->idRole==2){
+                        $content='Se desactivó correctamente coordinador de '.$dep->departmentName;
+                    }
+                    elseif($user->idRole==3){
+                        $content='Se desactivó correctamente asistente de '.$dep->departmentName;
+                    }
+                    else{
+                        $content='Se desactivó correctamento agente de '.$dep->departmentName;
+                    }
+                }
+                $user->update();
+            }catch(\Throwable $th){
+                DB::rollBack();
+                $status = 'error';
+                $content= 'Error al intentar desactivar usuario';
+            }
+            
+            
+        
             if(Auth()->user()->isAdministrator()){
-                return redirect()->route('administrator.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
+                return redirect()
+                ->route('administrator.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
             elseif(Auth()->user()->isCoordinator()){
-                return redirect()->route('coordinator.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
+                return redirect()
+                ->route('coordinator.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
             else{
-                return redirect()->route('assistant.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
+                return redirect()
+                ->route('assistant.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
             }
         }
         else{
-            
-            $user->active= TRUE;
+            try{
+                $user->active= TRUE;
+                $content='Se reactivó usuario con éxito';
+                if($user->idDepartment){
+                    $dep = Department::where('idDepartment',$user->idDepartment)->first();
+                    if($user->idRole==2){
+                        $content='Se reactivó correctamente coordinador de '.$dep->departmentName;
+                    }
+                    elseif($user->idRole==3){
+                        $content='Se reactivó correctamente asistente de '.$dep->departmentName;
+                    }
+                    else{
+                        $content='Se reactivó correctamento agente de '.$dep->departmentName;
+                    }
+                }
             $user->update();
-            return redirect()->route('administrator.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
+            }catch(\Throwable $th){
+                DB::rollBack();
+                $status = 'error';
+                $content= 'Error al intentar reactivar usuario';
+            }
+            return redirect()
+            ->route('administrator.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
         }
     }
 
-    public function reactivate(User $user)
-    {
-        $user->active = TRUE;
-        $user->update();
-        return redirect()->route('administrator.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
-    }
+ 
 
-    public function status(User $user)
-    {
-        if($user->status==TRUE){
-            $user->status = FALSE;
-        }
-        else{
-            $user->status = TRUE;
-        }
-        $user->update();
-        return redirect()->route('assistant.user.index',['idRole'=>$user->idRole, 'idDepartment'=>$user->idDepartment]);
-        
-    }
+  
 
 
 
