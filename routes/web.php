@@ -135,9 +135,9 @@ Route::middleware('auth')->group(function(){
             //Asignación de un usuario a una actividad
             Route::post('/AsignaciónUsuario/{activity}','AssignmentController@storeAgent')->name('assignment.store.agent');
             Route::post('/Eliminación/{assignment}/{user?}/{activity?}','AssignmentController@destroy')->name('assignment.destroy');
-            Route::get('/AsignaciónTemporal/{user}','AssignmentController@temporary')->name('user.status');
-            Route::post('/AsignaciónTemporalActividad/{agent}','AssignmentController@temporaryAssignment')->name('assignment.temporary.activity');
-            Route::post('/Asignasdasdsdasral/{agent}','AssignmentController@temporaryAssignmentAll')->name('assignment.temporary.all');
+            Route::get('/AsignaciónTemporal/{user}/{option}','AssignmentController@temporary')->name('user.status');
+            Route::post('/AsignaciónTemporalActividad/{agent}/{option}','AssignmentController@temporaryAssignment')->name('assignment.temporary.activity');
+            Route::post('/Asignasdasdsdasral/{agent}/{option}','AssignmentController@temporaryAssignmentAll')->name('assignment.temporary.all');
 
 
             //La siguiente es para gestión de tickets
@@ -199,11 +199,11 @@ Route::middleware('auth')->group(function(){
 
 
             //Muestra formulario para añadir un archivo
-            Route::get('/Archivo/Crear/{ticket}','FileController@create')->name('file.create');
+            Route::get('/Archivo/Crear/{ticket}/{option}','FileController@create')->name('file.create');
             //Muestra formulario para añadir archivo a tu ticket
-            Route::get('/Archivo/CrearMiArchivo/{ticket}','FileController@create')->name('myfile.create');
+           // Route::get('/Archivo/CrearMiArchivo/{ticket}/{option}','FileController@create')->name('myfile.create');
             //Se crea la asignación del archivo al ticket
-            Route::post('/Archivo/{ticket}','FileController@store')->name('file.store');
+            Route::post('/Archivo/{ticket}/{option}','FileController@store')->name('file.store');
 
             Route::get('/DescargarArchivo/{file}','FileController@download')->name('file.download');
 
@@ -341,9 +341,9 @@ Route::middleware('auth')->group(function(){
         Route::post('/AsignaciónActividad/{user}','AssignmentController@storeActivity')->name('assignment.store.activity');
         //Asignación de un usuario a una actividad
         Route::post('/AsignaciónUsuario/{activity}','AssignmentController@storeAgent')->name('assignment.store.agent');
-        Route::get('/AsignaciónTemporal/{user}','AssignmentController@temporary')->name('user.status');
-        Route::post('/AgregarSubareaTemporal/{agent}','AssignmentController@temporaryAssignmentAll')->name('assignment.temporary.all');
-        Route::post('/AsignaciónTemporalActividad/{agent}','AssignmentController@temporaryAssignment')->name('assignment.temporary.activity');
+        Route::get('/AsignaciónTemporal/{user}/{option}','AssignmentController@temporary')->name('user.status');
+        Route::post('/AgregarSubareaTemporal/{agent}/{option}','AssignmentController@temporaryAssignmentAll')->name('assignment.temporary.all');
+        Route::post('/AsignaciónTemporalActividad/{agent}/{option}','AssignmentController@temporaryAssignment')->name('assignment.temporary.activity');
         
         Route::post('/Eliminación/{assignment}/{user?}/{activity?}','AssignmentController@destroy')->name('assignment.destroy');
 
@@ -369,11 +369,11 @@ Route::middleware('auth')->group(function(){
          Route::get('Tickets/activities','ActivityController@getActivities');
 
          //Muestra formulario para añadir un archivo
-         Route::get('/Archivo/Crear/{ticket}','FileController@create')->name('file.create');
+         Route::get('/Archivo/Crear/{ticket}/{option}','FileController@create')->name('file.create');
          //Muestra formulario para añadir archivo a tu ticket
-         Route::get('/Archivo/CrearMiArchivo/{ticket}','FileController@create')->name('myfile.create');
+         //Route::get('/Archivo/CrearMiArchivo/{ticket}','FileController@create')->name('myfile.create');
          //Se crea la asignación del archivo al ticket
-         Route::post('/Archivo/{ticket}','FileController@store')->name('file.store');
+         Route::post('/Archivo/{ticket}/{option}','FileController@store')->name('file.store');
 
          Route::get('/DescargarArchivo/{file}','FileController@download')->name('file.download');
 

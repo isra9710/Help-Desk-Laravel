@@ -48,7 +48,7 @@
                         <i class="far fa-comments"></i>
                         </a>
                         <br>
-                        <a class="btn btn-light btn-sm" href="{{route('administrator.file.create',['ticket'=>$ticket])}}">
+                        <a class="btn btn-light btn-sm" href="{{route('administrator.file.create',['ticket'=>$ticket,'option'=>3])}}">
                         <i class="fas fa-file-upload"></i>
                         </a>
                         <br>
@@ -89,7 +89,7 @@
                             <a href="{{route('coordinator.message.create',['ticket'=>$ticket,'option'=>3])}}"class="btn btn-info btn-sm">
                             <i class="far fa-comments"></i>
                             </a>
-                            <a class="btn btn-light btn-sm" href="{{route('coordinator.file.create',['ticket'=>$ticket])}}">
+                            <a class="btn btn-light btn-sm" href="{{route('coordinator.file.create',['ticket'=>$ticket,'option'=>3])}}">
                             <i class="fas fa-file-upload"></i>
                             </a>
                             @if($ticket->idStatus==4 || $ticket->idStatus==6)
@@ -126,7 +126,7 @@
                         <a href="{{route('assistant.message.create',['ticket'=>$ticket,'option'=>3])}}"class="btn btn-info btn-sm">
                         <i class="far fa-comments"></i>
                         </a>
-                        <a class="btn btn-light btn-sm" href="{{route('assistant.file.create',['ticket'=>$ticket])}}">
+                        <a class="btn btn-light btn-sm" href="{{route('assistant.file.create',['ticket'=>$ticket,'option'=>3])}}">
                         <i class="fas fa-file-upload"></i>
                         </a>
 
@@ -164,7 +164,7 @@
                         <a href="{{route('agent.message.create',['ticket'=>$ticket,'option'=>3])}}"class="btn btn-info btn-sm">
                         <i class="far fa-comments"></i>
                         </a>
-                        <a class="btn btn-light btn-sm" href="{{route('agent.file.create',['ticket'=>$ticket])}}">
+                        <a class="btn btn-light btn-sm" href="{{route('agent.file.create',['ticket'=>$ticket,'option'=>3])}}">
                         <i class="fas fa-file-upload"></i>
                         </a>
                         @if($ticket->idStatus==4 || $ticket->idStatus==6)
@@ -201,7 +201,7 @@
                             <a href="{{route('user.message.create',['ticket'=>$ticket,'option'=>3])}}"class="btn btn-info btn-sm">
                             <i class="far fa-comments"></i>
                             </a>
-                            <a class="btn btn-light btn-sm" href="{{route('user.file.create',['ticket'=>$ticket])}}">
+                            <a class="btn btn-light btn-sm" href="{{route('user.file.create',['ticket'=>$ticket,'option'=>3])}}">
                             <i class="fas fa-file-upload"></i>
                             </a>
                         @endif

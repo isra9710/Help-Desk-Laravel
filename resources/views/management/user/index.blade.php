@@ -185,24 +185,24 @@
                             <td>
                                 @if(auth()->user()->isAssistant())
                                     @if($user->status)
-                                        <a href="{{route('assistant.user.status', ['user'=>$user])}}" class="btn
+                                        <a href="{{route('assistant.user.status', ['user'=>$user,'option'=>1])}}" class="btn
                                                 btn-warning btn-sm"><i class="fas fa-history"></i></a>
                                     @else
-                                    <a href="{{route('assistant.user.status', ['user'=>$user])}}" class="btn
+                                    <a href="{{route('assistant.user.status', ['user'=>$user,'option'=>2])}}" class="btn
                                                 btn-warning btn-sm "><i class="fas fa-undo"></i></a>
                                     @endif
                                 @else 
                                     @if($user->status)
-                                            <a href="{{route('administrator.user.status', ['user'=>$user])}}" class="btn
+                                            <a href="{{route('administrator.user.status', ['user'=>$user,'option'=>1])}}" class="btn
                                                     btn-warning btn-sm"><i class="fas fa-history"></i></a>
                                         @else
-                                        <a href="{{route('administrator.user.status', ['user'=>$user])}}" class="btn
+                                        <a href="{{route('administrator.user.status', ['user'=>$user,'option'=>2])}}" class="btn
                                                     btn-warning btn-sm "><i class="fas fa-undo"></i></a>
                                         @endif                               
                                 @endif
                             @endif
                             </td>
-                            @endif
+                           
                         </tr>
                     @endforeach
                     </tbody>

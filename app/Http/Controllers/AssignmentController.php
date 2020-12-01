@@ -107,10 +107,10 @@ class AssignmentController extends Controller
 
 
 
-    public function temporary(User $user){
+    public function temporary(User $user, $option){
         $status = 'success';//Estado por defecto de mensajes 
         $content = 'Escoge a uno o más agentes para cubrir a '.$user->name;//Contenido del mensaje por defecto
-        if($user->status){
+        if($option==1){
             try{
                 $user->status=FALSE;
                 $departmentsSideBar = Department::where('active',TRUE)->get();
@@ -123,7 +123,7 @@ class AssignmentController extends Controller
                 $temporaryAssignments = Assignment::join('activities', 'activities.idActivity', '=', '');
                 $agents = User::where('idUser','!=',$user->idUser)->where('idDepartment',$user->idDepartment)->where('idRole',4)->get();
                 $user->update();
-                return view ('management.assignment.temporaryAssignment',['departmentsSideBar'=>$departmentsSideBar, 'rolesSideBar'=>$rolesSideBar, 'subareasSideBar'=>$subareasSideBar,'assignments'=>$assignments,'agents'=>$agents,'user'=>$user,'assignments1'=>$assignments1])
+                return view ('management.assignment.temporaryAssignment',['departmentsSideBar'=>$departmentsSideBar, 'rolesSideBar'=>$rolesSideBar, 'subareasSideBar'=>$subareasSideBar,'assignments'=>$assignments,'agents'=>$agents,'user'=>$user,'assignments1'=>$assignments1,'option'=>$option])
                 ->with('process_result',[
                     'status'=>$status,
                     'content'=>$content
@@ -167,7 +167,7 @@ class AssignmentController extends Controller
        
     
 
-    public function temporaryAssignmentAll(User $agent, Request $request){
+    public function temporaryAssignmentAll(User $agent,$option ,Request $request){
         $status = 'success';//Estado por defecto de mensajes 
         $content = 'Se asignó subárea de manera temporal con éxito';//Contenido del mensaje por defecto
         $error= 0;
@@ -208,7 +208,7 @@ class AssignmentController extends Controller
         
         if(auth()->user()->isAdministrator()){
             return redirect()
-            ->route('administrator.user.status',['user'=>$agent])
+            ->route('administrator.user.status',['user'=>$agent,'option'=>$option])
             ->with('process_result',[
                 'status'=>$status,
                 'content'=>$content
@@ -216,7 +216,7 @@ class AssignmentController extends Controller
         }
         else{
             return redirect()
-            ->route('assistant.user.status',['user'=>$agent])
+            ->route('assistant.user.status',['user'=>$agent,'option'=>$option])
             ->with('process_result',[
                 'status'=>$status,
                 'content'=>$content
@@ -225,7 +225,7 @@ class AssignmentController extends Controller
     
     }
 
-    public function temporaryAssignment(User $agent, Request $request){
+    public function temporaryAssignment(User $agent,$option ,Request $request){
         $status = 'success';//Estado por defecto de mensajes 
         $content = 'Se asignó subárea de manera temporal con éxito';//Contenido del mensaje por defecto
         $nameUser = User::where('idUser',$request->idAgent)->first();

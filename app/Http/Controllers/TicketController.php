@@ -27,6 +27,7 @@ class TicketController extends Controller
         ->where('idStatus','!=',7)
         ->orderBy('idTicket','DESC')
         ->get();
+        if($tickets){
         foreach($tickets as $ticket){
             $closeDate=Carbon::parse($ticket->limitDate);
             if($closeDate->diffInDays(Carbon::now())>$ticket->activity->days){
@@ -34,7 +35,7 @@ class TicketController extends Controller
                 $ticket->update();
             }
         }
-        
+    }
     }
     /**
      * Display a listing of the resource.

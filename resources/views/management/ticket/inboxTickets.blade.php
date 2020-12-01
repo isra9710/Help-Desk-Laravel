@@ -55,7 +55,7 @@
                         <i class="far fa-comments"></i>
                         </a>
                         <br>
-                        <a class="btn btn-light btn-sm" href="{{route('administrator.file.create',['ticket'=>$ticket])}}">
+                        <a class="btn btn-light btn-sm" href="{{route('administrator.file.create',['ticket'=>$ticket,'option'=>1])}}">
                         <i class="fas fa-file-upload"></i>
                         </a>
                         <br>
@@ -67,7 +67,7 @@
                         <a href="{{route('coordinator.message.create',['ticket'=>$ticket,'option'=>1])}}"class="btn btn-info btn-sm">
                         <i class="far fa-comments"></i>
                         </a>
-                        <a class="btn btn-light btn-sm" href="{{route('coordinator.file.create',['ticket'=>$ticket])}}">
+                        <a class="btn btn-light btn-sm" href="{{route('coordinator.file.create',['ticket'=>$ticket,'option'=>1])}}">
                         <i class="fas fa-file-upload"></i>
                         </a>
                     @endif

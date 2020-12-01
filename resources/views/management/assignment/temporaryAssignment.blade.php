@@ -15,10 +15,10 @@
         <div class="col-sm-4">
                 <h4 class="text-center alert alert-info ">Agregar agente temporal para cubrir a {{$user->name}}</h4>
                 @if(auth()->user()->isAdministrator())
-                <form action="{{route('administrator.assignment.temporary.activity',['all'=>FALSE,'agent'=>$user])}}" method="POST"> 
+                <form action="{{route('administrator.assignment.temporary.activity',['agent'=>$user,'option'=>1])}}" method="POST"> 
                 {{ csrf_field() }}
                 @else
-                <form action="{{route('assistant.assignment.temporary.activity',['all'=>FALSE,'agent'=>$user])}}" method="POST"> 
+                <form action="{{route('assistant.assignment.temporary.activity',['agent'=>$user,'option'=>1])}}" method="POST"> 
                  
                 {{ csrf_field() }}
                 @endif
@@ -40,7 +40,7 @@
                 <br><br>
             </form>
             @if(auth()->user()->isAdministrator())
-                <form action="{{route('administrator.assignment.temporary.all',['all'=>TRUE,'agent'=>$user])}}" method="POST"> 
+                <form action="{{route('administrator.assignment.temporary.all',['agent'=>$user,'option'=>1])}}" method="POST"> 
                 {{ csrf_field() }}
                 <select class="form-control" name="idAgent">
                    <option value="">Escoge un agente </option>
@@ -53,7 +53,7 @@
                 </form>
                 <br>
                 @else
-                <form action="{{route('assistant.assignment.temporary.all',['agent'=>$user])}}" method="POST"> 
+                <form action="{{route('assistant.assignment.temporary.all',['agent'=>$user,'option'=>1])}}" method="POST"> 
                 {{ csrf_field() }}
                 <select class="form-control" name="idAgent">
                    <option value="">Escoge un agente </option>
