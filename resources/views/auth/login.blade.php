@@ -55,14 +55,7 @@
       @enderror
         </div>
         <div class="row">
-          <div class="col-8">
-            <div class="icheck-primary">
-              <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                <label class="form-check-label" for="remember">
-                    {{ __('Recordarme') }}
-                </label>
-            </div>
-          </div>
+          
           <!-- /.col -->
           <div class="col-4">
             <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
@@ -76,11 +69,64 @@
           <a href="{{ route('register') }}" class="text-center">Registrarse</a>
         </p>
         @endif
+        <p class="mb-0">
+          <a href="{{ route('guest.ticket.create') }}" class="text-center">Registrar ticket</a>
+        </p>
+        <p class="mb-0">
+          <a href="" data-toggle="modal" data-target="#modal-default" class="text-center" >Ver detalles de mi ticket</a>
+        </p>
+
         </div>
     </div>
       </form>
 
 
+
+
+      <div class="modal fade" id="modal-default">
+         <form action="{{route('guest.ticket.index')}}" method="GET">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Buscar ticket</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            
+            Número de ticket
+          <input class="form-control" required name="idTicket" >
+              
+              
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            
+              <button type="submit" class="btn btn-success">Buscar ticket</button>            
+            </div>
+            </form>
+          </div>
+       
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+
+
+
+
+      
+      <script src="{{ mix('js/vendor.js') }}"></script>
+    <script src=" {{ mix('js/app.js') }}?v3" defer></script> 
+    @if(session()->has('process_result'))
+        <script>
+        $(function(){
+           toastr.{{session('process_result')['status']}}('{{session
+            ('process_result')['content']}}')
+        });
+        </script>
+        @endif
 <!-- /.login-box -->
 
 </body>

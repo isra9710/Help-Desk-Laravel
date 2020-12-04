@@ -40,13 +40,7 @@
                        
                     <br><br>
                     @endif
-                    @if(auth()->user()->isAdministrator())
-                        <a href="{{route('administrator.user.index',[$user->idRole, $user->idDepartment])}}" class="btn btn-info">Regresar</a>
-                    @elseif(auth()->user()->isCoordinator())
-                        <a href="{{route('coordinator.user.index',[$user->idRole,$user->idDepartment])}}" class="btn btn-info">Regresar</a>
-                    @else
-                        <a href="{{route('assistant.user.index',[$user->idRole,$user->idDepartment])}}" class="btn btn-info">Regresar</a>
-                    @endif
+                    <a href="{{ URL::previous() }}" class="btn btn-info">Regresar</a>
                     <br>
                     <br>
                 </form>

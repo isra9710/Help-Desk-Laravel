@@ -55,10 +55,27 @@ Route::middleware('auth')->group(function(){
         'prefix'=>'Administrador','as'=>'administrator.',
     ],function(){
         
-            Route::get('Probar/{id}', 'UserController@probar')->name('prueba');
+        
             //La página principal del administrador
             Route::get('','UserController@homeAdministrator')->name('home');
-            
+            //Ruta para mostrar el formulario de cambio de contraseña
+            Route::get('/CambiarContraseña','UserController@changePassForm')->name('change.pass');
+            //Ruta para actualizar contraseña
+            Route::post('/ActualizarContraseña','UserController@updatePass')->name('update.pass');
+
+            //Respaldo de base de datos
+            Route::get('/RespaldoBase','BackupController@create')->name('create.backup');
+
+            //Gestión de preguntas
+            Route::get('/Preguntas','QuestionController@create')->name('question.create');
+            Route::post('/AgregarPregunta','QuestionController@store')->name('question.store');
+            Route::get('/Editar/{question}/Pregunta','QuestionController@edit')->name('question.edit');
+            Route::post('/ActualizarPregunta/{question}','QuestionController@update')->name('question.update');
+            Route::post('/EliminarPregunta/{question}','QuestionController@destroy')->name('question.destroy');
+
+           
+
+
             //En esta parte va el CRUD de todo tipo de usuario, coordinador, técnico, usuario
 
 
@@ -421,6 +438,20 @@ Route::middleware('auth')->group(function(){
 
     Route::prefix('Usuario')->name('user.')->group(function()
     {
+        Route::get('','UserController@homeUser')->name('home');
+         //Ruta para mostrar el formulario de cambio de contraseña
+         Route::get('/CambiarContraseña','UserController@changePassForm')->name('change.pass');
+         //Ruta para actualizar contraseña
+         Route::post('/ActualizarContraseña','UserController@updatePass')->name('update.pass');
+        
+        
+        
+        Route::get('/Tickets/Crear','TicketController@create')->name('ticket.create');
+        Route::post('/Tickets/Agregar','TicketController@store')->name('ticket.store');
+        Route::get('/Tickets/DetallesTicket/{ticket}/{option}', 'TicketController@show')->name('ticket.show');
+        Route::get('/Tickets/DetallesTicket/{ticket}', 'TicketController@edit')->name('ticket.edit');
+        Route::post('/Tickets/EditarTicket/{ticket}','TicketController@update')->name('ticket.update');
+        
         Route::get('/MisTickets/{employeeNumber}','TicketController@myTickets')->name('ticket.mytickets');
         Route::get('Tickets/subareas','SubareaController@getSubareas');
         Route::get('Tickets/activities','ActivityController@getActivities');
@@ -440,8 +471,29 @@ Route::middleware('auth')->group(function(){
     
 
 Auth::routes();
+Route::prefix('Invitado')->name('guest.')->group(function()
+    {
 
-
+        
+        Route::get('Tickets/subareas','SubareaController@getSubareas');
+        Route::get('Tickets/activities','ActivityController@getActivities');
+        Route::get('/Tickets/Crear','TicketController@createG')->name('ticket.create');
+        Route::post('/Tickets/Agregar','TicketController@storeG')->name('ticket.store');
+        //Route::post('/Tickets/DetallesTicket/{ticket?}', 'TicketController@index')->name('ticket.index');
+        Route::get('/Ver/Ticket/{ticket?}', 'TicketController@index')->name('ticket.index');
+        Route::get('/Tickets/EditarTicket/{ticket}','TicketController@updateG')->name('ticket.update');
+        Route::get('/Tickets/EliminarTicket/{ticket?}/{ticketOption?}','TicketController@destroyG')->name('ticket.destroy');
+          
+        
+        Route::get('/CrearArchivo/{ticket}','FileController@createG')->name('file.create');
+        Route::post('/AgregarArchivo/{ticket}','FileController@storeG')->name('file.store');
+        
+        Route::get('/CrearMensaje/{ticket}','MessageController@createG')->name('message.create');
+        Route::post('/AñadirMensaje/{ticket}','MessageController@storeG')->name('message.store');
+    
+    
+    });
+    
 
 
 

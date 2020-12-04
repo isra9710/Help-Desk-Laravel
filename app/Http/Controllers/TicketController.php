@@ -184,10 +184,19 @@ class TicketController extends Controller
     }
     //Muestra los agentes y se elige al nuevo
     public function reasign(Request $request,Ticket $ticket, $option){
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = '';//Contenido del mensaje por defecto
         $this->updateTickets();
-        $ticket->doubt=FALSE;
-        $ticket->idTechnician=$request->idTechnician;
-        $ticket->update();
+        try{
+            $content='Se reasignó el ticket con éxito';
+            $ticket->doubt=FALSE;
+            $ticket->idTechnician=$request->idTechnician;
+            $ticket->update();
+        }catch(\Throwable $th){
+        DB::rollBack();
+        $status = 'error';
+        $content= 'Error al intentar reasignar el ticket';
+        }
         if($option==1){
             if(auth()->user()->isAdministrator()){
                 return redirect()
@@ -238,6 +247,13 @@ class TicketController extends Controller
        
     }
 
+
+    //Función para que el usuario no registrado cree un ticket
+    public function createG(){
+        $this->updateTickets();
+        return view('management.ticket.addTicketByG');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -254,7 +270,7 @@ class TicketController extends Controller
             $activity = Activity::where('idActivity', $request->idActivity)->first();
             $ticket = new Ticket();
             /*
-            Los siguiente datos los obtenemos del formulario de registro ubicado en managment.user.index
+            Los siguiente datos los obtenemos del formulario de registro ubicado en managment.u
             */
             $ticket->idStatus=1;
             $ticket->idActivity = $request->idActivity;
@@ -368,13 +384,68 @@ class TicketController extends Controller
                 ]);
             }
         }
-       
-
-
-
-       
     }
 
+
+
+    public function storeG(Request $request)
+    {
+        //
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = '';//Contenido del mensaje por defecto
+        $this->updateTickets();
+        try{
+            $activity = Activity::where('idActivity', $request->idActivity)->first();
+            $ticket = new Ticket();
+            
+            $ticket->idStatus=1;
+            $ticket->idActivity = $request->idActivity;
+            $ticket->limitDate = Carbon::now()->addDays($activity->days);
+            $ticket->ticketDescription = $request->ticketDescription;
+            if(isset($request->doubt)){    
+                $ticket->doubt= 1;
+            }
+            else{
+                $ticket->doubt = 0;
+            }
+            //Esto quiere decir que se está registrando un ticket para alguien más
+        
+            $ticket->employeeNumber = $request->employeeNumber;
+                
+           
+            $ticket->save();
+            $content = 'Se registró con éxito el ticket cuyo número de folio es '.$ticket->idTicket;
+            if($request->file){
+                $dataFile = new File();
+                $fileName = "";//Nombre del archivo
+                $dataFile->idTicket=$ticket->idTicket;
+                $dataFile->fileDescription=$request->fileDescription;
+                $dataFile->save();
+                $file= $request->file('file');
+                if($request->employeeNumber){
+                    $userName = User::Where('username',$request->employeeNumber)->first();
+                    $fileName =$userName.$dataFile->idFile.$request->file->getClientOriginalName();
+                }
+                else{
+                    $fileName =auth()->user()->username.$dataFile->idFile.$request->file->getClientOriginalName();
+                }
+                $path = $file->storeAs('public',$fileName);
+                $dataFile->directoryFile = $path;
+                $dataFile->update();
+            }
+            
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar registrar el ticket';
+        }
+        return redirect()
+        ->route('login')
+        ->with('process_result',[
+            'status'=>$status,
+            'content'=>$content
+        ]);
+    }
     /**
      * Display the specified resource.
      *
@@ -392,6 +463,29 @@ class TicketController extends Controller
 
     }
 
+    public function index(Ticket $ticket=NULL, Request $request){
+
+        $this->updateTickets();
+        if(!($ticket)){
+            $ticket=Ticket::where('idTicket',$request->idTicket)->first();
+            if($ticket){
+            return view('management.ticket.showTicketG',['ticket'=>$ticket]);
+            }
+            else{
+                $status='info';
+                $content='No se encontró un ticket con el número '.$request->idTicket;
+                return back()->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
+        
+            }
+        }
+        else{
+        return view('management.ticket.showTicketG',['ticket'=>$ticket]);
+        }
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -407,6 +501,8 @@ class TicketController extends Controller
         $rolesSideBar = Role::all();
         return view('management.ticket.editTicket',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'ticket'=>$ticket,'option'=>$option]);
     }
+
+
 
     /**
      * Update the specified resource in storage.
@@ -506,6 +602,29 @@ class TicketController extends Controller
             }         
         }
     }
+
+    public function updateG(Request $request, Ticket $ticket){
+        $status='success';
+        $content='Se editó con éxito la descripción del ticket';
+        $this->updateTickets();
+        try{
+            $ticket->ticketDescription = $request->ticketDescription;
+            $content='Se editó con éxito la descripción del ticket '.$ticket->idTicket;
+            $ticket->update();
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar editar la descripción del ticket '.$ticket->idTicket;
+        }
+
+        return redirect() 
+        ->route('guest.ticket.index',['ticket'=>$ticket])
+        ->with('process_result',[
+            'status'=>$status,
+            'content'=>$content
+        ]);
+        
+    }
   
 
     /**
@@ -581,7 +700,7 @@ class TicketController extends Controller
                 ]);
             }
         }
-        else{
+        elseif($option==3){
             if(auth()->user()->isAdministrator()){
                 return redirect()
                 ->route('administrator.ticket.mytickets',$ticket->employeeNumber)
@@ -623,9 +742,60 @@ class TicketController extends Controller
                 ]);
             }         
         }
+        else{
+            return redirect()
+            ->route('guest.ticket.show',['ticket'=>$ticket],$ticket->employeeNumber)
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
+        }
     }
 
-   
 
+    public function destroyG(Ticket $ticket, $ticketOption){
+        $status='success';
+        $content='';
+        $this->updateTickets();
+        try{
+            if($ticketOption==1){
+                if($ticket->idStatus==4){
+                    $ticket->idStatus=5;
+                    $content='Se reabrió el ticket '.$ticket->idTicket.' con éxito';
+                }
+                else{
+                    
+                    $ticket->idStatus=7;
+                    $content='Se reabrió el ticket '.$ticket->idTicket.' con éxito';
+                }
+            }
+            elseif($ticketOption==2){
+                $ticket->idStatus=3;
+                $status='warning';
+                $content='Se canceló el ticket '.$ticket->idTicket;
+            }
+            else{
+                $ticket->idStatus=4;
+                $content='Se cerró el ticket '.$ticket->idTicket;
+                $ticket->closeDate=Carbon::now();
+            }
+            $ticket->update();
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar modificar el estado del ticket '.$ticket->idTicket;
+        }
+        return redirect()
+        ->route('guest.ticket.index',['ticket'=>$ticket])
+        ->with('process_result',[
+            'status'=>$status,
+            'content'=>$content
+        ]);
+    }
+   
+    public function loco(Ticket $ticket)
+    {
+        return redirect()->route('login');
+    }
 
 }

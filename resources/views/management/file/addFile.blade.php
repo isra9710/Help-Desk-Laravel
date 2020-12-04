@@ -10,34 +10,27 @@
         <div class="col-sm-4">
                 <h4 class="text-center alert alert-info ">Añade un archivo</h4>
                 @if(Auth::user()->isAdministrator())
-                <form action="{{route('administrator.file.store',['ticket'=>$ticket,'option'=>$option])}}" method="POST">
+                <form action="{{route('administrator.file.store',['ticket'=>$ticket,'option'=>$option])}}" method="POST" enctype="multipart/form-data">
                 @elseif(Auth::user()->isCoordinator())
-                <form action="{{route('coordinator.file.store',['ticket'=>$ticket,'option'=>$option])}}" method="POST">
+                <form action="{{route('coordinator.file.store',['ticket'=>$ticket,'option'=>$option])}}" method="POST" enctype="multipart/form-data">
                 @elseif(Auth::user()->isAssistant())
-                <form action="{{route('assistant.file.store',['ticket'=>$ticket,'option'=>$option])}}" method="POST">
+                <form action="{{route('assistant.file.store',['ticket'=>$ticket,'option'=>$option])}}" method="POST" enctype="multipart/form-data">
                 @elseif(Auth::user()->isAgent())
-                <form action="{{route('agent.file.store',['ticket'=>$ticket,'option'=>$option])}}" method="POST">
+                <form action="{{route('agent.file.store',['ticket'=>$ticket,'option'=>$option])}}" method="POST" enctype="multipart/form-data">
                 @else
-                <form action="{{route('user.file.store',['ticket'=>$ticket,'option'=>$option])}}" method="POST">
+                <form action="{{route('user.file.store',['ticket'=>$ticket,'option'=>$option])}}" method="POST" enctype="multipart/form-data">
                 @endif
 
                 {{ csrf_field() }}
-                <div class="input-group">
-                      <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="file" name="file" required>
-                        <label class="custom-file-label" for="file">Busca un archivo</label>
-                      </div>
-                      
-                    </div>
+                <div class="form-group">
+                    Escoge un archivo
+                 <input type="file" class="form-control-file" name="file">
+                </div>
                     <br><br>
                     Añade una descripción
                     <input type="text" class="form-control" required name="fileDescription"><br>
                 <input type="submit" class="btn btn-success" value="Agregar">
-                @if(auth()->user()->isAdministrator())
-                <a href="{{route('administrator.ticket.inbox',$ticket->activity->subarea->department)}}" class="btn btn-info">Regresar</a>
-                @else
-                <a href="{{route('coordinator.ticket.inbox',$ticket->activity->subarea->department)}}" class="btn btn-info">Regresar</a>
-                @endif
+                <a href="{{ URL::previous() }}" class="btn btn-info">Regresar</a>
                 <br>
                 <br>
             </form>

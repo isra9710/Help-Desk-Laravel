@@ -75,8 +75,7 @@
            toastr.{{session('process_result')['status']}}('{{session
             ('process_result')['content']}}')
         });
-        </script>
-
+        </script>    
 @endif
 </body>
 </html>

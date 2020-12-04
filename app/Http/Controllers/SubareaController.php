@@ -64,16 +64,35 @@ class SubareaController extends Controller
      */
     public function store(Department $department,Request $request)
     {
-        //
-        $subarea = new Subarea();
-        $subarea->subareaName = $request->subareaName;
-        $subarea->idDepartment= $department->idDepartment;
-        $subarea->save();
+        // 
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = 'Se registró subárea con éxito';//Contenido del mensaje por defecto
+        try{
+            $subarea = new Subarea();
+            $subarea->subareaName = $request->subareaName;
+            $subarea->idDepartment= $department->idDepartment;
+            $subarea->subareaDescription=$request->subareaDescription;
+            $subarea->save();
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar registrar subárea';
+            }
         if(Auth()->user()->isAdministrator()){
-            return redirect()->route('administrator.subarea.index',['department'=>$department]);
+            return redirect()
+            ->route('administrator.subarea.index',['department'=>$department])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
         }
         else{
-            return redirect()->route('coordinator.subarea.index',['department'=>$department]);
+            return redirect()
+            ->route('coordinator.subarea.index',['department'=>$department])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
         }
     }
 
@@ -86,10 +105,7 @@ class SubareaController extends Controller
     public function show(Department $department,Subarea $subarea)
     {
         //
-        $subareasSideBar = Subarea::where('active',TRUE)->get();
-        $departmentsSideBar = Department::where('active',TRUE)->get();
-        $rolesSideBar = Role::all();
-        return view ('management.subarea.edit',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'subarea'=>$subarea,'department'=>$department]);
+        
     }
 
     /**
@@ -98,9 +114,13 @@ class SubareaController extends Controller
      * @param  \App\Subarea  $subarea
      * @return \Illuminate\Http\Response
      */
-    public function edit(Subarea $subarea)
+    public function edit(Department $department,Subarea $subarea)
     {
         //
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $rolesSideBar = Role::all();
+        return view ('management.subarea.edit',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'subarea'=>$subarea,'department'=>$department]);
     }
 
     /**
@@ -113,14 +133,31 @@ class SubareaController extends Controller
     public function update(Request $request, Department $department,Subarea $subarea)
     {
         //
-        $subarea->subareaName = $request->subareaName;
-        $subarea->subareaDescription = $request->subareaDescription;
-        $subarea->update();
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = 'Se editó subárea con éxito';//Contenido del mensaje por defecto
+        try{
+            $subarea->subareaName = $request->subareaName;
+            $subarea->subareaDescription = $request->subareaDescription;
+            $subarea->update();   
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar editar subárea';
+        }
+        
         if(Auth()->user()->isAdministrator()){
-            return redirect()->route('administrator.subarea.index',['department'=>$department]);
+            return redirect()->route('administrator.subarea.index',['department'=>$department])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
         }
         else{
-            return redirect()->route('coordinator.subarea.index',['department'=>$department]);
+            return redirect()->route('coordinator.subarea.index',['department'=>$department])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
         }
         
     }
@@ -134,22 +171,54 @@ class SubareaController extends Controller
     public function destroy(Department $department, Subarea $subarea)
     {
         //
-        if($subarea->active){
-            $subarea->active = FALSE;
-            $subarea->update();
-            if(Auth()->user()->isAdministrator()){
-                return redirect()->route('administrator.subarea.index',['department'=>$department]);
-             }
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = '';//Contenido del mensaje por defecto
+            if($subarea->active){
+                try{
+                    $content='Se desactivó subárea';
+                    $subarea->active = FALSE;
+                    $subarea->update();
+                 }catch(\Throwable $th){
+                    DB::rollBack();
+                    $status = 'error';
+                    $content= 'Error al intentar desactivar subárea';
+                } 
+                if(Auth()->user()->isAdministrator()){
+                    return redirect()
+                    ->route('administrator.subarea.index',['department'=>$department])
+                    ->with('process_result',[
+                        'status'=>$status,
+                        'content'=>$content
+                    ]);
+                }
+                else{
+                    return redirect()
+                    ->route('coordinator.subarea.index',['department'=>$department])
+                    ->with('process_result',[
+                        'status'=>$status,
+                        'content'=>$content
+                    ]);
+                }
+            }
             else{
-                return redirect()->route('coordinator.subarea.index',['department'=>$department]);
-             }
-        }
-        else{
-            $subarea->active = TRUE;
-            $subarea->update();
-            return redirect()->route('administrator.subarea.index',['department'=>$department]);
+                try{
+                    $content='Se reactivó subárea';
+                    $subarea->active = TRUE;
+                    $subarea->update();
+                }catch(\Throwable $th){
+                    DB::rollBack();
+                    $status = 'error';
+                    $content= 'Error al intentar reactivar subárea';
+                }
+                return redirect()
+                ->route('administrator.subarea.index',['department'=>$department])
+                ->with('process_result',[
+                    'status'=>$status,
+                    'content'=>$content
+                ]);
 
-        }
+            }
+        
         
     }
 

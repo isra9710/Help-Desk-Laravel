@@ -7,23 +7,27 @@
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         @if(auth()->user()->isAdministrator())
-        <a href="{{route('administrator.home')}}" class="nav-link">Home</a>
+        <a href="{{route('administrator.home')}}" class="nav-link">Página principal</a>
+        @elseif(auth()->user()->isCoordinator())
+          <a href="{{route('coordinator.home')}}" class="nav-link">Página principal</a>
+        @elseif(auth()->user()->isAssistant())
+        <a href="{{route('assistant.home')}}" class="nav-link">Página principal</a>
+        @elseif(auth()->user()->isAgent())
+        <a href="{{route('agent.home')}}" class="nav-link">Página principal</a>
         @else
-          <a href="{{route('coordinator.home')}}" class="nav-link">Home</a>
+        <a href="{{route('user.home')}}" class="nav-link">Home</a>
         @endif
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Contact</a>
-      </li>
+     
     </ul>
 
     <!-- SEARCH FORM -->
     <form class="form-inline ml-3">
       <div class="input-group input-group-sm">
-        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+        <input class="form-control form-control-navbar" type="hidden" placeholder="Search" aria-label="Search">
         <div class="input-group-append">
-          <button class="btn btn-navbar" type="submit">
-            <i class="fas fa-search"></i>
+          <button class="btn btn-navbar" type="hidden">
+            
           </button>
         </div>
       </div>

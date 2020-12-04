@@ -41,11 +41,11 @@
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                <a class="nav-link" href="{{ route('login') }}">{{ __('Iniciar sesión') }}</a>
                             </li>
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Registrarse') }}</a>
                                 </li>
                             @endif
                         @else
@@ -76,5 +76,16 @@
             @yield('content')
         </main>
     </div>
+    <script src="{{ mix('js/vendor.js') }}"></script>
+    <script src=" {{ mix('js/app.js') }}?v3" defer></script> 
+    @if(session()->has('process_result'))
+        <script>
+        $(function(){
+           toastr.{{session('process_result')['status']}}('{{session
+            ('process_result')['content']}}')
+        });
+        </script>
+
+    @endif
 </body>
 </html>

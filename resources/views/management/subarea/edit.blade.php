@@ -11,7 +11,12 @@
         <div class="row">
             <div class="col-sm-8 offset-2">
             <h4 class="text-center alert alert-info ">Editar subarea de {{$department->departmentName}}</h4>
-                <form action="{{route('administrator.subarea.update', ['subarea'=>$subarea,'department'=>$department])}}" method="POST">
+            @if(auth()->user()->isAdministrator())
+            <form action="{{route('administrator.subarea.update', ['subarea'=>$subarea,'department'=>$department])}}" method="POST">
+            @else
+            <form action="{{route('cordinator.subarea.update', ['subarea'=>$subarea,'department'=>$department])}}" method="POST">
+            @endif
+                
                     {{ csrf_field() }}
 
                         Nombre de subárea
@@ -20,11 +25,12 @@
                     <br><br>
 
                         Descripción
-                        <input type="text" class="form-control" required name="lastname" value="{{$subarea->description}}">
+                        <input type="text" class="form-control" required name="subareaDescription" value="{{$subarea->subareaDescription}}">
                     <br><br>
 
                     <input type="submit" class="btn btn-success" value="Actualizar">
-                    <a href="{{route('administrator.subarea.index',$department)}}" class="btn btn-info">Regresar</a>
+                    
+                    <a href="{{ URL::previous() }}" class="btn btn-info">Regresar</a>
                     <br>
                     <br>
                 </form>

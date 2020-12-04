@@ -42,9 +42,10 @@
           <!-- Todo el código a continuación es lo que aparece del lado izquierdo del navegador
               dependiendo del tipo de usuario que inició sesión, son los segmentos que se mostrarán
           -->
-
+        @if(auth()->user()->isAdministrator())
           <li class="nav-header">Estadisticas y reportes</li>
                <li class="nav-item has-treeview">
+
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-tachometer-alt"></i>
                   <p>
@@ -73,8 +74,62 @@
                   </li>
                 </ul>
               </li>
+              <li class="nav-item">
+              <li class="nav-header">Gestión de preguntas</li>
+            <a href="{{route('administrator.question.create')}}" class="nav-link"> 
+            <i class="fas fa-question"></i>
+              <p>
+                Preguntas
+              </p>
+            </a>
+          </li>
 
+          <li class="nav-item">
+              <li class="nav-header">Respaldo de la base de datos</li>
+            <a href="{{route('administrator.create.backup')}}" class="nav-link"> 
+            <i class="fas fa-database"></i>
+              <p>
+                Respaldar base de datos
+              </p>
+            </a>
+          </li>
+          @endif
 
+          
+        @if(auth()->user()->isCoordinator())
+        <li class="nav-header">Estadisticas y reportes</li>
+               <li class="nav-item has-treeview">
+
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-tachometer-alt"></i>
+                  <p>
+                    Dashboard
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="../../index.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                      <p>Productividad empleado</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../../index2.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Productividad subárea</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../../index3.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Productividad departamento</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+          @endif
+      
 
 
 
@@ -218,26 +273,26 @@
 
 
         
-            
-          <li class="nav-item">
-          @if(auth()->user()->isAdministrator())
-            <a href="{{route('administrator.ticket.create',['guest'=>True])}}" class="nav-link">
-            @elseif(auth()->user()->isCoordinator())
-            <a href="{{route('coordinator.ticket.create',['guest'=>True])}}" class="nav-link">
-          @elseif(auth()->user()->isAssistant())
-          <a href="{{route('assistant.ticket.create',['guest'=>True])}}" class="nav-link">
-          @elseif(auth()->user()->isAgent()))
-          <a href="{{route('agent.ticket.create',['guest'=>True])}}" class="nav-link">  
-          @else
-          <a href="{{route('user.ticket.create',['guest'=>True])}}" class="nav-link">
-          @endif  
-              <i class="fas fa-phone-alt"></i>
-              <p>
-                Ticket para alguien más
-              </p>
-            </a>
-          </li>
-
+          @if(!(auth()->user()->isUser()))    
+              <li class="nav-item">
+              @if(auth()->user()->isAdministrator())
+                <a href="{{route('administrator.ticket.create',['guest'=>True])}}" class="nav-link">
+                @elseif(auth()->user()->isCoordinator())
+                <a href="{{route('coordinator.ticket.create',['guest'=>True])}}" class="nav-link">
+              @elseif(auth()->user()->isAssistant())
+              <a href="{{route('assistant.ticket.create',['guest'=>True])}}" class="nav-link">
+              @else
+              @if(auth()->user()->isAgent()))
+              <a href="{{route('agent.ticket.create',['guest'=>True])}}" class="nav-link">  
+              @endif
+              @endif  
+                  <i class="fas fa-phone-alt"></i>
+                  <p>
+                    Ticket para alguien más
+                  </p>
+                </a>
+              </li>
+        @endif
           @if(auth()->user()->isAgent())
           <li class="nav-item">
             <a href="{{route('agent.ticket.attend',['user'=>auth()->user()])}}" class="nav-link">

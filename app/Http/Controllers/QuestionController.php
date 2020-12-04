@@ -3,6 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
+use App\Models\Activity;
+use App\Models\Department;
+use App\Models\Subarea;
+use App\Models\Role;
+use App\Models\Priority;
+
+use App\Models\Question;
+use App\Models\Poll;
+use App\Models\Answer;
 use Illuminate\Support\Facades\DB;
 
 class QuestionController extends Controller
@@ -25,6 +35,12 @@ class QuestionController extends Controller
     public function create()
     {
         //
+        $departments = Department::paginate(2);
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
+        $rolesSideBar = Role::all();
+        $questions = Question::paginate(5);
+        return view('management.question.index',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'questions'=>$questions]);
     }
 
     /**
@@ -36,6 +52,35 @@ class QuestionController extends Controller
     public function store(Request $request)
     {
         //
+        $status='';
+        $content='';
+        $question = new Question();
+        try{
+            $status='success';
+            $status='Pregunta registrada con éxito';
+            $question->question = "¿".$request->question."?";
+            $question->save();
+        }catch(\Throwable $th){
+        DB::rollBack();
+        $status = 'error';
+        $content= 'Error al intentar registrar pregunta';
+        }
+        if(auth()->user()->isAdministrator()){
+            return redirect()
+            ->route('administrator.question.create')
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
+        }
+        else{
+            return redirect()
+            ->route('coordinator.question.create')
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
+        }
     }
 
     /**
@@ -55,9 +100,14 @@ class QuestionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Question $question)
     {
         //
+        $departments = Department::paginate(2);
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
+        $rolesSideBar = Role::all();
+        return view('management.question.edit',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'question'=>$question]);
     }
 
     /**
@@ -67,9 +117,36 @@ class QuestionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Question $question)
     {
         //
+        $status='success';
+        $content='Pregunta editada con éxito';
+        try{
+            $question->question=$request->question;
+            $question->update();
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar registrar pregunta';
+            }
+        if(auth()->user()->isAdministrator()){
+            return redirect()
+            ->route('administrator.question.create')
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
+        }
+        else{
+            return redirect()
+            ->route('coordinator.question.create')
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
+        }
+        
     }
 
     /**
@@ -78,8 +155,48 @@ class QuestionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Question $question)
     {
         //
+        $status='warning';
+        $content='';
+        try{
+            if($question->active){
+                $question->active=FALSE;
+                $content= 'Pregunta desactivada';
+            }else{
+                if(auth()->user()->isAdministrator()){
+                    $content= 'Pregunta reactivada';
+                    $question->active=TRUE;
+                }
+            }
+            $question->update();
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            if($question->active){
+                $content= 'Error al intentar desactivar pregunta';
+            }
+            else{
+                $content= 'Error al intentar reactivar pregunta';
+            }
+            
+            }
+        if(auth()->user()->isAdministrator()){
+            return redirect()
+            ->route('administrator.question.create')
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
+        }
+        else{
+            return redirect()
+            ->route('coordinator.question.create')
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
+        }
     }
 }

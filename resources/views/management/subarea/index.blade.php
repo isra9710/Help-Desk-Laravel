@@ -28,7 +28,7 @@
                 <br><br>
 
                     Descripción
-                    <input type="text" class="form-control" required name="lastname">
+                    <input type="text" class="form-control" required name="subareaDescription">
                 <br><br>
                 <input type="submit" class="btn btn-success" value="Agregar">
                 <br>
@@ -45,8 +45,8 @@
                         <th>ID</th>
                         <th scope="col">Nombre de subárea </th>
                         <th scope="col">Descripción</th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
+                        <th scope="col">Acciones</th>
+                        
                     </tr>
                     </thead>
                     <tbody>
@@ -54,16 +54,17 @@
                         <tr>
                             <td>{{$subarea->idSubarea}}</td>
                             <td>{{ $subarea->subareaName}}</td>
+                            <td>{{$subarea->subareaDescription}}</td>
                             <td>
                                 @if(auth()->user()->isAdministrator())
                                     <a href="{{route('administrator.subarea.edit', ['department'=>$department,'subarea'=>$subarea])}}" class="btn
                                     btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                                 @else
-                                <a href="{{route('coordinator.subarea.edit', ['department'=>$department,'subarea'=>$subarea])}}" class="btn
-                                    btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                    @if($subarea->active)
+                                        <a href="{{route('coordinator.subarea.edit', ['department'=>$department,'subarea'=>$subarea])}}" class="btn
+                                            btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                    @endif
                                 @endif
-                            </td>
-                            <td>
                             @if(auth()->user()->isAdministrator())
                                 <form action="{{route('administrator.subarea.destroy', ['department'=>$department,'subarea'=>$subarea])}}"
                                       method="POST" class="d-inline">
@@ -75,11 +76,13 @@
                                     @endif
                                 </form>
                             @else
-                            <form action="{{route('coordinator.subarea.destroy', ['department'=>$department,'subarea'=>$subarea])}}"
-                                      method="POST" class="d-inline">
-                                    <input type="submit" onclick="return confirm('¿Seguro que desea desactivar?');"  class="btn btn-danger btn-sm"   value="X">
-                                    
-                                </form>
+                                @if($subarea->active)
+                                    <form action="{{route('coordinator.subarea.destroy', ['department'=>$department,'subarea'=>$subarea])}}"
+                                            method="POST" class="d-inline">
+                                            <input type="submit" onclick="return confirm('¿Seguro que desea desactivar?');"  class="btn btn-danger btn-sm"   value="X">
+                                            
+                                        </form>
+                                @endif
                             @endif
                             </td>
                         </tr>

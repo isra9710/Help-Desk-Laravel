@@ -106,13 +106,7 @@
                                     <button type="submit" onclick="return confirm('¿Seguro que desea cancelar?');" class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
                                 </form >
                             @endif
-                            @if($ticket->idStatus==1 || $ticket->idStatus==2 || $ticket->idStatus==5 || $ticket->idStatus==7)
-                                <form action="{{route('coordinator.ticket.destroy', ['ticket'=>$ticket,'ticketOption'=>3,'option'=>3])}}"
-                                    method="POST" class="d-inline">
-                                    {{ csrf_field() }}
-                                    <button type="submit" onclick="return confirm('¿Seguro que desea cerrar?');" class="btn btn-danger btn-sm"><i class="fas fa-check"></i></button>
-                                </form >
-                            @endif
+                            
                         @endif
 
 
@@ -142,13 +136,6 @@
                                     method="POST" class="d-inline">
                                     {{ csrf_field() }}
                                     <button type="submit" onclick="return confirm('¿Seguro que desea cancelar?');" class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
-                                </form >
-                            @endif
-                            @if($ticket->idStatus==1 || $ticket->idStatus==2 || $ticket->idStatus==5 || $ticket->idStatus==7)
-                                <form action="{{route('assistant.ticket.destroy', ['ticket'=>$ticket,'ticketOption'=>3,'option'=>1])}}"
-                                    method="POST" class="d-inline">
-                                    {{ csrf_field() }}
-                                    <button type="submit" onclick="return confirm('¿Seguro que desea cerrar?');" class="btn btn-danger btn-sm"><i class="fas fa-check"></i></button>
                                 </form >
                             @endif
                         @endif
@@ -181,13 +168,7 @@
                                     <button type="submit" onclick="return confirm('¿Seguro que desea cancelar?');" class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
                                 </form >
                             @endif
-                            @if($ticket->idStatus==1 || $ticket->idStatus==2 || $ticket->idStatus==5 || $ticket->idStatus==7)
-                                <form action="{{route('agent.ticket.destroy', ['ticket'=>$ticket,'ticketOption'=>3,'option'=>3])}}"
-                                    method="POST" class="d-inline">
-                                    {{ csrf_field() }}
-                                    <button type="submit" onclick="return confirm('¿Seguro que desea cerrar?');" class="btn btn-danger btn-sm"><i class="fas fa-check"></i></button>
-                                </form >
-                            @endif
+                         
                         @endif
 
 
@@ -220,17 +201,9 @@
                                     <button type="submit" onclick="return confirm('¿Seguro que desea cancelar?');" class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
                                 </form >
                             @endif
-                            @if($ticket->idStatus==1 || $ticket->idStatus==2 || $ticket->idStatus==5 || $ticket->idStatus==7)
-                                <form action="{{route('administrator.ticket.destroy', ['ticket'=>$ticket,'ticketOption'=>3,'option'=>1])}}"
-                                    method="POST" class="d-inline">
-                                    {{ csrf_field() }}
-                                    <button type="submit" onclick="return confirm('¿Seguro que desea cerrar?');" class="btn btn-danger btn-sm"><i class="fas fa-check"></i></button>
-                                </form >
-                            @endif
+                          
                         @endif
                     @endif
-                    
-                       
             @endforeach
             </tbody>
         </table>    

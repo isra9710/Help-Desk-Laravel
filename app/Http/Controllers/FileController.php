@@ -40,6 +40,12 @@ class FileController extends Controller
         return view('management.file.addFile',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'ticket'=>$ticket,'files'=>$files,'option'=>$option]);
     }
 
+    public function createG(Ticket $ticket){
+        
+        $files=File::where('idTicket',$ticket->idTicket)->paginate(2);
+        return view('management.file.addFileG',['ticket'=>$ticket,'files'=>$files]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -50,23 +56,24 @@ class FileController extends Controller
     {
         //
         $status = 'success';//Estado por defecto de mensajes 
-        $content = 'Se anexó con éxito tu archivo al ticket '.$ticket->idTicket.' con éxito';//Contenido del mensaje por defecto
+        $content = 'Se anexó con éxito tu archivo al ticket '.$ticket->idTicket;//Contenido del mensaje por defecto
         try{
             $dataFile = new File();
             $fileName = "";//Nombre del archivo
             $dataFile->idTicket=$ticket->idTicket;
             $dataFile->fileDescription=$request->fileDescription;
+            $dataFile->directoryFile="x";
             $dataFile->save();
             $file= $request->file('file');
             $fileName =auth()->user()->username.$dataFile->idFile.$request->file->getClientOriginalName();
             $path = $file->storeAs('public',$fileName);
             $dataFile->directoryFile = $path;
             $dataFile->update();
-        }catch(\Throwable $th){
-        DB::rollBack();
-        $status = 'error';
-        $content= 'Error al intentar asociar el archivo al ticket número'.$ticket->idTicket;
-    }
+        }
+        catch(\Throwable $th){
+            $status = 'error';
+            $content= 'Error al intentar asociar el archivo al ticket número'.$ticket->idTicket;
+        }
         if($option==1)
             if(auth()->user()->isAdministrator()){
                 return redirect()
@@ -142,31 +149,37 @@ class FileController extends Controller
                 ]);
             }         
         }
-        
-       
-
     }
-    public function myStore(Ticket $ticket){
-        if(auth()->user()->isAdministrator()){
 
+    public function storeG(Ticket $ticket, Request $request){
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = 'Se anexó con éxito tu archivo al ticket '.$ticket->idTicket;//Contenido del mensaje por defecto
+        try{
+            $dataFile = new File();
+            $fileName = "";//Nombre del archivo
+            $dataFile->idTicket=$ticket->idTicket;
+            $dataFile->fileDescription=$request->fileDescription;
+            $dataFile->directoryFile="x";
+            $dataFile->save();
+            $file= $request->file('file');
+            $fileName =$ticket->employeeNumber.$dataFile->idFile.$request->file->getClientOriginalName();
+            $path = $file->storeAs('public',$fileName);
+            $dataFile->directoryFile = $path;
+            $dataFile->update();
         }
-        elseif(auth()->user()->isCoordinator()){
-
+        catch(\Throwable $th){
+            $status = 'error';
+            $content= 'Error al intentar asociar el archivo al ticket número'.$ticket->idTicket;
         }
-        elseif(auth()->user()->isAssistant()){
-
-        }
-        elseif(auth()->user()->isAgent()){
-
-        }
-        elseif(auth()->user()->isUser()){
-
-        }
-        else{
-
-        }
-
+   
+        return redirect()
+        ->route('guest.ticket.show',['ticket'=>$ticket])
+        ->with('process_result',[
+            'status'=>$status,
+            'content'=>$content
+        ]);
     }
+   
 
     /**
      * Display the specified resource.

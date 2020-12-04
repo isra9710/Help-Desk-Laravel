@@ -23,11 +23,11 @@
     <div class="row">
         <div class="col-sm-4">
             @if($idRole==2)
-                <h4 class="text-center alert alert-info ">Agregar nuevo coordinador</h4>
+                <h4 class="text-center alert alert-info ">Agregar nuevo coordinador para {{$department->departmentName}}</h4>
             @elseif($idRole==3)
-                <h4 class="text-center alert alert-info ">Agregar nuevo  asistente</h4>
+                <h4 class="text-center alert alert-info ">Agregar nuevo  asistente para {{$department->departmentName}}</h4>
             @elseif($idRole==4)
-                <h4 class="text-center alert alert-info ">Agregar nuevo agente</h4>
+                <h4 class="text-center alert alert-info ">Agregar nuevo agente para {{$department->departmentName}}</h4>
             @else
                 <h4 class="text-center alert alert-info ">Agregar nuevo usuario</h4>
             @endif
@@ -181,8 +181,9 @@
                             @endif
                             
                             </td>
-                            @if(auth()->user()->isAssistant() || auth()->user()->isAdministrator())
+                          
                             <td>
+                            @if((auth()->user()->isAssistant() || auth()->user()->isAdministrator())&& $user->idRole==4)
                                 @if(auth()->user()->isAssistant())
                                     @if($user->status)
                                         <a href="{{route('assistant.user.status', ['user'=>$user,'option'=>1])}}" class="btn
@@ -200,9 +201,9 @@
                                                     btn-warning btn-sm "><i class="fas fa-undo"></i></a>
                                         @endif                               
                                 @endif
-                            @endif
+                                @endif
                             </td>
-                           
+                            
                         </tr>
                     @endforeach
                     </tbody>

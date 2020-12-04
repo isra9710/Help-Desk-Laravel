@@ -11,6 +11,7 @@ use App\Models\Role;
 use App\Models\Subarea;
 use App\Controllers\AssignmentController;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -77,6 +78,7 @@ class UserController extends Controller
 
     function homeAgent()
     {
+        
         return view('home');
     }
 
@@ -90,6 +92,75 @@ class UserController extends Controller
     function homeGuest()
     {
         return view('home');
+    }
+
+    public function changePassForm(){
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
+        $rolesSideBar = Role::all();
+
+        return view('management.user.changePass', ['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar]);
+    }
+    public function updatePass(Request $request){
+       
+      
+        
+        $status='';
+        $content='';
+        $flag = TRUE;
+        if((Hash::check($request->currentPass,auth()->user()->password)) && ($request->newPass==$request->confPass)){
+           
+            try{
+                $status='success';
+                $content='Se cambió tu contraseña con éxito';
+                auth()->user()->password=bcrypt($request->newPass);
+                auth()->user()->update();
+            }catch(\Throwable $th){
+                DB::rollBack();
+                $status = 'error';
+                $content= 'Error al intentar cambiar contraseña';
+            } 
+            
+        }
+        else{
+            $status='error';
+            $content= 'Error al intentar cambiar contraseña';
+        }
+        if(auth()->user()->isAdministrator()){
+        return redirect()->route('administrator.home')
+        ->with('process_result',[
+            'status'=>$status,
+            'content'=>$content
+        ]);
+        }
+        elseif(auth()->user()->isCoordinator()){
+          return route('coordinator.home')
+          ->with('process_result',[
+            'status'=>$status,
+            'content'=>$content
+        ]);
+        }
+        elseif(auth()->user()->isAssistant()){
+        return route('assistant.home')
+        ->with('process_result',[
+            'status'=>$status,
+            'content'=>$content
+        ]);
+        }
+        elseif(auth()->user()->isAgent()){
+        route('agent.home')
+        ->with('process_result',[
+            'status'=>$status,
+            'content'=>$content
+        ]);
+        }
+        else{
+        return route('user.home')
+        ->with('process_result',[
+            'status'=>$status,
+            'content'=>$content
+        ]); 
+        }
     }
     /**
      * Display a listing of the resource.
@@ -110,6 +181,7 @@ class UserController extends Controller
         //
         $users = "";
         $subareas = NULL;
+        $department=Department::where('idDepartment',$idDepartment)->first();
         if(auth()->user()->isAdministrator()){
             $users = User::where('idRole', $idRole)->where('idDepartment', $idDepartment)->paginate(3);
         }
@@ -137,7 +209,7 @@ class UserController extends Controller
         $departmentsSideBar = Department::where('active',TRUE)->get();
         $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
-        return view('management.user.index',['departmentsSideBar'=>$departmentsSideBar, 'rolesSideBar'=>$rolesSideBar, 'subareasSideBar'=>$subareasSideBar,'users'=>$users,'idDepartment'=>$idDepartment,'idRole'=>$idRole,'subareas'=>$subareas]);
+        return view('management.user.index',['departmentsSideBar'=>$departmentsSideBar, 'rolesSideBar'=>$rolesSideBar, 'subareasSideBar'=>$subareasSideBar,'users'=>$users,'idDepartment'=>$idDepartment,'idRole'=>$idRole,'subareas'=>$subareas,'department'=>$department]);
     }
 
 

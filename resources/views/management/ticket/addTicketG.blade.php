@@ -11,7 +11,7 @@
 <div class="col-sm-12 offset-0" id="ticket">
   <h4 class="text-center alert alert-info ">Registra un ticket para alguin más</h4>
   @if(Auth::user()->isAdministrator())
-      <form action="{{route('administrator.ticket.store')}}" method="POST" enctype="multipart/form-data">
+      <form action="{{route('administrator.ticket.store')}}" method="POST" enctype="multipart/form-data" >
   @elseif(Auth::user()->isCoordinator())
       <form action="{{route('coordinator.ticket.store')}}" method="POST" enctype="multipart/form-data">
   @elseif(Auth::user()->isAssistant())
@@ -22,11 +22,9 @@
       <form action="{{route('user.ticket.store')}}" method="POST" enctype="multipart/form-data">
   @endif
   {{ csrf_field() }}
-<br><br>
-Número de empleado
-      <input type="text" class="form-control" required name="employeeNumber">
 
-      <br><br>
+  Número de empleado <input type="text" class="form-control" required name="employeeNumber"> 
+  <br><br>
 
     Departamento
         
@@ -84,19 +82,40 @@ Número de empleado
 <br><br>
 
   Asociar archivo al ticket
-                    <div class="input-group">
-                      <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="file" name="file">
-                        <label class="custom-file-label" for="file">Busca un archivo</label>
-                      </div>
-                      
-                    </div>
+  
+  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
+        <i class="fas fa-file-upload"></i> Agregar archivo
+                </button>
 
-
+                <div class="modal fade" id="modal-default">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Agrega un archivo al ticket</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              
+              {{Form::file('file',$attributes = array())}}
+              {{Form::label('Agregar una descripción al archivo')}}
+              {{Form::text('fileDescription')}}
+             
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+              
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
 <br><br>
 
-  Descripción
-      <textarea class="form-control" required name="description" rows="3"></textarea>
+  Descripción del ticket
+      <textarea class="form-control" required name="ticketDescription" rows="3"></textarea>
   <br><br>
   <div class="form-check">
   <input class="form-check-input" type="checkbox"  id="doubt" name="doubt">
@@ -112,4 +131,3 @@ Número de empleado
                
                   
 @endsection
-

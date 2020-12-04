@@ -40,6 +40,11 @@ class MessageController extends Controller
         return view('management.messages.addMessage',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'ticket'=>$ticket,'messages'=>$messages,'option'=>$option]);
     }
 
+    public function createG(Ticket $ticket){
+        $messages = Message::where('idTicket',$ticket->idTicket)->paginate(4);
+        return view('management.messages.addMessageG',['ticket'=>$ticket,'messages'=>$messages]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -139,6 +144,28 @@ class MessageController extends Controller
         }
     }
 
+
+    public function storeG(Ticket $ticket, Request $request){
+        $message = new Message();
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = 'Se registró tu comentario al ticket '.$ticket->idTicket.' con éxito';//Contenido del mensaje por defecto
+        
+        try{
+            $message->idTicket=$ticket->idTicket;
+            $message->text=$request->text;
+            $message->save();
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar asociar un comentario al ticket número'.$ticket->idTicket;
+        }
+        return redirect()
+        ->route('guest.ticket.index',['ticket'=>$ticket])
+        ->with('process_result',[
+            'status'=>$status,
+            'content'=>$content
+        ]);
+    }
     /**
      * Display the specified resource.
      *
