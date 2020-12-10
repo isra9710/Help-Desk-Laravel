@@ -68,14 +68,29 @@ class ActivityController extends Controller
     public function store(Subarea $subarea, Request $request)
     {
         //
-        $activity = new Activity();
-        $activity->activityName = $request->activityName;
-        $activity->idSubarea =  $subarea->idSubarea;
-        $activity->idPriority = $request->idPriority;
-        $activity->days = $request->days;
-        $activity->activityDescription = $request->activityDescription;
-        $activity->save();
-        return redirect()->route('administrator.activity.index',['subarea'=>$subarea]);
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = 'Se registró actividad con éxito';//Contenido del mensaje por defecto
+        try{
+            $activity = new Activity();
+            $activity->activityName = $request->activityName;
+            $activity->idSubarea =  $subarea->idSubarea;
+            $activity->idPriority = $request->idPriority;
+            $activity->days = $request->days;
+            $activity->activityDescription = $request->activityDescription;
+            $activity->save();
+        } catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar registrar actividad';
+           
+            
+            }
+        return redirect()
+        ->route('administrator.activity.index',['subarea'=>$subarea])
+        ->with('process_result',[
+            'status'=>$status,
+            'content'=>$content
+        ]);
     }
 
     /**
@@ -117,12 +132,21 @@ class ActivityController extends Controller
     public function update(Request $request, Subarea $subarea, Activity $activity)
     {
         //
-        $activity->activityName = $request->activityName;
-        $activity->idPriority = (int)$request->idPriority;
-        $activity->idSubarea = (int)$request->idSubarea;
-        $activity->activityDescription  = $request->activityDescription;
-        $activity->days = $request->days;
-        $activity->update();
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = 'Se editó actividad con éxito';//Contenido del mensaje por defecto
+        try{
+            $activity->activityName = $request->activityName;
+            $activity->idPriority = (int)$request->idPriority;
+            $activity->idSubarea = (int)$request->idSubarea;
+            $activity->activityDescription  = $request->activityDescription;
+            $activity->days = $request->days;
+            $activity->update();
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar editar actividad';
+           
+        }
         if(auth()->user()->isAdministrator()){
             return redirect()->route('administrator.activity.index',['subarea'=>$subarea]);
         }
@@ -140,20 +164,37 @@ class ActivityController extends Controller
      */
     public function destroy(Subarea $subarea, Activity $activity)
     {
-        //
+        //  
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = 'Se desactivó actividad con éxito';//Contenido del mensaje por defecto
+        
         if($activity->active){
-            $activity->active = FALSE;
-            $activity->update();
-            if(auth()->user()->isAdministrator()){
-                return redirect()->route('administrator.activity.index',['subarea'=>$subarea]);
-            }
-            else{
-                return redirect()->route('coordinator.activity.index',['subarea'=>$subarea]);
+            try{
+                $activity->active = FALSE;
+                $activity->update();
+                if(auth()->user()->isAdministrator()){
+                    return redirect()->route('administrator.activity.index',['subarea'=>$subarea]);
+                }
+                else{
+                    return redirect()->route('coordinator.activity.index',['subarea'=>$subarea]);
+                }
+            }catch(\Throwable $th){
+                DB::rollBack();
+                $status = 'error';
+                $content= 'Error al intentar desactivar actividad';
+               
             }
         }
         else{
-            $activity->active = TRUE;
-            $activity->update();
+            try{
+                $activity->active = TRUE;
+                $activity->update();
+            }catch(\Throwable $th){
+                DB::rollBack();
+                $status = 'error';
+                $content= 'Error al intentar activar actividad';
+               
+            }
             return redirect()->route('administrator.activity.index',['subarea'=>$subarea]);
         }
     }

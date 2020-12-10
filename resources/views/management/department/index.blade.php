@@ -20,7 +20,7 @@
                 <br><br>
 
                     Descripción
-                    <input type="text" class="form-control" required name="lastname">
+                    <input type="text" class="form-control" required name="departmentDescription">
                 <br><br>
                 <input type="submit" class="btn btn-success" value="Agregar">
                 <br>
@@ -47,14 +47,14 @@
                         <tr>
                             <td>{{$department->idDepartment}}</td>
                             <td>{{ $department->departmentName}}</td>
-                            <td>{{$department->description }}</td>
+                            <td>{{$department->departmentDescription}}</td>
                             @if($department->active)
                             <td>Activo</td>
                             @else
                             <td>Desactivado</td>
                             @endif
                             <td>
-                                <a href="{{route('administrator.department.edit', $department)}}" class="btn
+                                <a href="{{route('administrator.department.edit',$department)}}" class="btn
                                 btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                             </td>
                             <td>

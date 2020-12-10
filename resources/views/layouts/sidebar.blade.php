@@ -46,7 +46,7 @@
           <li class="nav-header">Estadisticas y reportes</li>
                <li class="nav-item has-treeview">
 
-                <a href="#" class="nav-link">
+                <a href="" class="nav-link">
                   <i class="nav-icon fas fa-tachometer-alt"></i>
                   <p>
                     Dashboard
@@ -55,20 +55,20 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="../../index.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
+                    <a href="{{route('chart.index')}}" class="nav-link">
+                    <i class="fas fa-chart-pie"></i>
                       <p>Productividad empleado</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="../../index2.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
+                    <i class="fas fa-chart-bar"></i>
                       <p>Productividad subárea</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="../../index3.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
+                    <i class="fas fa-chart-line"></i>
                       <p>Productividad departamento</p>
                     </a>
                   </li>

@@ -21,20 +21,9 @@ Route::get('/', function () {
 
 
 
-Route::get('Empleado',function(){
-    return 'Página principal del empleado';
-});
 
 
-Route::get('Usuario',function(){
-    return 'Página principal de usuario no registrado';
-});
-
-Route::get('Dashboard', function(){
-    return view('dashboard.index');
-});
-
-
+Route::get('Reportes','ChartController@indexDepartment')->name('chart.index');
 
 
 
@@ -189,8 +178,7 @@ Route::middleware('auth')->group(function(){
             //Esta ruta es para agregar un ticket
             Route::post('/Tickets/Agregar','TicketController@store')->name('ticket.store');
             
-            //Esta ruta es para agregar un ticket para alguien más
-            Route::post('/Tickets/Agregar','TicketController@store')->name('ticket.store');
+           
 
             //Esta ruta es para ver los detalles de un ticket en especifico
             Route::get('/Tickets/DetallesTicket/{ticket}/{option}', 'TicketController@show')->name('ticket.show');
@@ -226,6 +214,14 @@ Route::middleware('auth')->group(function(){
 
             Route::get('/Mensaje/Crear/{ticket}/{option}','MessageController@create')->name('message.create');
             Route::post('/Mensajes/{ticket}/{option}','MessageController@store')->name('message.store');
+
+            //Encuesta
+            Route::post('/Evaluar/{ticket}','PollController@store')->name('poll.store');
+
+
+
+            //Reportes
+           // Route::get('/Reportes','')->name('index.chart');
             
     });
 
@@ -240,6 +236,13 @@ Route::middleware('auth')->group(function(){
         
         Route::get('','UserController@homeCoordinator')->name('home');
         
+           //Ruta para mostrar el formulario de cambio de contraseña
+        Route::get('/CambiarContraseña','UserController@changePassForm')->name('change.pass');
+           //Ruta para actualizar contraseña
+        Route::post('/ActualizarContraseña','UserController@updatePass')->name('update.pass');
+
+
+
         //En esta parte va la gestión de todo tipo de usuario, coordinador, técnico, usuario
         Route::get('/Usuarios/{idRole}/{idDepartment?}', 'UserController@index')->name('user.index');
         Route::post('/Usuarios/Agregar','UserController@store')->name('user.store');
@@ -333,6 +336,11 @@ Route::middleware('auth')->group(function(){
     {
         
         Route::get('','UserController@homeAssistant')->name('home');
+
+           //Ruta para mostrar el formulario de cambio de contraseña
+        Route::get('/CambiarContraseña','UserController@changePassForm')->name('change.pass');
+           //Ruta para actualizar contraseña
+        Route::post('/ActualizarContraseña','UserController@updatePass')->name('update.pass');
         
         //En esta parte va el CRUD de todo tipo de usuario, coordinador, técnico, usuario
         Route::get('/Usuarios/{idRole}/{idDepartment?}', 'UserController@index')->name('user.index');
@@ -404,6 +412,13 @@ Route::middleware('auth')->group(function(){
     {
         
         Route::get('','UserController@homeAgent')->name('home');
+           //Ruta para mostrar el formulario de cambio de contraseña
+        Route::get('/CambiarContraseña','UserController@changePassForm')->name('change.pass');
+           //Ruta para actualizar contraseña
+        Route::post('/ActualizarContraseña','UserController@updatePass')->name('update.pass');
+
+
+
         //La siguiente es para gestión de tickets
 
         Route::get('/Tickets/{department}/{subarea}', 'TicketController@inbox')->name('ticket.inbox');
@@ -425,13 +440,16 @@ Route::middleware('auth')->group(function(){
         Route::get('Tickets/activities','ActivityController@getActivities');
 
         //Muestra formulario para añadir un archivo
-        Route::get('/Archivo/Crear/{ticket}','FileController@create')->name('file.create');
+        Route::get('/Archivo/Crear/{ticket}/{option}','FileController@create')->name('file.create');
         //Muestra formulario para añadir archivo a tu ticket
         Route::get('/Archivo/CrearMiArchivo/{ticket}','FileController@create')->name('myfile.create');
         //Se crea la asignación del archivo al ticket
-        Route::post('/Archivo/{ticket}','FileController@store')->name('file.store');
+        Route::post('/Archivo/{ticket}/{option}','FileController@store')->name('file.store');
 
         Route::get('/DescargarArchivo/{file}','FileController@download')->name('file.download');
+
+        Route::get('/Mensaje/Crear/{ticket}/{option}','MessageController@create')->name('message.create');
+        Route::post('/Mensajes/{ticket}/{option}','MessageController@store')->name('message.store');
 
     });
 
@@ -463,6 +481,12 @@ Route::middleware('auth')->group(function(){
         Route::post('/Archivo/{ticket}','FileController@store')->name('file.store');
 
         Route::get('/DescargarArchivo/{file}','FileController@download')->name('file.download');
+
+        Route::get('/Mensaje/Crear/{ticket}/{option}','MessageController@create')->name('message.create');
+        Route::post('/Mensajes/{ticket}/{option}','MessageController@store')->name('message.store');
+
+        //Encuesta
+        Route::post('/Evaluar/{ticket}','PollController@store')->name('poll.store');
 
     });
   

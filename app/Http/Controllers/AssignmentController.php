@@ -78,31 +78,61 @@ class AssignmentController extends Controller
     }
 
 
-
+    //Agregar  un agente a un actividad
     public function storeAgent(Activity $activity=NULL, Request $request)
     {
-        $assignment = new Assignment();
-        $assignment->idActivity = $activity->idActivity;
-        $assignment->idUser = $request->idAgent;
-        $assignment->temporary=FALSE;
-        $assignment->save();
-        return redirect()->route('administrator.assignment.activity',['activity'=>$activity]);
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = 'Se agregó agente a actividad';//Contenido del mensaje por defecto
+        try{
+            $assignment = new Assignment();
+            $assignment->idActivity = $activity->idActivity;
+            $assignment->idUser = $request->idAgent;
+            $assignment->temporary=FALSE;
+            $assignment->save();
+        } catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar agregar agente a actividad';
+          
+           
+        }
+        return redirect()
+        ->route('administrator.assignment.activity',['activity'=>$activity])
+        ->with('process_result',[
+            'status'=>$status,
+            'content'=>$content
+        ]);
     }
 
 
-
+    //Agregar actividad a agente
     public function storeActivity(User $user, $temporary=NULL,Request $request){
-        $assignment = new Assignment();
-        $assignment->idUser = $user->idUser;
-        $assignment->idActivity = $request->idActivity;
-        if($temporary){
-                $assignment->temporary=TRUE;
-            }
-        else{
-                $assignment->temporary=FALSE;
-            }
-        $assignment->save();
-        return redirect()->route('administrator.assignment.user',['user'=>$user]);
+        $status = 'success';//Estado por defecto de mensajes 
+        $content = 'Se agregó actividad a agente';//Contenido del mensaje por defecto
+        try{
+            $assignment = new Assignment();
+            $assignment->idUser = $user->idUser;
+            $assignment->idActivity = $request->idActivity;
+            if($temporary){
+                    $assignment->temporary=TRUE;
+                }
+            else{
+                    $assignment->temporary=FALSE;
+                }
+            $assignment->save();
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar agregar actividad a agente';
+          
+           
+        }
+        return redirect()
+        ->route('administrator.assignment.user',['user'=>$user])
+        ->with('process_result',[
+            'status'=>$status,
+            'content'=>$content
+        ]);
     }
 
 
@@ -253,7 +283,7 @@ class AssignmentController extends Controller
     
         if(auth()->user()->isAdministrator()){
             return redirect()
-            ->route('administrator.user.status',['user'=>$agent])
+            ->route('administrator.user.status',['user'=>$agent,'option'=>$option])
             ->with('process_result',[
                 'status'=>$status,
                 'content'=>$content
@@ -261,7 +291,7 @@ class AssignmentController extends Controller
         }
         else{
             return redirect()
-            ->route('assistant.user.status',['user'=>$agent])
+            ->route('assistant.user.status',['user'=>$agent,'option'=>$option])
             ->with('process_result',[
                 'status'=>$status,
                 'content'=>$content
@@ -322,12 +352,24 @@ class AssignmentController extends Controller
     public function destroy(Assignment $assignment, User $user=NULL, Activity $activity=NULL)
     {
         //
+        $status='success';
+        $content='Se eliminó asignación';
         $assignment->destroy($assignment->idAssignment);
         if($user){
-            return redirect()->route('administrator.assignment.user',['user'=>$user]);
+            return redirect()
+            ->route('administrator.assignment.user',['user'=>$user])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+                ]);
         }
         else{
-            return redirect()->route('administrator.assignment.activity',['activity'=>$activity]);
+            return redirect()
+            ->route('administrator.assignment.activity',['activity'=>$activity])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+                ]);
         }
     }
 }

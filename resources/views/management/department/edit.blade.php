@@ -20,7 +20,7 @@
                     <br><br>
 
                         Descripción
-                        <input type="text" class="form-control" required name="departmentDescription" value="{{$department->description}}">
+                        <input type="text" class="form-control" required name="departmentDescription" value="{{$department->departmentDescription}}">
                     <br><br>
 
                     <input type="submit" class="btn btn-success" value="Actualizar">

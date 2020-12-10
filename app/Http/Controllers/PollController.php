@@ -1,8 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Question;
+use App\Models\Answer;
+use App\Models\Poll;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PollController extends Controller
 {
@@ -32,9 +36,41 @@ class PollController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,Ticket $ticket)
     {
         //
+         //
+         $status = 'success';//Estado por defecto de mensajes 
+         $content = 'Se registró tu opinión con éxito';//Contenido del mensaje por defecto
+         $questions = Question::where('active',TRUE)->get();
+         $pollTest= Poll::where('idTicket',$ticket->idTicket)->first();
+         if($pollTest){
+             $status = 'error';//Estado por defecto de mensajes 
+             $content = 'Ya has llenado una encuesta de este ticket anteriormente';//Contenido del mensaje por defecto
+         }
+         else{
+             
+                    $poll= new Poll();
+                    $poll->idTicket=$ticket->idTicket;
+                    $poll->score=$request->score;
+                    $poll->save();
+                    $i=0;
+                    foreach($questions as $question){
+                        $i=$i+1;
+                        $answer= new Answer();
+                        $answer->idPoll = $poll->idPoll;
+                        $answer->idQuestion=$question->idQuestion;
+                        $arrayAnswer = $request->only([$question->idQuestion]);
+                        $answer->answer=$arrayAnswer[$i];
+                        $answer->save();   
+                    }
+              
+         }
+        return back()
+        ->with('process_result',[
+         'status'=>$status,
+         'content'=>$content
+         ]);
     }
 
     /**

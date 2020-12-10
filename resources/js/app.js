@@ -5,9 +5,7 @@
  */
 
 require('./bootstrap');
-//require('./pages/dashboard');
-//require('./pages/dashboard2');
-//require('./pages/dashboard3');
+require('./chart.min');
 require('./adminlte');
 require('./demo');
 

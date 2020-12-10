@@ -18,6 +18,7 @@ class CreateAnswersTable extends Migration
 
             $table->unsignedBigInteger('idPoll');
             $table->unsignedBigInteger('idQuestion');
+            $table->string('answer');
             $table->timestamps();
             $table->foreign('idPoll')->references('idPoll')->on('polls')->onDelete('cascade');
             $table->foreign('idQuestion')->references('idQuestion')->on('questions')->onDelete('cascade');

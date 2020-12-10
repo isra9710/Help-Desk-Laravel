@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $idAnswer
  * @property int $idPoll
  * @property int $idQuestion
- * @property int $score
+ * @property string $answer
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
@@ -31,14 +31,13 @@ class Answer extends Model
 
 	protected $casts = [
 		'idPoll' => 'int',
-		'idQuestion' => 'int',
-		'score' => 'int'
+		'idQuestion' => 'int'
 	];
 
 	protected $fillable = [
 		'idPoll',
 		'idQuestion',
-		'score'
+		'answer'
 	];
 
 	public function poll()

@@ -42,7 +42,7 @@
                     <a href="{{route('administrator.ticket.edit', ['ticket'=>$ticket,'option'=>1])}}" class="btn
                         btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                         
-                        <a href="{{route('administrator.ticket.show', ['ticket'=>$ticket,'option'=>1])}}" class="btn
+                        <a href="{{route('administrator.ticket.show', ['ticket'=>$ticket,'option'=>3])}}" class="btn
                         btn-primary btn-sm"><i class="fas fa-eye"></i></a>
                         <a href="{{route('administrator.message.create',['ticket'=>$ticket,'option'=>3])}}"class="btn btn-info btn-sm">
                         <i class="far fa-comments"></i>
@@ -204,6 +204,54 @@
                           
                         @endif
                     @endif
+                    @if(($ticket->idStatus==4)&& ($ticket->polls()))
+                            
+                <a href="" data-toggle="modal" data-target="#modal-default" ><i class="fas fa-question-circle"></i></a>
+                <div class="modal fade" id="modal-default">
+                @if(auth()->user()->isAdministrator())
+                <form action="{{route('administrator.poll.store',['ticket'=>$ticket])}}" method="POST">
+                @elseif(auth()->user()->isCoordinator())
+                <form action="{{route('administrator.poll.store')}}" method="GET">
+                @elseif(auth()->user()->isAssistant())
+                <form action="{{route('administrator.poll.store')}}" method="GET">
+                @elseif(auth()->user()->isAgent())
+                <form action="{{route('administrator.poll.store')}}" method="GET">
+                @else
+                <form action="{{route('administrator.poll.store')}}" method="GET">
+                @endif 
+                {{ csrf_field() }}
+
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h4 class="modal-title">Encuesta de satsisfacción</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                    @foreach($questions as $question)
+                    {{$question->question}}
+                <input class="form-control" required name="{{$question->idQuestion}}" >
+                    @endforeach              
+                    Califica el servicio que se te brindó
+                    <input type="number" class="form-control"  required name="score"
+                        min="1" max="10">
+
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    
+                    <button type="submit" class="btn btn-success">Terminar encuesta</button>            
+                    </div>
+                    </form>
+                </div>
+            
+                <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+                   @endif
             @endforeach
             </tbody>
         </table>    

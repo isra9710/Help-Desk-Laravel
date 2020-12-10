@@ -100,7 +100,7 @@ class MessageController extends Controller
                 ]);
             }
         }
-        else{
+        elseif($option==3){
             if(auth()->user()->isAdministrator()){
                 return redirect()
                 ->route('administrator.ticket.mytickets',$ticket->employeeNumber)
@@ -141,6 +141,14 @@ class MessageController extends Controller
                     'content'=>$content
                 ]);
             }         
+        }
+        else{
+            return redirect()
+            ->route('agent.ticket.attend',['user'=>auth()->user()])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
         }
     }
 

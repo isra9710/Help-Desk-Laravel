@@ -10,9 +10,7 @@
 @section('content')
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-   <!-- <div class="container mt-5">
-        <h2 class="text-center alert alert-danger">Gestión Empleados</h2>
-    </div>-->
+
     <div class="row">
         <div class="col-sm-4">
         <h4 class="text-center alert alert-info ">Agregar nueva actividad para  {{$subarea->subareaName}}</h4>

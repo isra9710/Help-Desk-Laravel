@@ -35,11 +35,7 @@ class DepartmentController extends Controller
     public function create(Request $request)
     {
         //
-        $department = new Department();
-        $department->departmentName =$request->departmentName;
-        $department->departmentDescription  = $request->departmentDescription ;
-        $department->save();
-        return redirect()->route('administrator.department.index');
+       
     }
 
     /**
@@ -51,6 +47,24 @@ class DepartmentController extends Controller
     public function store(Request $request)
     {
         //
+        $status = 'success';
+        $content= 'Se agregó departamento';
+        try{
+            $department = new Department();
+            $department->departmentName =$request->departmentName;
+            $department->departmentDescription  = $request->departmentDescription;
+            $department->save();
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar registrar departamento';  
+            }
+       return redirect()
+       ->route('administrator.department.index')
+       ->with('process_result',[
+        'status'=>$status,
+        'content'=>$content
+        ]);
     }
 
     /**
@@ -62,10 +76,7 @@ class DepartmentController extends Controller
     public function show(Department $department)
     {
         //  
-        $departmentsSideBar = Department::where('active',TRUE)->get();
-        $subareasSideBar = Subarea::where('active',TRUE)->get();
-        $rolesSideBar = Role::all();
-        return view('management.department.edit',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'department'=>$department]);
+        
     }
 
     /**
@@ -77,6 +88,10 @@ class DepartmentController extends Controller
     public function edit(Department $department)
     {
         //
+        $departmentsSideBar = Department::where('active',TRUE)->get();
+        $subareasSideBar = Subarea::where('active',TRUE)->get();
+        $rolesSideBar = Role::all();
+        return view('management.department.edit',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'department'=>$department]);
     }
 
     /**
@@ -89,10 +104,23 @@ class DepartmentController extends Controller
     public function update(Request $request, Department $department)
     {
         //
-        $department->departmentName=$request->departmentName;
-        $department->departmentDescription=$request->departmentDescription;
-        $department->update();
-        return redirect()->route('administrator.department.index');
+        $status = 'success';
+        $content= 'Se editó departamento';
+        try{
+            $department->departmentName=$request->departmentName;
+            $department->departmentDescription=$request->departmentDescription;
+            $department->update();
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar editar departamento';  
+            }
+        return redirect()
+        ->route('administrator.department.index')
+        ->with('process_result',[
+            'status'=>$status,
+            'content'=>$content
+            ]);
     }
 
     /**
@@ -104,15 +132,29 @@ class DepartmentController extends Controller
     public function destroy(Department $department)
     {
         //
-        if($department->active){
-            
-            $department->active = FALSE;
-        }
-        else{
-            $department->active = TRUE;
-        }
-        $department->update();
-        return redirect()->route('administrator.department.index');
+        $status = 'success';
+        $content= '';
+        try{
+            if($department->active){
+                $content='Se desacivó departamento';
+                $department->active = FALSE;
+            }
+            else{
+                $content='Se activó departamento';
+                $department->active = TRUE;
+            }
+            $department->update();
+        }catch(\Throwable $th){
+            DB::rollBack();
+            $status = 'error';
+            $content= 'Error al intentar actualizar departamento';  
+            }
+        return redirect()
+        ->route('administrator.department.index')
+        ->with('process_result',[
+            'status'=>$status,
+            'content'=>$content
+            ]);
     }
 
 }

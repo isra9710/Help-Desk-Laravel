@@ -103,7 +103,7 @@ class User extends Authenticatable
 	{
 		return $this->hasMany(Ticket::class, 'idTechnician');
 	}
-
+	
 	public function hasRole($role){
 		if($this->role()->where('roleName',$role)->first()){
 			return true;

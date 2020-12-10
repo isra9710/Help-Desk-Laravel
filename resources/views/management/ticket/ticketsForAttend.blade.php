@@ -46,9 +46,19 @@
                     <td>No asignado</td>
                     @endif
                     <td>
+                    <a href="{{route('agent.ticket.show', ['ticket'=>$ticket,'option'=>4])}}" class="btn
+                        btn-primary btn-sm"><i class="fas fa-eye"></i></a>
+                        <a href="{{route('agent.message.create',['ticket'=>$ticket,'option'=>4])}}"class="btn btn-info btn-sm">
+                        <i class="far fa-comments"></i>
+                        </a>
+                        
+                        <a class="btn btn-light btn-sm" href="{{route('agent.file.create',['ticket'=>$ticket,'option'=>4])}}">
+                        <i class="fas fa-file-upload"></i>
+                        </a>
+                        
                     <a href="" class="btn
                         btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                    @if($ticket->idStatus==1)
+                    @if($ticket->idStatus==1 || $ticket->idStatus==5 || $ticket->idStatus==7)
                         <a href="{{route('agent.ticket.technician',['user'=>auth()->user(),'ticket'=>$ticket])}}" class="btn btn-success 
                         btn-sm"><i class="fas fa-sign-in-alt"></i></a>
                     @endif

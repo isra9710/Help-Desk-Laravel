@@ -74,7 +74,7 @@ class FileController extends Controller
             $status = 'error';
             $content= 'Error al intentar asociar el archivo al ticket número'.$ticket->idTicket;
         }
-        if($option==1)
+        if($option==1){
             if(auth()->user()->isAdministrator()){
                 return redirect()
                 ->route('administrator.ticket.inbox',['department'=>$ticket->activity->subarea->department])
@@ -91,6 +91,7 @@ class FileController extends Controller
                     'content'=>$content
                 ]);
             }
+        }
         elseif($option==2){
             if(auth()->user()->isAdministrator()){
                 return redirect()->route('administrator.ticket.notAssigned',['department'=>$ticket->activity->subarea->department])
@@ -107,7 +108,7 @@ class FileController extends Controller
                 ]);
             }
         }
-        else{
+        elseif($option==3){
             if(auth()->user()->isAdministrator()){
                 return redirect()
                 ->route('administrator.ticket.mytickets',$ticket->employeeNumber)
@@ -148,6 +149,14 @@ class FileController extends Controller
                     'content'=>$content
                 ]);
             }         
+        }
+        else{
+            return redirect()
+            ->route('agent.ticket.attend',['user'=>auth()->user()])
+            ->with('process_result',[
+                'status'=>$status,
+                'content'=>$content
+            ]);
         }
     }
 

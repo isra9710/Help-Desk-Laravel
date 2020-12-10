@@ -1,8 +1,8 @@
 @extends('layouts.main')
-@section('title', 'Añadir archivo')
+@section('title', 'Reasigna el ticket')
 
 @section('icon_title')
-<i class="fas fa-ticket-alt"></i>
+<i class="fas fa-map-signs"></i>
 @endsection
 @section('content')
 <div class="col-sm-12 offset-0" id="ticket">

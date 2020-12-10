@@ -218,16 +218,7 @@ class SubareaController extends Controller
                 ]);
 
             }
-        
-        
     }
 
-    public function reactivate(Department $department, Subarea $subarea)
-    {
-        $subarea->active = True;
-        $subarea->update();
-        return redirect()->route('administrator.subarea.index',['department'=>$department]);
-        
-      
-    }
+  
 }

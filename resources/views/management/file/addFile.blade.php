@@ -53,7 +53,17 @@
                         <tr>
                             <td>{{$file->idFile}}</td>
                             <td>{{$file->fileDescription}}</td>
+                            @if(auth()->user()->isAdministrator())
                             <td> <a href="{{route('administrator.file.download',['file'=>$file])}}">Descargar</a></td>
+                            @elseif(auth()->user()->isCoordinator())
+                            <td> <a href="{{route('coordinator.file.download',['file'=>$file])}}">Descargar</a></td>
+                            @elseif(auth()->user()->isAssistant())
+                            <td> <a href="{{route('assistant.file.download',['file'=>$file])}}">Descargar</a></td>
+                            @elseif(auth()->user()->isAgent())
+                            <td> <a href="{{route('agent.file.download',['file'=>$file])}}">Descargar</a></td>
+                            @else
+                            <td> <a href="{{route('user.file.download',['file'=>$file])}}">Descargar</a></td>
+                            @endif
                              
                         </tr>
                     @endforeach

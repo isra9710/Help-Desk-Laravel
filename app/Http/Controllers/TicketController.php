@@ -9,6 +9,8 @@ use App\Models\Department;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\File;
+use App\Models\Poll;
+use App\Models\Question;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\DB;
@@ -140,10 +142,11 @@ class TicketController extends Controller
         $myTickets = Ticket::where('employeeNumber',$employeNumber)
         ->orderBy('idStatus','ASC')
         ->paginate(3);
+        $questions = Question::where('active',TRUE)->get();
         $departmentsSideBar = Department::where('active',TRUE)->get();
         $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
-        return view ('management.ticket.myTickets',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'tickets'=>$myTickets]);
+        return view ('management.ticket.myTickets',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'tickets'=>$myTickets, 'questions'=>$questions]);
     }
 
     //Los tickets en los que un agente puede intervenir
@@ -152,26 +155,39 @@ class TicketController extends Controller
         $departmentsSideBar = Department::where('active',TRUE)->get();
         $subareasSideBar = Subarea::where('active',TRUE)->get();
         $rolesSideBar = Role::all();
-        $ticketsForAttend = Ticket::join('assignments','tickets.idActivity','=', 'assignments.idActivity')
-                                    ->join('users','assignments.idUser', '=','users.idUser')
-                                    ->where(function($query){
-                                        $query->Where('tickets.idTechnician',NULL)->Where('tickets.idStatus','!=',3)->Where('tickets.idStatus','!=',4)->orWhere(function($query1){
-                                                $query1->where('tickets.idTechnician',auth()->user()->idUser)->orWhere('tickets.idStatus',2)->Where('tickets.idStatus',4)
-                                                ->orWhere(function($query2){
-                                                    $query2->join('assignments','tickets.idActivity','=', 'assignments.idActivity')
-                                                    ->join('users','assignments.idUser', '=','users.idUser')
-                                                    ->select('tickets.*')
-                                                    ->where('users.idUser',auth()->user()->idUser)->where('tickets.idTechnician',NULL)->where('assignments.temporary',TRUE);
-                                        });
-                                    });
-                                  
-                                    })
-                                    ->select('tickets.*')
-                                    ->distinct()
-                                    ->where('users.idUser',$user->idUser)
-                                    ->orderBy('idStatus','ASC')
-                                    ->paginate(10);
+        $ticketsForAttend1 =Ticket::
+        where('tickets.idTechnician',NULL)
+        ->where('tickets.idStatus',1)->
+        join('assignments','tickets.idActivity','=', 'assignments.idActivity')
+        ->join('users','assignments.idUser', '=','users.idUser')
+        ->where('assignments.idUser',auth()->user()->idUser)                                             
+        ->select('tickets.*')
+        ->distinct()
+        ->get();
+        $ticketsForAttend2 =Ticket::    
+        where('tickets.idTechnician',auth()->user()->idUser)
+        ->where('tickets.idStatus',2)
+        ->orWhere(function($query1) {
+            $query1
+            ->where('tickets.idTechnician',auth()->user()->idUser)
+            ->where('tickets.idStatus',4);
+        })
+        ->distinct()
+        ->get();
+        $ticketsForAttend3 = $ticketsForAttend1->merge($ticketsForAttend2);
+        $ticketsForAttend = (collect($ticketsForAttend3))->paginate(10);
+        //$ticketsForAttend = (collect($ticketsForAttend3))->forPage(1,20);                                  
         return view('management.ticket.ticketsForAttend',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'tickets'=>$ticketsForAttend]);
+    }
+
+
+
+    //Asigna a un técnico una actividad
+    public function ticketsTechnician(User $user, Ticket $ticket){
+        $ticket->idTechnician=$user->idUser;
+        $ticket->idStatus = 2;
+        $ticket->update();
+        return redirect()->route('agent.ticket.attend',['user'=>$user]);
     }
     //Rotorna la vista con los agentes del departamentos para transferir
     public function toTransfer(Ticket $ticket, $option){
@@ -191,6 +207,7 @@ class TicketController extends Controller
             $content='Se reasignó el ticket con éxito';
             $ticket->doubt=FALSE;
             $ticket->idTechnician=$request->idTechnician;
+            $ticket->idStatus=2;
             $ticket->update();
         }catch(\Throwable $th){
         DB::rollBack();
@@ -650,6 +667,10 @@ class TicketController extends Controller
                     $ticket->idStatus=7;
                     $content='Se reabrió el ticket '.$ticket->idTicket.' con éxito';
                 }
+                Poll::where('idTicket',$ticket->idTicket)->delete();
+                $ticket->created_at = Carbon::now(); 
+                $ticket->limitDate = Carbon::now()->addDays($ticket->activity->days);
+                $ticket->closeDate = NULL;
             }
             elseif($ticketOption==2){
                 $ticket->idStatus=3;
@@ -768,6 +789,9 @@ class TicketController extends Controller
                     $ticket->idStatus=7;
                     $content='Se reabrió el ticket '.$ticket->idTicket.' con éxito';
                 }
+                Poll::where('idTicket',$ticket->idTicket)->delete();
+                $ticket->created_at = Carbon::now(); 
+                $ticket->limitDate = Carbon::now()->addDays($activity->days);
             }
             elseif($ticketOption==2){
                 $ticket->idStatus=3;
@@ -793,9 +817,6 @@ class TicketController extends Controller
         ]);
     }
    
-    public function loco(Ticket $ticket)
-    {
-        return redirect()->route('login');
-    }
+  
 
 }
