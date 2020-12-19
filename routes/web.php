@@ -23,7 +23,7 @@ Route::get('/', function () {
 
 
 
-Route::get('Reportes','ChartController@indexDepartment')->name('chart.index');
+//Route::get('Reportes','ChartController@indexTechnician')->name('chart.index.technician');
 
 
 
@@ -61,6 +61,23 @@ Route::middleware('auth')->group(function(){
             Route::get('/Editar/{question}/Pregunta','QuestionController@edit')->name('question.edit');
             Route::post('/ActualizarPregunta/{question}','QuestionController@update')->name('question.update');
             Route::post('/EliminarPregunta/{question}','QuestionController@destroy')->name('question.destroy');
+
+
+            //Reportes
+            Route::get('/ReportesTecnico/{department}','ChartController@indexTechnician')->name('chart.index.technician');
+
+            Route::post('/TicketsTecnico','ChartController@ticketAgent')->name('chart.ticket.technician');
+
+
+            Route::get('/ReportesSubarea/{department}','ChartController@indexSubarea')->name('chart.index.subarea');
+
+            Route::post('/TicketsSubarea','ChartController@ticketSubarea')->name('chart.ticket.subarea');
+
+
+
+            Route::get('/ReportesDepartamento/{department}','ChartController@indexDepartment')->name('chart.index.department');
+
+            Route::post('/TicketsDepartamento','ChartController@ticketSubarea')->name('chart.ticket.department');
 
            
 
@@ -240,6 +257,12 @@ Route::middleware('auth')->group(function(){
         Route::get('/CambiarContraseña','UserController@changePassForm')->name('change.pass');
            //Ruta para actualizar contraseña
         Route::post('/ActualizarContraseña','UserController@updatePass')->name('update.pass');
+
+
+          //Reportes
+          Route::get('/ReportesTecnico/{department}','ChartController@indexTechnician')->name('chart.index.technician');
+
+          Route::post('/TicketsTecnico','TicketController@ticketAgent')->name('chart.ticket.technician');
 
 
 

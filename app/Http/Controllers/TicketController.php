@@ -174,9 +174,11 @@ class TicketController extends Controller
         })
         ->distinct()
         ->get();
-        $ticketsForAttend3 = $ticketsForAttend1->merge($ticketsForAttend2);
-        $ticketsForAttend = (collect($ticketsForAttend3))->paginate(10);
-        //$ticketsForAttend = (collect($ticketsForAttend3))->forPage(1,20);                                  
+        $ticketsForAttend3 = Ticket::where('tickets.idTechnician',auth()->user()->idUser)
+        ->where('tickets.idStatus',6)->get();
+        $ticketsForAttend4 = $ticketsForAttend1->merge($ticketsForAttend2)->merge($ticketsForAttend3);
+        $ticketsForAttend = (collect($ticketsForAttend4))->paginate(10);
+                                        
         return view('management.ticket.ticketsForAttend',['departmentsSideBar'=>$departmentsSideBar,'rolesSideBar'=>$rolesSideBar,'subareasSideBar'=>$subareasSideBar,'tickets'=>$ticketsForAttend]);
     }
 
@@ -817,6 +819,9 @@ class TicketController extends Controller
         ]);
     }
    
+
+
+    
   
 
 }
