@@ -31,7 +31,7 @@
    
 @endsection
 @section('scripts')
-@if(auth()->user()->isAdministrator())
+
 <script>
     var one = document.getElementById('one').value;
     var two = document.getElementById('two').value;
@@ -79,7 +79,7 @@
   
 
 </script>
- @endif
+
 @endsection
 
 

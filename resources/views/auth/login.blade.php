@@ -73,7 +73,7 @@
           <a href="{{ route('guest.ticket.create') }}" class="text-center">Registrar ticket</a>
         </p>
         <p class="mb-0">
-          <a href="" data-toggle="modal" data-target="#modal-default" class="text-center" >Ver detalles de mi ticket</a>
+          <a href="" data-toggle="modal" data-target="#modal-default" class="text-center" > Buscar ticket</a>
         </p>
 
         </div>

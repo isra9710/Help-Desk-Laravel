@@ -8,7 +8,11 @@
 
 
 @section('content')
+@if(auth()->user()->isAdministrator())
     <form method="POST"   action ="{{route('administrator.chart.ticket.subarea')}}" id="form">
+@else
+<form method="POST"   action ="{{route('coordinator.chart.ticket.subarea')}}" id="form">
+@endif
     {{ csrf_field() }}
     Elige la subárea 
     <select class="form-control" name="idSubarea">

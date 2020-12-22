@@ -75,9 +75,9 @@ Route::middleware('auth')->group(function(){
 
 
 
-            Route::get('/ReportesDepartamento/{department}','ChartController@indexDepartment')->name('chart.index.department');
+            Route::get('/ReportesDepartamento/{department}','ChartController@ticketDepartment')->name('chart.department');
 
-            Route::post('/TicketsDepartamento','ChartController@ticketSubarea')->name('chart.ticket.department');
+            
 
            
 
@@ -259,10 +259,19 @@ Route::middleware('auth')->group(function(){
         Route::post('/ActualizarContraseña','UserController@updatePass')->name('update.pass');
 
 
-          //Reportes
-          Route::get('/ReportesTecnico/{department}','ChartController@indexTechnician')->name('chart.index.technician');
+         //Reportes
+         Route::get('/ReportesTecnico/{department}','ChartController@indexTechnician')->name('chart.index.technician');
 
-          Route::post('/TicketsTecnico','TicketController@ticketAgent')->name('chart.ticket.technician');
+         Route::post('/TicketsTecnico','ChartController@ticketAgent')->name('chart.ticket.technician');
+
+
+         Route::get('/ReportesSubarea/{department}','ChartController@indexSubarea')->name('chart.index.subarea');
+
+         Route::post('/TicketsSubarea','ChartController@ticketSubarea')->name('chart.ticket.subarea');
+
+
+
+         Route::get('/ReportesDepartamento/{department}','ChartController@ticketDepartment')->name('chart.department');
 
 
 

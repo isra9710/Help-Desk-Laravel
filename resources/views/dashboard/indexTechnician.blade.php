@@ -8,7 +8,11 @@
 
 
 @section('content')
+    @if(auth()->user()->isAdministrator())
     <form method="POST"   action ="{{route('administrator.chart.ticket.technician')}}" id="form">
+    @else
+    <form method="POST"   action ="{{route('coordinator.chart.ticket.technician')}}" id="form">
+    @endif
     {{ csrf_field() }}
     Elige al técnico 
     <select class="form-control" name="idTechnician">

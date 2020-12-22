@@ -98,7 +98,7 @@
                         @foreach ($departmentsSideBar as $department)
                           <ul class="nav nav-treeview">
                             <li class="nav-item">
-                              <a href="{{route('administrator.ticket.historical',['department'=>$department])}}" class="nav-link">
+                              <a href="{{route('administrator.chart.department',['department'=>$department])}}" class="nav-link">
                                 <i class="fas fa-monument"></i>
                               <p>{{$department->departmentName}}</p>
                               </a>
@@ -133,36 +133,41 @@
           
         @if(auth()->user()->isCoordinator())
         <li class="nav-header">Estadisticas y reportes</li>
-               <li class="nav-item has-treeview">
+              
+             
+        <li class="nav-item">
+                <a href="{{route('coordinator.chart.index.technician',['department'=>auth()->user()->department])}}" class="nav-link">
+                    <i class="fas fa-chart-pie"></i>
+                        <p>
+                         Reporte de empleado
+                        <i class="right fas fa-angle-left"></i>
+                        </p>
+                   </a>
+                      
+                 </li>
+              
+               
+                 <li class="nav-item">
+                <a href="{{route('coordinator.chart.index.subarea',['department'=>auth()->user()->department])}}" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                        <p>
+                         Reporte de subárea
+                        <i class="right fas fa-angle-left"></i>
+                        </p>
+                   </a>
 
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-tachometer-alt"></i>
-                  <p>
-                    Dashboard
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
+                       
+                         
+                 </li>
                   <li class="nav-item">
-                    <a href="../../index.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                      <p>Productividad empleado</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="../../index2.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>Productividad subárea</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="../../index3.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>Productividad departamento</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
+                 <a href="{{route('coordinator.chart.department',['department'=>auth()->user()->department])}}" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                      <p>Reporte departamento</p>
+                        <i class="right fas fa-angle-left"></i>
+                        </p>
+                   </a>
+                 </li>
+                 
           @endif
       
 
@@ -442,7 +447,7 @@
                 <i class="fas fa-hotel"></i>
                 <p>
                   Departamentos
-                  <span class="badge badge-info right">100</span>
+                  
                 </p>
               </a>
             </li>
